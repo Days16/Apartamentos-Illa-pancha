@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { getExtras, upsertExtra, deleteExtra } from '../../services/dataService';
+import { formatPrice } from '../../utils/format';
 import Ico, { paths } from '../../components/Ico';
 
 const PRIMARY_COLOR = '#1a5f6e';
@@ -25,16 +26,11 @@ export default function ExtrasAdmin() {
     try {
       setLoading(true);
       setError(null);
-      const { data, error: fetchError } = await supabase
-        .from('extras')
-        .select('*')
-        .order('id', { ascending: true });
-
-      if (fetchError) throw fetchError;
+      const data = await getExtras();
       setExtras(data || []);
     } catch (err) {
       console.error('Error loading extras:', err);
-      setError(err.message || 'Error al cargar extras');
+      setError('Error al cargar extras (Supabase)');
     } finally {
       setLoading(false);
     }
@@ -57,17 +53,13 @@ export default function ExtrasAdmin() {
       }
 
       setSaving(true);
-      const { error: updateError } = await supabase
-        .from('extras')
-        .update({
-          name: formData.name,
-          description: formData.description || '',
-          price: parseFloat(formData.price) || 0,
-          active: formData.active !== false
-        })
-        .eq('id', formData.id);
-
-      if (updateError) throw updateError;
+      await upsertExtra({
+        id: formData.id,
+        name: formData.name,
+        description: formData.description || '',
+        price: parseFloat(formData.price) || 0,
+        active: formData.active !== false
+      });
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -75,7 +67,8 @@ export default function ExtrasAdmin() {
       loadExtras();
     } catch (err) {
       console.error('Error saving extra:', err);
-      setError(err.message || 'Error al guardar');
+      const isRLS = err.code === '42501' || err.message?.includes('policy');
+      setError(`Error al guardar: ${err.message}${isRLS ? '\n\nTIP: Es probable que falten permisos RLS.' : ''}`);
     } finally {
       setSaving(false);
     }
@@ -89,16 +82,12 @@ export default function ExtrasAdmin() {
       }
 
       setSaving(true);
-      const { error: insertError } = await supabase
-        .from('extras')
-        .insert([{
-          name: formData.name,
-          description: formData.description || '',
-          price: parseFloat(formData.price) || 0,
-          active: true
-        }]);
-
-      if (insertError) throw insertError;
+      await upsertExtra({
+        name: formData.name,
+        description: formData.description || '',
+        price: parseFloat(formData.price) || 0,
+        active: true
+      });
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -107,7 +96,7 @@ export default function ExtrasAdmin() {
       loadExtras();
     } catch (err) {
       console.error('Error creating extra:', err);
-      setError(err.message || 'Error al crear');
+      setError('Error al crear extra (RLS?)');
     } finally {
       setSaving(false);
     }
@@ -117,13 +106,7 @@ export default function ExtrasAdmin() {
     if (!confirm('¿Estás seguro de que deseas eliminar este extra?')) return;
 
     try {
-      const { error: deleteError } = await supabase
-        .from('extras')
-        .delete()
-        .eq('id', id);
-
-      if (deleteError) throw deleteError;
-
+      await deleteExtra(id);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
       loadExtras();
@@ -135,12 +118,10 @@ export default function ExtrasAdmin() {
 
   const toggleActiveStatus = async (extra) => {
     try {
-      const { error: updateError } = await supabase
-        .from('extras')
-        .update({ active: !extra.active })
-        .eq('id', extra.id);
-
-      if (updateError) throw updateError;
+      await upsertExtra({
+        ...extra,
+        active: !extra.active
+      });
       loadExtras();
     } catch (err) {
       console.error('Error updating status:', err);
@@ -489,7 +470,7 @@ export default function ExtrasAdmin() {
 
                 {/* Precio */}
                 <div style={{ fontSize: 14, color: PRIMARY_COLOR, fontWeight: 600 }}>
-                  {parseFloat(extra.price).toFixed(2)} €
+                  {formatPrice(extra.price)}
                 </div>
 
                 {/* Creado */}

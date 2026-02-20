@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { formatDateShort, formatPrice } from '../../utils/format';
 import { getReservations, getApartmentBySlug, getExtras, markCashPaid, updateReservationStatus, deleteReservation, confirmAndMarkPaid } from '../../services/dataService';
 import generateInvoice from '../../utils/generateInvoice';
 import exportReservationsExcel from '../../utils/exportExcel';
@@ -447,8 +447,8 @@ export default function Reservas() {
                   ['Email', selectedReservation.email],
                   ['Teléfono', selectedReservation.phone],
                   ['Apartamento', apt?.name || selectedReservation.apt],
-                  ['Check-in', selectedReservation.checkin],
-                  ['Check-out', selectedReservation.checkout],
+                  ['Check-in', formatDateShort(selectedReservation.checkin)],
+                  ['Check-out', formatDateShort(selectedReservation.checkout)],
                   ['Noches', selectedReservation.nights],
                   ['Origen', srcBadge[selectedReservation.source]?.[0] || selectedReservation.source],
                 ].map(([label, value], i) => (
@@ -510,10 +510,10 @@ export default function Reservas() {
               </div>
               <div style={{ padding: '16px' }}>
                 {[
-                  ['Total reserva', `${selectedReservation.total} €`],
-                  ...(selectedReservation.extrasTotal > 0 ? [['Extras incluidos', `${selectedReservation.extrasTotal} €`]] : []),
-                  ['Depósito (50%)', `${selectedReservation.deposit} € · ${selectedReservation.status === 'confirmed' ? '✓ Cobrado' : '---'}`],
-                  ['Pago al llegar (50%)', `${selectedReservation.deposit} € · ${selectedReservation.cashPaid ? '✓ Recibido' : 'Pendiente'}`],
+                  ['Total reserva', formatPrice(selectedReservation.total)],
+                  ...(selectedReservation.extrasTotal > 0 ? [['Extras incluidos', formatPrice(selectedReservation.extrasTotal)]] : []),
+                  ['Depósito (50%)', `${formatPrice(selectedReservation.deposit)} · ${selectedReservation.status === 'confirmed' ? '✓ Cobrado' : '---'}`],
+                  ['Pago al llegar (50%)', `${formatPrice(selectedReservation.deposit)} · ${selectedReservation.cashPaid ? '✓ Recibido' : 'Pendiente'}`],
                 ].map(([label, value], i) => (
                   <div key={i} style={{
                     display: 'flex',
@@ -542,7 +542,7 @@ export default function Reservas() {
                   color: COLORS.gray,
                 }}>
                   <span>Total cobrado</span>
-                  <span>{selectedReservation.cashPaid || selectedReservation.status !== 'confirmed' ? selectedReservation.total : selectedReservation.deposit} €</span>
+                  <span>{formatPrice(selectedReservation.cashPaid || selectedReservation.status !== 'confirmed' ? selectedReservation.total : selectedReservation.deposit)}</span>
                 </div>
               </div>
             </div>
@@ -567,7 +567,7 @@ export default function Reservas() {
                       color: COLORS.blue,
                       fontWeight: 500,
                     }}>
-                      {extra.name} {extra.price > 0 ? `· ${extra.price} €` : '· Gratis'}
+                      {extra.name} {extra.price > 0 ? `· ${formatPrice(extra.price)}` : '· Gratis'}
                     </div>
                   ) : null;
                 })}
@@ -591,7 +591,7 @@ export default function Reservas() {
                   ['Capacidad', apt.cap],
                   ['Dormitorios', apt.beds],
                   ['Baños', apt.baths],
-                  ['Precio/noche', `${apt.price} €`],
+                  ['Precio/noche', formatPrice(apt.price)],
                   ['Estancia mínima', `${apt.minStay} noches`],
                 ].map(([label, value], i) => (
                   <div key={i}>

@@ -32,6 +32,15 @@ export async function getApartmentBySlug(slug) {
   }
 }
 
+export async function deleteApartment(slug) {
+  const { error } = await supabase
+    .from('apartments')
+    .delete()
+    .eq('slug', slug);
+  if (error) throw error;
+  return true;
+}
+
 // ─── RESERVAS ─────────────────────────────────────────────────────────────────
 export async function getReservations() {
   try {
@@ -47,35 +56,30 @@ export async function getReservations() {
 }
 
 export async function createReservation(reservation) {
-  try {
-    const { data, error } = await supabase
-      .from('reservations')
-      .insert({
-        id: reservation.id,
-        guest: reservation.guest,
-        apt: reservation.apt,
-        apt_slug: reservation.aptSlug,
-        checkin: reservation.checkin,
-        checkout: reservation.checkout,
-        nights: reservation.nights,
-        total: reservation.total,
-        deposit: reservation.deposit,
-        status: reservation.status || 'pending',
-        source: reservation.source || 'web',
-        cash_paid: reservation.cashPaid || false,
-        email: reservation.email,
-        phone: reservation.phone,
-        extras: reservation.extras || [],
-        extras_total: reservation.extrasTotal || 0,
-      })
-      .select()
-      .single();
-    if (error) throw error;
-    return normalizeReservation(data);
-  } catch (err) {
-    console.warn('Error creando reserva en Supabase:', err);
-    return reservation; // devolver los datos localmente
-  }
+  const { data, error } = await supabase
+    .from('reservations')
+    .insert({
+      id: reservation.id,
+      guest_name: reservation.guest,
+      apartment_slug: reservation.aptSlug,
+      check_in: reservation.checkin,
+      check_out: reservation.checkout,
+      nights: reservation.nights,
+      total_price: reservation.total,
+      deposit_paid: reservation.deposit,
+      status: reservation.status || 'pending',
+      source: reservation.source || 'web',
+      fully_paid: reservation.cashPaid || false,
+      guest_email: reservation.email,
+      guest_phone: reservation.phone,
+      extras: reservation.extras || [],
+      extras_total: reservation.extrasTotal || 0,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return normalizeReservation(data);
 }
 
 export async function updateReservationStatus(id, status) {
@@ -149,28 +153,20 @@ export async function getExtras() {
 }
 
 export async function upsertExtra(extra) {
-  try {
-    const { data, error } = await supabase
-      .from('extras')
-      .upsert(extra)
-      .select()
-      .single();
-    if (error) throw error;
-    return data;
-  } catch (err) {
-    console.warn('Error guardando extra en Supabase:', err);
-    return extra;
-  }
+  const { data, error } = await supabase
+    .from('extras')
+    .upsert(extra)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function deleteExtra(id) {
-  try {
-    const { error } = await supabase.from('extras').delete().eq('id', id);
-    if (error) throw error;
-    return true;
-  } catch {
-    return false;
-  }
+  const { error } = await supabase.from('extras').delete().eq('id', id);
+  if (error) throw error;
+  return true;
 }
 
 // ─── RESEÑAS ─────────────────────────────────────────────────────────────────
@@ -196,7 +192,7 @@ function normalizeApartment(d) {
     nameEn: d.name_en || d.nameEn || d.name,
     tagline: d.tagline,
     taglineEn: d.tagline_en || d.taglineEn || d.tagline,
-    cap: d.cap,
+    cap: d.capacity ?? d.cap ?? 2,
     beds: d.beds,
     baths: d.baths,
     price: d.price,
@@ -212,6 +208,8 @@ function normalizeApartment(d) {
     nearby: d.nearby || [],
     occupiedDays: d.occupied_days ?? d.occupiedDays ?? [],
     extraNight: d.extra_night ?? d.extraNight ?? 0,
+    cancellation_days: d.cancellation_days ?? 14,
+    deposit_percentage: d.deposit_percentage ?? 50,
   };
 }
 

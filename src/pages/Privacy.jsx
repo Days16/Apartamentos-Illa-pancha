@@ -1,17 +1,23 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
 
 export default function Privacy() {
+  const { lang } = useLang();
+  const T = useT(lang);
+  const L = T.legal;
+
   return (
     <>
-      <SEO title="Política de Privacidad" description="Consulta nuestra política de privacidad y cómo tratamos tus datos personales." />
+      <SEO title={L.privacyTitle} description={L.privacyDesc} />
       <Navbar />
       <div className="policy-page">
-        <div className="policy-page-hero">
-          <div className="section-eyebrow">Documentos legales</div>
-          <h1 className="policy-page-title">Política de Privacidad</h1>
-          <p style={{ fontSize: 13, color: '#64748b', marginTop: 8 }}>Última actualización: enero de 2026</p>
+        <div className="policy-page-hero policy-hero-legal">
+          <div className="section-eyebrow legal-eyebrow">{L.docs}</div>
+          <h1 className="policy-page-title">{L.privacyTitle}</h1>
+          <p style={{ fontSize: 13, color: '#6B7E94', marginTop: 8 }}>{L.lastUpdate}</p>
         </div>
         <div className="policy-content">
           <p>En <strong>Illa Pancha Ribadeo</strong> (en adelante, «nosotros») nos comprometemos a proteger tu privacidad. Esta política explica qué datos personales recopilamos, para qué los usamos y cuáles son tus derechos al respecto, de conformidad con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>

@@ -1,17 +1,23 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
 
 export default function Cookies() {
+  const { lang } = useLang();
+  const T = useT(lang);
+  const L = T.legal;
+
   return (
     <>
-      <SEO title="Política de Cookies" description="Consulta nuestra política de cookies y cómo puedes gestionarlas." />
+      <SEO title={L.cookiesTitle} description={L.cookiesDesc} />
       <Navbar />
       <div className="policy-page">
-        <div className="policy-page-hero">
-          <div className="section-eyebrow">Documentos legales</div>
-          <h1 className="policy-page-title">Política de Cookies</h1>
-          <p style={{ fontSize: 13, color: '#64748b', marginTop: 8 }}>Última actualización: enero de 2026</p>
+        <div className="policy-page-hero policy-hero-legal">
+          <div className="section-eyebrow legal-eyebrow">{L.docs}</div>
+          <h1 className="policy-page-title">{L.cookiesTitle}</h1>
+          <p style={{ fontSize: 13, color: '#6B7E94', marginTop: 8 }}>{L.lastUpdate}</p>
         </div>
         <div className="policy-content">
           <p>Esta política explica qué son las cookies, qué tipos utilizamos en <strong>illapancha.com</strong> y cómo puedes gestionarlas, de conformidad con el artículo 22.2 de la Ley 34/2002 (LSSI) y la Guía sobre el uso de las cookies de la AEPD.</p>

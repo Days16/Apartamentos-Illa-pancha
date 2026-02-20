@@ -1,17 +1,23 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
 
 export default function ProteccionDatos() {
+  const { lang } = useLang();
+  const T = useT(lang);
+  const L = T.legal;
+
   return (
     <>
-      <SEO title="Protección de Datos" description="Información detallada sobre la protección de tus datos personales según el RGPD." />
+      <SEO title={L.dataTitle} description={L.dataDesc} />
       <Navbar />
       <div className="policy-page">
         <div className="policy-page-hero policy-hero-legal">
-          <div className="section-eyebrow legal-eyebrow">Documentos legales</div>
-          <h1 className="policy-page-title">Protección de Datos</h1>
-          <p style={{ fontSize: 13, color: '#6B7E94', marginTop: 8 }}>Última actualización: enero de 2026 · Conforme al RGPD (UE) 2016/679</p>
+          <div className="section-eyebrow legal-eyebrow">{L.docs}</div>
+          <h1 className="policy-page-title">{L.dataTitle}</h1>
+          <p style={{ fontSize: 13, color: '#6B7E94', marginTop: 8 }}>{L.lastUpdate}</p>
         </div>
         <div className="policy-content">
           <p>Este documento complementa la Política de Privacidad general y detalla de forma específica el cumplimiento del <strong>Reglamento General de Protección de Datos (RGPD)</strong> y la <strong>Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD)</strong> por parte de <strong>Illa Pancha Ribadeo</strong>.</p>

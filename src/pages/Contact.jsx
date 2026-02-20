@@ -5,6 +5,8 @@ import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
 import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
+import { assets } from '../constants/assets';
 import { fetchApartments, submitContactMessage } from '../services/supabaseService';
 
 export default function Contact() {
@@ -34,24 +36,24 @@ export default function Contact() {
 
   const up = (field) => (e) => setForm(p => ({ ...p, [field]: e.target.value }));
 
-  const { t } = useLang();
+  const { lang, t } = useLang();
+  const T = useT(lang);
+  const C = T.contact;
 
   return (
     <>
       <SEO
-        title={t('Contacto', 'Contact')}
-        description={t('¿Tienes alguna duda? Contacta con nosotros. Estamos aquí para ayudarte a planificar tu estancia en Ribadeo.', 'Any questions? Contact us. We are here to help you plan your stay in Ribadeo.')}
+        title={C.title}
+        description={C.desc}
       />
       <Navbar onOpenBooking={() => setBookingOpen(true)} />
 
       {/* HERO */}
       <div className="page-hero">
-        <div className="page-hero-eyebrow">Estamos aquí</div>
-        <h1 className="page-hero-title">
-          Escríbenos,<br /><em>respondemos rápido</em>
-        </h1>
+        <div className="page-hero-eyebrow">{C.heroEyebrow}</div>
+        <h1 className="page-hero-title" dangerouslySetInnerHTML={{ __html: C.heroTitle }} />
         <p className="page-hero-desc">
-          Cualquier duda sobre disponibilidad, precios, accesibilidad o servicios. Respondemos en menos de 24 horas, normalmente en pocas horas.
+          {C.heroDesc}
         </p>
       </div>
 
@@ -65,42 +67,42 @@ export default function Contact() {
                 <Ico d={paths.check} size={28} color="#1a5f6e" />
               </div>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 300, color: '#0f172a', marginBottom: 12 }}>
-                ¡Mensaje enviado!
+                {C.sentTitle}
               </div>
               <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.7, marginBottom: 28 }}>
-                Hemos recibido tu mensaje y te responderemos en breve a <strong>{form.email}</strong>.
+                {C.sentDesc.replace('{email}', `<strong>${form.email}</strong>`)}
               </p>
               <button
                 className="btn-outline"
                 onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', apt: '', msg: '' }); }}
               >
-                Enviar otro mensaje
+                {C.sendAnother}
               </button>
             </div>
           ) : (
             <>
-              <div className="contact-form-title">Envíanos un mensaje</div>
+              <div className="contact-form-title">{C.formTitle}</div>
               <div className="contact-form-sub">
-                También puedes llamarnos directamente. Somos personas reales.
+                {C.formSub}
               </div>
               <form onSubmit={handleSubmit}>
                 <div className="form-row" style={{ marginBottom: 20 }}>
                   <div>
-                    <label className="form-label">Nombre *</label>
+                    <label className="form-label">{C.labelName}</label>
                     <input
                       className="form-input"
-                      placeholder="Tu nombre"
+                      placeholder={C.placeholderName}
                       value={form.name}
                       onChange={up('name')}
                       required
                     />
                   </div>
                   <div>
-                    <label className="form-label">Email *</label>
+                    <label className="form-label">{C.labelEmail}</label>
                     <input
                       type="email"
                       className="form-input"
-                      placeholder="tu@email.com"
+                      placeholder={C.placeholderEmail}
                       value={form.email}
                       onChange={up('email')}
                       required
@@ -110,29 +112,29 @@ export default function Contact() {
 
                 <div className="form-row" style={{ marginBottom: 20 }}>
                   <div>
-                    <label className="form-label">Teléfono</label>
+                    <label className="form-label">{C.labelPhone}</label>
                     <input
                       className="form-input"
-                      placeholder="+34 600 000 000"
+                      placeholder={C.placeholderPhone}
                       value={form.phone}
                       onChange={up('phone')}
                     />
                   </div>
                   <div>
-                    <label className="form-label">Apartamento de interés</label>
+                    <label className="form-label">{C.labelApt}</label>
                     <select className="form-input" value={form.apt} onChange={up('apt')} style={{ cursor: 'pointer' }}>
-                      <option value="">-- Sin preferencia --</option>
+                      <option value="">{C.noPref}</option>
                       {apartmentsList.map(a => (
-                        <option key={a.slug} value={a.slug}>{a.name}</option>
+                        <option key={a.slug} value={a.slug}>{lang === 'EN' ? (a.nameEn || a.name) : a.name}</option>
                       ))}
                     </select>
                   </div>
                 </div>
 
-                <label className="form-label">Mensaje *</label>
+                <label className="form-label">{C.labelMsg}</label>
                 <textarea
                   className="form-input"
-                  placeholder="Cuéntanos qué necesitas: fechas, número de personas, dudas sobre el apartamento..."
+                  placeholder={C.placeholderMsg}
                   rows={5}
                   value={form.msg}
                   onChange={up('msg')}
@@ -141,13 +143,11 @@ export default function Contact() {
                 />
 
                 <div style={{ fontSize: 11, color: '#64748b', lineHeight: 1.6, marginBottom: 24 }}>
-                  Al enviar este formulario aceptas nuestra{' '}
-                  <a href="/privacidad" style={{ color: '#1a5f6e', textDecoration: 'underline' }}>política de privacidad</a>.
-                  Tus datos no se compartirán con terceros.
+                  {C.privacy}
                 </div>
 
                 <button type="submit" className="btn-primary" style={{ width: '100%', padding: 14, fontSize: 13 }} disabled={submitting}>
-                  {submitting ? 'Enviando...' : 'Enviar mensaje →'}
+                  {submitting ? C.submitting : C.sendMsg}
                 </button>
               </form>
             </>
@@ -156,15 +156,15 @@ export default function Contact() {
 
         {/* INFO */}
         <div className="contact-info-side">
-          <div className="contact-info-title">Información de contacto</div>
+          <div className="contact-info-title">{C.infoTitle}</div>
 
           <div className="contact-info-item">
             <Ico d={paths.phone} size={18} color="#7dd3fc" />
             <div>
-              <div className="contact-info-label">Teléfono</div>
+              <div className="contact-info-label">{T.booking.phone}</div>
               <div className="contact-info-value">+34 982 XXX XXX</div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>
-                Lun–Dom · 9:00 – 21:00
+                {C.hours}
               </div>
             </div>
           </div>
@@ -172,10 +172,10 @@ export default function Contact() {
           <div className="contact-info-item">
             <Ico d={paths.mail} size={18} color="#7dd3fc" />
             <div>
-              <div className="contact-info-label">Email</div>
+              <div className="contact-info-label">{T.booking.email}</div>
               <div className="contact-info-value">info@illapancha.com</div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>
-                Respuesta en &lt; 24h
+                {C.response}
               </div>
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function Contact() {
             <div>
               <div className="contact-info-label">WhatsApp</div>
               <a
-                href="https://wa.me/34982XXXXXX?text=Hola%2C%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20los%20apartamentos%20en%20Ribadeo."
+                href={`https://wa.me/34982XXXXXX?text=${encodeURIComponent(C.waMsg)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="contact-info-value"
@@ -204,24 +204,24 @@ export default function Contact() {
           <div className="contact-info-item">
             <Ico d={paths.map} size={18} color="#7dd3fc" />
             <div>
-              <div className="contact-info-label">Dirección</div>
+              <div className="contact-info-label">{T.detail.location}</div>
               <div className="contact-info-value">
-                Ribadeo, Lugo<br />Galicia, España
+                Ribadeo, Lugo<br />Galicia, Spain
               </div>
             </div>
           </div>
 
           <div style={{ marginTop: 40, padding: '24px', background: 'rgba(168,197,160,0.12)' }}>
             <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#ffffff', marginBottom: 8 }}>
-              Check-in y check-out
+              {T.detail.checkin} y {T.detail.checkout}
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: 13 }}>
-              <span style={{ color: 'rgba(255,255,255,0.55)' }}>Entrada</span>
-              <span>A partir de las 15:00</span>
+              <span style={{ color: 'rgba(255,255,255,0.55)' }}>{T.booking.checkin}</span>
+              <span>{C.checkinTime}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: 13 }}>
-              <span style={{ color: 'rgba(255,255,255,0.55)' }}>Salida</span>
-              <span>Antes de las 11:00</span>
+              <span style={{ color: 'rgba(255,255,255,0.55)' }}>{T.booking.checkout}</span>
+              <span>{C.checkoutTime}</span>
             </div>
           </div>
 

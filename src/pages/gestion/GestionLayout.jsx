@@ -6,7 +6,7 @@ const navItems = [
   { path: '/gestion', label: 'Dashboard', icon: paths.home, exact: true },
   { path: '/gestion/reservas', label: 'Reservas', icon: paths.cal },
   { path: '/gestion/calendario', label: 'Calendario', icon: paths.building },
-  { path: '/gestion/sync', label: 'Sincronización', icon: paths.sync },
+  //{ path: '/gestion/sync', label: 'Sincronización', icon: paths.sync },
   { path: '/gestion/mensajes', label: 'Mensajes', icon: paths.msg },
 ];
 

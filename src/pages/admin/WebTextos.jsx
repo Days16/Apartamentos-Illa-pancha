@@ -5,6 +5,10 @@ export default function WebTextos() {
   const [settings, setSettings] = useState({
     titleEs: '', titleEn: '',
     subtitleEs: '', subtitleEn: '',
+    aboutHeroTitleEs: '', aboutHeroTitleEn: '',
+    aboutHeroDescEs: '', aboutHeroDescEn: '',
+    aboutStoryTitleEs: '', aboutStoryTitleEn: '',
+    aboutText1Es: '', aboutText1En: '',
     phone: '', email: '', address: '',
     metaEs: '', metaEn: '',
     maintenanceMode: false
@@ -14,35 +18,56 @@ export default function WebTextos() {
 
   useEffect(() => {
     async function load() {
-      const [siteSet, webContent] = await Promise.all([
-        fetchSettings(),
-        fetchWebsiteContent('home')
-      ]);
+      try {
+        const [siteSet, webContent] = await Promise.all([
+          fetchSettings(),
+          fetchWebsiteContent()
+        ]);
 
-      const newSettings = { ...settings };
+        const newSettings = { ...settings };
 
-      // Mapear site_settings a state
-      if (siteSet) {
-        if (siteSet.site_phone !== undefined) newSettings.phone = siteSet.site_phone;
-        if (siteSet.site_email !== undefined) newSettings.email = siteSet.site_email;
-        if (siteSet.site_address !== undefined) newSettings.address = siteSet.site_address;
-        if (siteSet.maintenance_mode !== undefined) newSettings.maintenanceMode = siteSet.maintenance_mode === true;
+        if (siteSet) {
+          if (siteSet.site_phone !== undefined) newSettings.phone = siteSet.site_phone;
+          if (siteSet.site_email !== undefined) newSettings.email = siteSet.site_email;
+          if (siteSet.site_address !== undefined) newSettings.address = siteSet.site_address;
+          if (siteSet.maintenance_mode !== undefined) newSettings.maintenanceMode = siteSet.maintenance_mode === true;
+          if (siteSet.meta_description_es !== undefined) newSettings.metaEs = siteSet.meta_description_es;
+          if (siteSet.meta_description_en !== undefined) newSettings.metaEn = siteSet.meta_description_en;
+        }
+
+        webContent.forEach(c => {
+          if (c.section_key === 'home_hero_title') {
+            newSettings.titleEs = c.content_es || '';
+            newSettings.titleEn = c.content_en || '';
+          }
+          if (c.section_key === 'home_hero_desc') {
+            newSettings.subtitleEs = c.content_es || '';
+            newSettings.subtitleEn = c.content_en || '';
+          }
+          if (c.section_key === 'about_hero_title') {
+            newSettings.aboutHeroTitleEs = c.content_es || '';
+            newSettings.aboutHeroTitleEn = c.content_en || '';
+          }
+          if (c.section_key === 'about_hero_desc') {
+            newSettings.aboutHeroDescEs = c.content_es || '';
+            newSettings.aboutHeroDescEn = c.content_en || '';
+          }
+          if (c.section_key === 'about_story_title') {
+            newSettings.aboutStoryTitleEs = c.content_es || '';
+            newSettings.aboutStoryTitleEn = c.content_en || '';
+          }
+          if (c.section_key === 'about_story_text_1') {
+            newSettings.aboutText1Es = c.content_es || '';
+            newSettings.aboutText1En = c.content_en || '';
+          }
+        });
+
+        setSettings(newSettings);
+      } catch (err) {
+        console.error('Error loading web textos:', err);
+      } finally {
+        setLoading(false);
       }
-
-      // Mapear website_content a state
-      webContent.forEach(c => {
-        if (c.section_key === 'home_hero_title') {
-          newSettings.titleEs = c.content_es || '';
-          newSettings.titleEn = c.content_en || '';
-        }
-        if (c.section_key === 'home_hero_desc') {
-          newSettings.subtitleEs = c.content_es || '';
-          newSettings.subtitleEn = c.content_en || '';
-        }
-      });
-
-      setSettings(newSettings);
-      setLoading(false);
     }
     load();
   }, []);
@@ -51,33 +76,37 @@ export default function WebTextos() {
 
   const handleSave = async () => {
     try {
-      // Guardar site_settings
-      await updateSetting('site_phone', settings.phone);
-      await updateSetting('site_email', settings.email);
-      await updateSetting('site_address', settings.address);
-      await updateSetting('maintenance_mode', settings.maintenanceMode, 'boolean');
-
-      // Guardar website_content
-      await updateWebsiteContent('home_hero_title', { content_es: settings.titleEs, content_en: settings.titleEn });
-      await updateWebsiteContent('home_hero_desc', { content_es: settings.subtitleEs, content_en: settings.subtitleEn });
-
+      setSaved(false);
+      await Promise.all([
+        updateSetting('site_phone', settings.phone),
+        updateSetting('site_email', settings.email),
+        updateSetting('site_address', settings.address),
+        updateSetting('maintenance_mode', settings.maintenanceMode, 'boolean'),
+        updateSetting('meta_description_es', settings.metaEs),
+        updateSetting('meta_description_en', settings.metaEn),
+        updateWebsiteContent('home_hero_title', { content_es: settings.titleEs, content_en: settings.titleEn }),
+        updateWebsiteContent('home_hero_desc', { content_es: settings.subtitleEs, content_en: settings.subtitleEn }),
+        updateWebsiteContent('about_hero_title', { content_es: settings.aboutHeroTitleEs, content_en: settings.aboutHeroTitleEn }),
+        updateWebsiteContent('about_hero_desc', { content_es: settings.aboutHeroDescEs, content_en: settings.aboutHeroDescEn }),
+        updateWebsiteContent('about_story_title', { content_es: settings.aboutStoryTitleEs, content_en: settings.aboutStoryTitleEn }),
+        updateWebsiteContent('about_story_text_1', { content_es: settings.aboutText1Es, content_en: settings.aboutText1En })
+      ]);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
       console.error('Error saving texts:', err);
-      alert('Error al guardar los textos. Revisa la consola.');
+      const isRLS = err.code === '42501' || err.message?.includes('policy');
+      alert(`Error al guardar los textos: ${err.message}${isRLS ? '\n\nTIP: Esto suele ser un problema de permisos RLS en Supabase.' : ''}`);
     }
   };
 
   const handleToggleMaintenance = async (active) => {
     setSettings(p => ({ ...p, maintenanceMode: active }));
     try {
-      console.log('Cambiando modo mantenimiento a:', active);
       await updateSetting('maintenance_mode', active, 'boolean');
-      console.log('Modo mantenimiento guardado con éxito.');
     } catch (err) {
       console.error('Error al cambiar modo mantenimiento:', err);
-      alert('No se pudo cambiar el modo mantenimiento. Revisa la consola.');
+      alert('No se pudo cambiar el modo mantenimiento.');
     }
   };
 
@@ -93,145 +122,151 @@ export default function WebTextos() {
       </div>
 
       <div className="main-body">
+        {/* MANTENIMIENTO */}
         <div className="card" style={{
           padding: '28px 32px',
           maxWidth: 760,
           marginBottom: 20,
           border: '1px solid',
           borderColor: settings.maintenanceMode ? '#fecaca' : '#e2e8f0',
-          background: settings.maintenanceMode ? '#fff5f5' : '#ffffff',
-          transition: 'all 0.3s ease'
+          background: settings.maintenanceMode ? '#fff5f5' : '#ffffff'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minHeight: '44px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <div style={{ fontWeight: 600, color: settings.maintenanceMode ? '#b91c1c' : '#0f172a', fontSize: 15 }}>
+              <div style={{ fontWeight: 600, color: settings.maintenanceMode ? '#b91c1c' : '#0f172a' }}>
                 {settings.maintenanceMode ? '⚠️ Modo Mantenimiento ACTIVO' : 'Modo Mantenimiento'}
               </div>
-              <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
-                Cuando está activo, los clientes verán una pantalla de aviso y no podrán acceder a la web.
+              <div style={{ fontSize: 12, color: '#64748b' }}>
+                Cuando está activo, los clientes verán una pantalla de aviso.
               </div>
             </div>
             <label className="premium-switch">
-              <input
-                type="checkbox"
-                checked={settings.maintenanceMode}
-                onChange={(e) => handleToggleMaintenance(e.target.checked)}
-              />
-              <span className="premium-slider">
-                <span className="status-icon status-on">ON</span>
-                <span className="status-icon status-off">OFF</span>
-              </span>
+              <input type="checkbox" checked={settings.maintenanceMode} onChange={(e) => handleToggleMaintenance(e.target.checked)} />
+              <span className="premium-slider" />
             </label>
-          </div>
-
-          <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'flex-start' }}>
-            <button
-              onClick={() => {
-                sessionStorage.setItem('maintenance_preview', 'true');
-                window.open('/', '_blank');
-              }}
-              style={{
-                background: 'transparent',
-                border: '1px solid #0f172a',
-                color: '#0f172a',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8
-              }}
-            >
-              👁️ Ver Vista Previa de la Web
-            </button>
           </div>
         </div>
 
         <div className="card" style={{ padding: 32, maxWidth: 760, marginBottom: 16 }}>
+          {/* HOME HERO */}
           <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', marginBottom: 20 }}>
-            Hero principal
+            Inicio: Hero principal
           </div>
-          <div className="form-row" style={{ marginBottom: 20 }}>
-            <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-group-label">Título principal (ES)</label>
-              <input className="form-control" value={settings.titleEs} onChange={up('titleEs')} />
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-group-label">Título principal (ES) {!settings.titleEs.trim() && <span style={{ color: '#f44' }}>*</span>}</label>
+              <input className="form-control" value={settings.titleEs} onChange={up('titleEs')} style={{ borderColor: !settings.titleEs.trim() ? '#f44' : '#ddd' }} />
             </div>
-            <div className="form-group" style={{ margin: 0 }}>
+            <div className="form-group">
               <label className="form-group-label">Main title (EN)</label>
               <input className="form-control" value={settings.titleEn} onChange={up('titleEn')} />
             </div>
           </div>
-          {[
-            ['subtitleEs', 'Subtítulo (ES)'],
-            ['subtitleEn', 'Subtitle (EN)'],
-          ].map(([field, label]) => (
-            <div key={field} className="form-group">
-              <label className="form-group-label">{label}</label>
-              <textarea
-                className="form-control"
-                style={{ minHeight: 60, resize: 'vertical' }}
-                value={settings[field]}
-                onChange={up(field)}
-              />
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-group-label">Subtítulo (ES)</label>
+              <textarea className="form-control" value={settings.subtitleEs} onChange={up('subtitleEs')} />
             </div>
-          ))}
-
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', margin: '24px 0 16px' }}>
-            Información de contacto
-          </div>
-          <div className="form-row" style={{ marginBottom: 16 }}>
-            {[
-              ['phone', 'Teléfono'],
-              ['email', 'Email de contacto'],
-            ].map(([field, label]) => (
-              <div key={field} className="form-group" style={{ margin: 0 }}>
-                <label className="form-group-label">{label}</label>
-                <input className="form-control" value={settings[field]} onChange={up(field)} />
-              </div>
-            ))}
-          </div>
-          <div className="form-group">
-            <label className="form-group-label">Dirección</label>
-            <input className="form-control" value={settings.address} onChange={up('address')} />
+            <div className="form-group">
+              <label className="form-group-label">Subtitle (EN)</label>
+              <textarea className="form-control" value={settings.subtitleEn} onChange={up('subtitleEn')} />
+            </div>
           </div>
 
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', margin: '24px 0 16px' }}>
-            SEO
+          <div style={{ height: 40 }} />
+
+          {/* ABOUT HERO */}
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', marginBottom: 20, borderTop: '1px solid #eee', paddingTop: 20 }}>
+            Nosotros: Hero
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-group-label">Título Nosotros (ES)</label>
+              <input className="form-control" value={settings.aboutHeroTitleEs} onChange={up('aboutHeroTitleEs')} />
+            </div>
+            <div className="form-group">
+              <label className="form-group-label">About Hero Title (EN)</label>
+              <input className="form-control" value={settings.aboutHeroTitleEn} onChange={up('aboutHeroTitleEn')} />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-group-label">Descripción Hero (ES)</label>
+              <textarea className="form-control" value={settings.aboutHeroDescEs} onChange={up('aboutHeroDescEs')} />
+            </div>
+            <div className="form-group">
+              <label className="form-group-label">Hero Desc (EN)</label>
+              <textarea className="form-control" value={settings.aboutHeroDescEn} onChange={up('aboutHeroDescEn')} />
+            </div>
+          </div>
+
+          {/* ABOUT STORY */}
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', margin: '30px 0 20px', borderTop: '1px solid #eee', paddingTop: 20 }}>
+            Nosotros: Historia
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-group-label">Título Historia (ES)</label>
+              <input className="form-control" value={settings.aboutStoryTitleEs} onChange={up('aboutStoryTitleEs')} />
+            </div>
+            <div className="form-group">
+              <label className="form-group-label">Story Title (EN)</label>
+              <input className="form-control" value={settings.aboutStoryTitleEn} onChange={up('aboutStoryTitleEn')} />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-group-label">Texto Historia 1 (ES)</label>
+              <textarea className="form-control" style={{ minHeight: 120 }} value={settings.aboutText1Es} onChange={up('aboutText1Es')} />
+            </div>
+            <div className="form-group">
+              <label className="form-group-label">Story Text 1 (EN)</label>
+              <textarea className="form-control" style={{ minHeight: 120 }} value={settings.aboutText1En} onChange={up('aboutText1En')} />
+            </div>
+          </div>
+
+          <div style={{ height: 40 }} />
+
+          {/* CONTACT & SEO */}
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', marginBottom: 20, borderTop: '2px solid #0f172a', paddingTop: 20 }}>
+            Contacto y SEO
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-group-label">Teléfono {!settings.phone.trim() && <span style={{ color: '#f44' }}>*</span>}</label>
+              <input className="form-control" value={settings.phone} onChange={up('phone')} style={{ borderColor: !settings.phone.trim() ? '#f44' : '#ddd' }} />
+            </div>
+            <div className="form-group">
+              <label className="form-group-label">Email {!settings.email.includes('@') && <span style={{ color: '#f44' }}>*</span>}</label>
+              <input className="form-control" value={settings.email} onChange={up('email')} style={{ borderColor: !settings.email.includes('@') ? '#f44' : '#ddd' }} />
+            </div>
           </div>
           <div className="form-group">
-            <label className="form-group-label">Meta descripción (ES) — máx. 160 caracteres</label>
-            <textarea
-              className="form-control"
-              style={{ minHeight: 60, resize: 'none' }}
-              value={settings.metaEs}
-              onChange={up('metaEs')}
-              placeholder="Reserva directo los mejores apartamentos en Ribadeo, Galicia. Sin comisiones. 8 apartamentos frente a la ría del Eo."
-            />
+            <label className="form-group-label">Meta Descripción (ES)</label>
+            <textarea className="form-control" value={settings.metaEs} onChange={up('metaEs')} />
           </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-group-label">Meta description (EN)</label>
-            <textarea
-              className="form-control"
-              style={{ minHeight: 60, resize: 'none' }}
-              value={settings.metaEn}
-              onChange={up('metaEn')}
-              placeholder="Book directly the best apartments in Ribadeo, Galicia. No commissions. 8 apartments overlooking the Eo estuary."
-            />
+          <div className="form-group">
+            <label className="form-group-label">Meta Description (EN)</label>
+            <textarea className="form-control" value={settings.metaEn} onChange={up('metaEn')} />
           </div>
         </div>
 
         {saved && (
-          <div style={{ background: '#e0f2fe', border: '1px solid #7dd3fc', padding: '12px 20px', fontSize: 13, color: '#164e63', display: 'flex', alignItems: 'center', gap: 8, maxWidth: 760 }}>
-            ✓ Cambios guardados y publicados correctamente
+          <div style={{ background: '#e0f2fe', border: '1px solid #7dd3fc', padding: '12px 20px', borderRadius: 8, color: '#164e63', marginBottom: 20, maxWidth: 760 }}>
+            ✓ Cambios guardados con éxito
           </div>
         )}
       </div>
 
       <div className="save-bar">
-        <span className="save-bar-hint">Los cambios se publican en la web al guardar</span>
-        <button className="action-btn" onClick={handleSave}>Guardar y publicar</button>
+        <button
+          className="action-btn"
+          onClick={handleSave}
+          disabled={!settings.titleEs.trim() || !settings.email.includes('@') || !settings.phone.trim()}
+          style={{ opacity: (!settings.titleEs.trim() || !settings.email.includes('@') || !settings.phone.trim()) ? 0.5 : 1 }}
+        >
+          Guardar y publicar
+        </button>
       </div>
     </>
   );

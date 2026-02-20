@@ -29,10 +29,11 @@ export default function Footer() {
         </div>
 
         <div>
-          <div className="footer-col-title">Apartamentos</div>
-          {['Apt. Cantábrico', 'Apt. Ribadeo', 'Apt. Illa Pancha', 'Apt. Eo', 'Apt. Castro', 'Ver todos'].map(name => (
-            <Link key={name} to="/apartamentos" className="footer-link">{name}</Link>
+          <div className="footer-col-title">{T.nav.apartments}</div>
+          {['Cantábrico', 'Ribadeo', 'Illa Pancha', 'Eo', 'Castro'].map(name => (
+            <Link key={name} to="/apartamentos" className="footer-link">Apt. {name}</Link>
           ))}
+          <Link to="/apartamentos" className="footer-link">{T.home.viewAll}</Link>
         </div>
 
         <div>

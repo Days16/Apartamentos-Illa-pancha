@@ -1,7 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
 
 export default function Maintenance() {
     const navigate = useNavigate();
+    const { lang } = useLang();
+    const T = useT(lang);
+    const M = T.maintenance;
 
     return (
         <div style={{
@@ -35,7 +40,7 @@ export default function Maintenance() {
                     marginBottom: '16px',
                     fontWeight: '500'
                 }}>
-                    Estamos mejorando para ti
+                    {M.title}
                 </h1>
 
                 <p style={{
@@ -44,9 +49,7 @@ export default function Maintenance() {
                     lineHeight: '1.6',
                     marginBottom: '32px'
                 }}>
-                    Nuestra web se encuentra actualmente en mantenimiento.
-                    Estamos realizando algunas actualizaciones técnicas para ofrecerte una mejor experiencia.
-                    Estaremos de vuelta en muy poco tiempo.
+                    {M.desc}
                 </p>
 
                 <div style={{
@@ -61,8 +64,8 @@ export default function Maintenance() {
                     color: '#94a3b8',
                     marginBottom: '40px'
                 }}>
-                    Si necesitas contactar con nosotros urgentemente, puedes hacerlo en:<br />
-                    <strong>hola@apartamentosrosaila.es</strong>
+                    {M.contact}<br />
+                    <strong>info@illapancha.com</strong>
                 </p>
 
                 <button
@@ -81,7 +84,7 @@ export default function Maintenance() {
                     onMouseOver={(e) => e.target.style.opacity = '0.9'}
                     onMouseOut={(e) => e.target.style.opacity = '1'}
                 >
-                    Reintentar acceso
+                    {M.retry}
                 </button>
             </div>
 
@@ -93,7 +96,7 @@ export default function Maintenance() {
                 letterSpacing: '0.05em',
                 textTransform: 'uppercase'
             }}>
-                © 2026 Apartamentos Rosaila · Ribadeo
+                {T.footer.rights}
             </div>
         </div>
     );

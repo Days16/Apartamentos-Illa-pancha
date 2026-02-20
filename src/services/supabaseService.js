@@ -383,15 +383,22 @@ export async function fetchSettings() {
     else if (row.type === 'boolean') settings[row.key] = row.value === 'true';
     else settings[row.key] = row.value;
   });
+  console.log('Ajustes cargados:', settings);
   return settings;
 }
 
 export async function updateSetting(key, value, type = 'string') {
+  console.log(`Actualizando ajuste: ${key} = ${value} (${type})`);
   const { data, error } = await supabase
     .from('site_settings')
-    .upsert({ key, value: String(value), type }, { onConflict: 'key' });
+    .upsert({ key, value: String(value), type }, { onConflict: 'key' })
+    .select();
 
-  if (error) throw error;
+  if (error) {
+    const errorMsg = `Error en updateSetting (${key}): [${error.code}] ${error.message}`;
+    console.error(errorMsg, error);
+    throw new Error(errorMsg);
+  }
   return data;
 }
 
@@ -413,10 +420,14 @@ export async function fetchWebsiteContent(page = null) {
 export async function updateWebsiteContent(section_key, updates) {
   const { data, error } = await supabase
     .from('website_content')
-    .update(updates)
-    .eq('section_key', section_key);
+    .upsert({ section_key, ...updates }, { onConflict: 'section_key' })
+    .select();
 
-  if (error) throw error;
+  if (error) {
+    const errorMsg = `Error en updateWebsiteContent (${section_key}): [${error.code}] ${error.message}`;
+    console.error(errorMsg, error);
+    throw new Error(errorMsg);
+  }
   return data;
 }
 

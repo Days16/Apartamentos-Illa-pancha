@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { fetchApartments, createReservation } from '../services/supabaseService';
-import { normalizeReservation } from '../services/dataService';
+import { getApartments, createReservation, getReservations, normalizeReservation } from '../services/dataService';
+import { formatPrice } from '../utils/format';
 import Ico, { paths } from './Ico';
 
 export default function ManualBookingModal({ onClose, onSuccess }) {
@@ -14,9 +14,10 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [validationErrors, setValidationErrors] = useState({});
 
     useEffect(() => {
-        fetchApartments().then(apts => {
+        getApartments().then(apts => {
             setApartments(apts);
             if (apts.length > 0) {
                 setForm(f => ({ ...f, aptSlug: apts[0].slug }));
@@ -30,12 +31,16 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
         setError('');
 
         try {
-            if (!form.name || !form.aptSlug || !form.checkin || !form.checkout || form.price <= 0) {
-                throw new Error('Rellena todos los campos obligatorios y asegúrate de que el precio sea mayor a 0.');
-            }
+            const errors = {};
+            if (!form.name.trim()) errors.name = 'El nombre es obligatorio';
+            if (!form.checkin || !form.checkout) errors.dates = 'Las fechas son obligatorias';
+            else if (form.checkout <= form.checkin) errors.dates = 'La salida debe ser después de la entrada';
+            if (!form.price || form.price <= 0) errors.price = 'El precio debe ser mayor a 0';
 
-            if (form.checkout <= form.checkin) {
-                throw new Error('La fecha de salida debe ser posterior a la de entrada.');
+            if (Object.keys(errors).length > 0) {
+                setValidationErrors(errors);
+                setLoading(false);
+                return;
             }
 
             const formatDate = (date) => new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
@@ -58,14 +63,22 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
                 source: form.source
             };
 
-            const { data, error: createError } = await supabase
-                .from('reservations')
-                .insert([newReservation])
-                .select()
-                .single();
+            const data = await createReservation({
+                id: resId,
+                guest: form.name,
+                email: form.email || 'manual@reservas.app',
+                phone: form.phone,
+                aptSlug: form.aptSlug,
+                checkin: formatDate(form.checkin),
+                checkout: formatDate(form.checkout),
+                nights: nights,
+                total: parseFloat(form.price),
+                deposit: parseFloat(form.deposit),
+                status: form.status,
+                source: form.source
+            });
 
-            if (createError) throw createError;
-            onSuccess(normalizeReservation(data));
+            onSuccess(data);
         } catch (err) {
             setError(err.message || 'Error al crear la reserva.');
         } finally {
@@ -89,7 +102,17 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                         <div>
                             <label className="form-label" style={{ fontSize: 12 }}>Nombre del huésped *</label>
-                            <input className="form-input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+                            <input
+                                className="form-input"
+                                value={form.name}
+                                onChange={e => {
+                                    setForm(f => ({ ...f, name: e.target.value }));
+                                    if (validationErrors.name) setValidationErrors(p => ({ ...p, name: null }));
+                                }}
+                                style={{ borderColor: validationErrors.name ? '#f44' : '#ddd' }}
+                                required
+                            />
+                            {validationErrors.name && <div style={{ color: '#f44', fontSize: 10, marginTop: 4 }}>{validationErrors.name}</div>}
                         </div>
                         <div>
                             <label className="form-label" style={{ fontSize: 12 }}>Teléfono</label>
@@ -111,35 +134,57 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                         <div>
-                            <label className="form-label" style={{ fontSize: 12 }}>Fecha de Entrada *</label>
+                            <label className="form-label" style={{ fontSize: 12, color: validationErrors.dates ? '#f44' : 'inherit' }}>Fecha de Entrada *</label>
                             <DatePicker
                                 selected={form.checkin}
-                                onChange={d => setForm(f => ({ ...f, checkin: d }))}
+                                onChange={d => {
+                                    setForm(f => ({ ...f, checkin: d }));
+                                    setValidationErrors(p => ({ ...p, dates: null }));
+                                }}
                                 dateFormat="dd/MM/yyyy"
                                 className="form-input"
+                                style={{ borderColor: validationErrors.dates ? '#f44' : '#ddd' }}
                                 placeholderText="Entrada"
                             />
                         </div>
                         <div>
-                            <label className="form-label" style={{ fontSize: 12 }}>Fecha de Salida *</label>
+                            <label className="form-label" style={{ fontSize: 12, color: validationErrors.dates ? '#f44' : 'inherit' }}>Fecha de Salida *</label>
                             <DatePicker
                                 selected={form.checkout}
-                                onChange={d => setForm(f => ({ ...f, checkout: d }))}
+                                onChange={d => {
+                                    setForm(f => ({ ...f, checkout: d }));
+                                    setValidationErrors(p => ({ ...p, dates: null }));
+                                }}
                                 dateFormat="dd/MM/yyyy"
                                 className="form-input"
+                                style={{ borderColor: validationErrors.dates ? '#f44' : '#ddd' }}
                                 placeholderText="Salida"
                                 minDate={form.checkin}
                             />
                         </div>
+                        {validationErrors.dates && <div style={{ color: '#f44', fontSize: 10, gridColumn: 'span 2' }}>{validationErrors.dates}</div>}
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                         <div>
-                            <label className="form-label" style={{ fontSize: 12 }}>Precio Total (€) *</label>
-                            <input type="number" step="0.01" className="form-input" min="1" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} required />
+                            <label className="form-label" style={{ fontSize: 12 }}>Precio Total *</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                className="form-input"
+                                min="1"
+                                value={form.price}
+                                onChange={e => {
+                                    setForm(f => ({ ...f, price: e.target.value }));
+                                    if (validationErrors.price) setValidationErrors(p => ({ ...p, price: null }));
+                                }}
+                                style={{ borderColor: validationErrors.price ? '#f44' : '#ddd' }}
+                                required
+                            />
+                            {validationErrors.price && <div style={{ color: '#f44', fontSize: 10, marginTop: 4 }}>{validationErrors.price}</div>}
                         </div>
                         <div>
-                            <label className="form-label" style={{ fontSize: 12 }}>Depósito Pagado (€)</label>
+                            <label className="form-label" style={{ fontSize: 12 }}>Depósito Pagado</label>
                             <input type="number" step="0.01" className="form-input" min="0" value={form.deposit} onChange={e => setForm(f => ({ ...f, deposit: e.target.value }))} />
                         </div>
                     </div>

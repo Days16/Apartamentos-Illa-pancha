@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { formatDateNumeric, formatPrice } from '../../utils/format';
 import { supabase } from '../../lib/supabase';
 import Ico, { paths } from '../../components/Ico';
 
@@ -252,7 +253,8 @@ export default function ApartamentosAdmin() {
       loadApartments();
     } catch (err) {
       console.error('Error saving apartment:', err);
-      setError('Error al guardar: ' + (err.message || 'Error desconocido'));
+      const isRLS = err.code === '42501' || err.message?.includes('policy');
+      setError(`Error al guardar: ${err.message}${isRLS ? '\n\nTIP: Es probable que falten permisos RLS en Supabase.' : ''}`);
     } finally {
       setSaving(false);
     }
@@ -398,6 +400,33 @@ export default function ApartamentosAdmin() {
     } catch (err) {
       console.error('Error updating status:', err);
       setError(err.message || 'Error al actualizar estado');
+    }
+  };
+
+  const handleDelete = async (apt) => {
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar el apartamento "${apt.name}"? Esta acción no se puede deshacer y fallará si hay reservas asociadas.`)) {
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setError(null);
+
+      const { error: deleteError } = await supabase
+        .from('apartments')
+        .delete()
+        .eq('slug', apt.slug);
+
+      if (deleteError) throw deleteError;
+
+      setSuccess('✓ Apartamento eliminado correctamente');
+      setTimeout(() => setSuccess(null), 3000);
+      loadApartments();
+    } catch (err) {
+      console.error('Error deleting apartment:', err);
+      setError(`Error al eliminar: ${err.message}. Asegúrate de que no tenga reservas, fotos o precios de temporada vinculados.`);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -702,7 +731,7 @@ export default function ApartamentosAdmin() {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 8 }}>
-                        Precio €/noche {validationErrors.price && <span style={{ color: '#f44' }}>*</span>}
+                        Precio por noche {validationErrors.price && <span style={{ color: '#f44' }}>*</span>}
                       </label>
                       <input
                         type="number"
@@ -1524,7 +1553,7 @@ export default function ApartamentosAdmin() {
 
                 {/* Precio */}
                 <div style={{ fontSize: 13, color: PRIMARY_COLOR, fontWeight: 600 }}>
-                  {apt.price} €<span style={{ fontSize: 11, color: '#888' }}>/noche</span>
+                  {formatPrice(apt.price)}<span style={{ fontSize: 11, color: '#888' }}>/noche</span>
                 </div>
 
                 {/* Estancia mínima */}
@@ -1572,10 +1601,28 @@ export default function ApartamentosAdmin() {
                       fontWeight: 600,
                       transition: 'all 0.2s'
                     }}
-                    onMouseEnter={(e) => e.target.style.opacity = '0.8'}
-                    onMouseLeave={(e) => e.target.style.opacity = '1'}
                   >
                     Editar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(apt)}
+                    style={{
+                      background: '#fee2e2',
+                      border: '1px solid #ef4444',
+                      color: '#b91c1c',
+                      padding: '6px 8px',
+                      borderRadius: 6,
+                      cursor: 'pointer',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.2s'
+                    }}
+                    title="Eliminar apartamento"
+                  >
+                    <Ico d={paths.trash} size={14} color="currentColor" />
                   </button>
                 </div>
               </div>

@@ -1,7 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchSettings, updateSetting } from '../../services/supabaseService';
+import { formatDateShort, formatPrice } from '../../utils/format';
+import { supabase } from '../../lib/supabase';
 
 export default function Pagos() {
   const [depositPct, setDepositPct] = useState(50);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      const settings = await fetchSettings();
+      if (settings.payment_deposit_percentage !== undefined) {
+        setDepositPct(settings.payment_deposit_percentage);
+      }
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      // 1. Guardar en site_settings para global
+      await updateSetting('payment_deposit_percentage', depositPct, 'number');
+
+      // 2. Aplicar a todos los apartamentos para consistencia
+      const { error } = await supabase
+        .from('apartments')
+        .update({ deposit_percentage: depositPct })
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Todos
+
+      if (error) throw error;
+
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      console.error('Error FULL saving payment settings:', err);
+      const isRLS = err.code === '42501' || err.message?.includes('policy');
+      alert(`Error al guardar: ${err.message}${isRLS ? '\n\nTIP: Esto suele ser un problema de permisos RLS en Supabase. Revisa el SQL de configuración.' : ''}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div style={{ padding: 40 }}>Cargando configuración...</div>;
 
   return (
     <>
@@ -30,6 +74,7 @@ export default function Pagos() {
               step={5}
               value={depositPct}
               onChange={e => setDepositPct(+e.target.value)}
+              style={{ flex: 1, height: 6, borderRadius: 3, appearance: 'none', background: '#e2e8f0' }}
             />
             <div style={{ textAlign: 'center', flexShrink: 0 }}>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 52, fontWeight: 300, color: '#0f172a', lineHeight: 1 }}>
@@ -40,71 +85,44 @@ export default function Pagos() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, marginBottom: 24 }}>
-            <div style={{ background: '#DDEEFF', padding: '20px 24px' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1A4A8B', marginBottom: 8 }}>
+            <div style={{ background: '#e0f2fe', padding: '20px 24px' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#0369a1', marginBottom: 8 }}>
                 💳 Tarjeta ahora
               </div>
-              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, color: '#1A2A5E' }}>{depositPct}%</div>
-              <div style={{ fontSize: 12, color: '#4A6A9E', marginTop: 4 }}>
-                Ej: {Math.round(1020 * depositPct / 100)} € de 1.020 €
+              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, color: '#0c4a6e' }}>{depositPct}%</div>
+              <div style={{ fontSize: 12, color: '#0369a1', marginTop: 4 }}>
+                Ej: {formatPrice(Math.round(1020 * depositPct / 100))} de {formatPrice(1020)}
               </div>
             </div>
-            <div style={{ background: '#FEF0D0', padding: '20px 24px' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#8B5E0A', marginBottom: 8 }}>
+            <div style={{ background: '#fef3c7', padding: '20px 24px' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#92400e', marginBottom: 8 }}>
                 💵 Efectivo al llegar
               </div>
-              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, color: '#5E3A0A' }}>{100 - depositPct}%</div>
-              <div style={{ fontSize: 12, color: '#8B6A2E', marginTop: 4 }}>
-                Ej: {Math.round(1020 * (100 - depositPct) / 100)} € de 1.020 €
+              <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, color: '#78350f' }}>{100 - depositPct}%</div>
+              <div style={{ fontSize: 12, color: '#92400e', marginTop: 4 }}>
+                Ej: {formatPrice(Math.round(1020 * (100 - depositPct) / 100))} de {formatPrice(1020)}
               </div>
             </div>
           </div>
 
-          <div className="toggle-row">
-            <div>
-              <div className="toggle-info-title">Aceptar pagos online activo</div>
-              <div className="toggle-info-sub">Desactivar para solo reservas manuales</div>
+          {success && (
+            <div style={{ padding: '12px 16px', borderRadius: 6, background: '#f0fdf4', color: '#166534', fontSize: 13, border: '1px solid #bbf7d0', marginBottom: 16 }}>
+              ✓ Configuración guardada correctamente
             </div>
-            <div className="toggle"><div className="toggle-knob" /></div>
-          </div>
-          <div className="toggle-row" style={{ borderBottom: 'none' }}>
-            <div>
-              <div className="toggle-info-title">Confirmación automática</div>
-              <div className="toggle-info-sub">Confirmar sin revisión manual al recibir el pago</div>
-            </div>
-            <div className="toggle"><div className="toggle-knob" /></div>
-          </div>
-        </div>
-
-        <div className="card" style={{ padding: 24, maxWidth: 600 }}>
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', marginBottom: 16 }}>
-            Integración Stripe
-          </div>
-          <div style={{ background: '#f8fafc', padding: 20, marginBottom: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#64748b', marginBottom: 4 }}>
-              Estado
-            </div>
-            <div style={{ fontSize: 13, color: '#cbd5e1' }}>
-              ⚠ Stripe no configurado — modo prototipo activo
-            </div>
-            <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
-              Cuando tengas cuenta Stripe, añade aquí tu clave de API
-            </div>
-          </div>
-          <div className="form-group">
-            <label className="form-group-label">Clave pública de Stripe (pk_live_...)</label>
-            <input className="form-control" placeholder="pk_live_..." />
-          </div>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-group-label">Clave secreta de Stripe (sk_live_...)</label>
-            <input className="form-control" type="password" placeholder="sk_live_..." />
-          </div>
+          )}
         </div>
       </div>
 
       <div className="save-bar">
         <span className="save-bar-hint">Configuración actual: {depositPct}% tarjeta · {100 - depositPct}% efectivo</span>
-        <button className="action-btn">Guardar configuración</button>
+        <button
+          className="action-btn"
+          onClick={handleSave}
+          disabled={saving}
+          style={{ opacity: saving ? 0.7 : 1 }}
+        >
+          {saving ? 'Guardando...' : 'Guardar configuración'}
+        </button>
       </div>
     </>
   );

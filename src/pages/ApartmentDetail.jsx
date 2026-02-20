@@ -5,10 +5,10 @@ import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
-import { fetchApartmentBySlug } from '../services/supabaseService';
+import { fetchApartmentBySlug, fetchSettings } from '../services/supabaseService';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
-import { formatDateShort, MESES } from '../utils/formatDate';
+import { formatDateShort, MESES, formatPrice } from '../utils/format';
 import { useDiscount } from '../contexts/DiscountContext';
 
 const amenityIcons = {
@@ -16,6 +16,19 @@ const amenityIcons = {
   'TV Smart': paths.tv, 'A/C': paths.ac, 'Calefacción': paths.leaf,
   'Lavadora': paths.wash, 'Terraza': paths.leaf, 'Vistas al mar': paths.map,
   'Vistas a la ría': paths.map, 'Cuna disponible': paths.crib, 'Barbacoa': paths.bbq,
+};
+
+const amenityTranslations = {
+  'Cocina equipada': 'Fully equipped kitchen',
+  'Cafetera': 'Coffee maker',
+  'Tostadora': 'Toaster',
+  'Microondas': 'Microwave',
+  'Lavadora': 'Washing machine',
+  'Secador de pelo': 'Hair dryer',
+  'Plancha': 'Iron',
+  'Ropa de cama y toallas': 'Bed linen and towels',
+  'Cuna (bajo petición)': 'Crib (on request)',
+  'Trona': 'High chair'
 };
 
 const DAY_NAMES = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -67,7 +80,7 @@ function MiniCalendar({ occupiedDays, T }) {
             <div
               key={i}
               className={`mini-cal-day ${!day ? 'empty' : past ? 'past' : occ ? 'occupied' : 'available'}`}
-              title={day && !past ? (occ ? 'Ocupado' : 'Disponible') : ''}
+              title={day && !past ? (occ ? T.common.occupied : T.common.available) : ''}
             >
               {day}
             </div>
@@ -85,22 +98,23 @@ function MiniCalendar({ occupiedDays, T }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#64748b' }}>
           <div style={{ width: 10, height: 10, background: '#F0EDE8', border: '1px solid rgba(15,23,42,0.12)' }} />
-          Pasado
+          {T.common.past}
         </div>
       </div>
     </div>
   );
 }
 
-function BookingWidget({ apt, onBook, T }) {
+function BookingWidget({ apt, onBook, T, globalSettings }) {
   const { lang, t } = useLang();
   const { activeDiscount } = useDiscount();
   const [checkin, setCheckin] = useState('');
   const [checkout, setCheckout] = useState('');
   const [guests, setGuests] = useState(2);
 
-  const depositPct = apt.deposit_percentage !== undefined ? apt.deposit_percentage : 50;
-  const cancelDays = apt.cancellation_days !== undefined ? apt.cancellation_days : 14;
+  // Apt > Global > Default
+  const cancelDays = apt.cancellation_days ?? globalSettings.cancellation_days ?? 14;
+  const depositPct = apt.deposit_percentage ?? globalSettings.payment_deposit_percentage ?? 50;
 
   const calcNights = () => {
     if (!checkin || !checkout) return 0;
@@ -127,7 +141,7 @@ function BookingWidget({ apt, onBook, T }) {
 
   return (
     <div className="apt-booking-widget">
-      <div className="apt-booking-price">{apt.price} €</div>
+      <div className="apt-booking-price">{formatPrice(apt.price)}</div>
       <div className="apt-booking-price-sub">{T.detail.pricePerNight}</div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, marginBottom: 2 }}>
@@ -157,7 +171,7 @@ function BookingWidget({ apt, onBook, T }) {
         <div className="apt-booking-field-label">{T.detail.guestsLabel}</div>
         <select value={guests} onChange={e => setGuests(+e.target.value)}>
           {Array.from({ length: apt.cap }, (_, i) => i + 1).map(n => (
-            <option key={n} value={n}>{n} {n === 1 ? 'persona' : T.apartments?.persons || 'personas'}</option>
+            <option key={n} value={n}>{n} {n === 1 ? T.common.person : T.common.persons}</option>
           ))}
         </select>
       </div>
@@ -166,37 +180,37 @@ function BookingWidget({ apt, onBook, T }) {
         <>
           <div className="apt-booking-divider" />
           <div className="apt-booking-row">
-            <span>{apt.price} € × {nights} {nights === 1 ? T.apartments?.night || 'noche' : T.apartments?.nights || 'noches'}</span>
-            <strong style={{ textDecoration: discountAmount > 0 ? 'line-through' : 'none', opacity: discountAmount > 0 ? 0.6 : 1 }}>{subtotal} €</strong>
+            <span>{formatPrice(apt.price)} × {nights} {nights === 1 ? T.common.night : T.common.nights}</span>
+            <strong style={{ textDecoration: discountAmount > 0 ? 'line-through' : 'none', opacity: discountAmount > 0 ? 0.6 : 1 }}>{formatPrice(subtotal)}</strong>
           </div>
           {discountAmount > 0 && (
             <div className="apt-booking-row" style={{ color: '#4CAF50', marginTop: -6 }}>
-              <span style={{ fontSize: 11 }}>{t('Oferta aplicada', 'Offer applied')} {activeDiscount.discount_percentage}%</span>
-              <strong>-{discountAmount} €</strong>
+              <span style={{ fontSize: 11 }}>{T.common.offerApplied} {activeDiscount.discount_percentage}%</span>
+              <strong>-{formatPrice(discountAmount)}</strong>
             </div>
           )}
           {extra > 0 && (
             <div className="apt-booking-row">
               <span>{T.detail.season}</span>
-              <strong>{extra} €</strong>
+              <strong>{formatPrice(extra)}</strong>
             </div>
           )}
           <div className="apt-booking-row">
             <span>{T.detail.cleaning}</span>
-            <strong>{cleaning} €</strong>
+            <strong>{formatPrice(cleaning)}</strong>
           </div>
           <div className="apt-booking-total">
             <span>{T.detail.total}</span>
-            <span>{total} €</span>
+            <span>{formatPrice(total)}</span>
           </div>
           <div className="apt-booking-divider" />
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#475569', marginBottom: 4 }}>
             <span>💳 {depositPct}% {T.detail.depositNow}</span>
-            <strong style={{ color: '#0f172a' }}>{deposit} €</strong>
+            <strong style={{ color: '#0f172a' }}>{formatPrice(deposit)}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#475569', marginBottom: 16 }}>
             <span>💵 {T.detail.cashArrival}</span>
-            <strong style={{ color: '#0f172a' }}>{total - deposit} €</strong>
+            <strong style={{ color: '#0f172a' }}>{formatPrice(total - deposit)}</strong>
           </div>
         </>
       ) : (
@@ -213,13 +227,13 @@ function BookingWidget({ apt, onBook, T }) {
         }}
       >
         {nights > 0
-          ? `${T.detail.bookBtn} · ${deposit > 0 ? `${deposit} €` : ''}`
+          ? `${T.detail.bookBtn} · ${deposit > 0 ? `${formatPrice(deposit)}` : ''}`
           : T.detail.seeAvailability}
       </button>
 
       {nights > 0 && nights < apt.minStay && (
         <div className="apt-booking-unavailable">
-          {T.detail.minStayWarn} {apt.minStay} {T.apartments?.nights || 'noches'}
+          {T.detail.minStayWarn} {apt.minStay} {T.common.nights}
         </div>
       )}
 
@@ -235,38 +249,44 @@ export default function ApartmentDetail() {
   const navigate = useNavigate();
   const [bookingOpen, setBookingOpen] = useState(false);
   const [apt, setApt] = useState(null);
-  const { lang } = useLang();
+  const [globalSettings, setGlobalSettings] = useState({});
+  const { lang, t } = useLang();
   const T = useT(lang);
 
-  // Settings dinámicos se sacan directamente del objeto apt
-
-  // Cargar apartamento desde Supabase
+  // Cargar datos
   useEffect(() => {
-    if (slug) {
-      fetchApartmentBySlug(slug).then(data => {
-        if (data) {
-          // Normalizar datos de Supabase al formato esperado por el componente
+    async function load() {
+      if (!slug) return;
+
+      try {
+        const [aptData, settings] = await Promise.all([
+          fetchApartmentBySlug(slug),
+          fetchSettings()
+        ]);
+
+        if (aptData) {
           setApt({
-            ...data,
-            cap: data.capacity || 2,
-            beds: data.beds || 1,
-            baths: data.baths || 1,
-            minStay: data.min_stay || 2,
-            nameEn: data.name_en,
-            descriptionEn: data.description_en,
-            reviewCount: data.review_count || 0,
+            ...aptData,
+            cap: aptData.capacity || 2,
+            beds: aptData.beds || 1,
+            baths: aptData.baths || 1,
+            minStay: aptData.min_stay || 2,
+            nameEn: aptData.name_en,
+            descriptionEn: aptData.description_en,
+            reviewCount: aptData.review_count || 0,
             gradient: 'linear-gradient(135deg, #1a5f6e 0%, #2C4A5E 100%)',
-            amenities: data.amenities || [],
-            rules: data.rules || [],
-            nearby: data.nearby || [],
+            amenities: aptData.amenities || [],
+            rules: aptData.rules || [],
+            nearby: aptData.nearby || [],
             occupiedDays: [],
           });
         }
-      }).catch(err => {
-        console.error('Error loading apartment:', err);
-        setApt(null);
-      });
+        setGlobalSettings(settings);
+      } catch (err) {
+        console.error('Error loading detail data:', err);
+      }
     }
+    load();
   }, [slug]);
 
   if (!apt) {
@@ -294,6 +314,9 @@ export default function ApartmentDetail() {
 
   const aptName = lang === 'EN' ? (apt.nameEn || apt.name) : apt.name;
   const aptDesc = lang === 'EN' ? (apt.descriptionEn || apt.description) : apt.description;
+
+  const depositPct = globalSettings.payment_deposit_percentage ?? (apt.deposit_percentage || 50);
+  const cancelDays = globalSettings.cancellation_days ?? (apt.cancellation_days || 14);
 
   return (
     <>
@@ -323,7 +346,7 @@ export default function ApartmentDetail() {
           {/* COLUMNA IZQUIERDA */}
           <div className="apt-detail-left">
             <div className="breadcrumb">
-              <Link to="/">Inicio</Link>
+              <Link to="/">{T.seo.homeTitle}</Link>
               <span className="breadcrumb-sep">›</span>
               <Link to="/apartamentos">{T.nav.apartments}</Link>
               <span className="breadcrumb-sep">›</span>
@@ -354,7 +377,7 @@ export default function ApartmentDetail() {
               {apt.amenities.map(am => (
                 <div key={am} className="amenity-item">
                   <Ico d={amenityIcons[am] || paths.check} size={16} color="#1a5f6e" />
-                  {am}
+                  {lang === 'EN' ? (amenityTranslations[am] || am) : am}
                 </div>
               ))}
             </div>
@@ -408,14 +431,14 @@ export default function ApartmentDetail() {
 
           {/* COLUMNA DERECHA: WIDGET */}
           <div className="apt-detail-right">
-            <BookingWidget apt={apt} onBook={() => setBookingOpen(true)} T={T} />
+            <BookingWidget apt={apt} onBook={() => setBookingOpen(true)} T={T} globalSettings={globalSettings} />
 
             <div style={{ marginTop: 16, padding: '20px', background: '#f8fafc', fontSize: 12, color: '#475569', lineHeight: 1.7 }}>
               <div style={{ fontWeight: 600, marginBottom: 4, color: '#0f172a' }}>{T.detail.payModel}</div>
-              <div>💳 {apt.deposit_percentage || 50}% {T.detail.depositNow}</div>
-              <div>💵 {100 - (apt.deposit_percentage || 50)}% {T.detail.cashArrival}</div>
+              <div>💳 {depositPct}% {T.detail.depositNow}</div>
+              {depositPct < 100 && <div>💵 {100 - depositPct}% {T.detail.cashArrival}</div>}
               <div style={{ marginTop: 8, color: '#64748b' }}>
-                {T.detail.noCommission} {apt.cancellation_days || 14} {T.detail.daysBefore}
+                {T.detail.noCommission} {cancelDays} {T.detail.daysBefore}
               </div>
             </div>
 

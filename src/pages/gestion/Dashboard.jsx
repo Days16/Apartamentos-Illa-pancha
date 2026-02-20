@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { fetchAllReservations, fetchApartments, fetchAllMessages } from '../../services/supabaseService';
+import { formatPrice } from '../../utils/format';
 
 const srcBadge = {
   web: ['badge-green', 'Web'],
@@ -121,7 +122,7 @@ export default function Dashboard() {
           {[
             { l: 'Check-ins y outs hoy', v: checkinsoutsTodayCount, s: checkinsToday.length > 0 ? `${checkinsToday.length} entradas / ${checkoutsToday.length} salidas` : 'Sin movimiento hoy', accent: true },
             { l: 'Reservas esta semana', v: bookingsThisWeek.length.toString(), s: 'creadas en los últimos 7 días', accent: false },
-            { l: 'Ingresos mes actual', v: `${incomeThisMonth.toLocaleString()} €`, s: 'reservas con check-in en este mes', accent: false },
+            { l: 'Ingresos mes actual', v: formatPrice(incomeThisMonth), s: 'reservas con check-in en este mes', accent: false },
             { l: 'Ocupación hoy', v: occupancyText, s: 'sobre los apartamentos activos', accent: true },
           ].map((k, i) => (
             <div key={i} className={`kpi ${k.accent ? 'kpi-accent' : ''}`}>
@@ -231,7 +232,7 @@ export default function Dashboard() {
               <div style={{ fontWeight: 500, fontSize: 13 }}>{r.guest_name || r.guest}</div>
               <div style={{ fontSize: 13, color: '#334155' }}>{r.apartment_slug || r.apt}</div>
               <div style={{ fontSize: 12, color: '#64748b' }}>{r.check_in || r.checkin} → {r.check_out || r.checkout}</div>
-              <div style={{ fontSize: 13, fontWeight: 600 }}>{r.total_price || r.total} €</div>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{formatPrice(r.total_price || r.total)}</div>
               <span className={`badge ${srcBadge[r.source || 'web']?.[0] || 'badge-yellow'}`}>{srcBadge[r.source || 'web']?.[1] || r.source || 'Web'}</span>
               <span className={`badge ${r.status === 'confirmed' ? 'badge-green' : r.status === 'pending' ? 'badge-yellow' : 'badge-red'}`}>
                 {r.status === 'confirmed' ? 'Confirmada' : r.status === 'pending' ? 'Pendiente' : 'Cancelada'}

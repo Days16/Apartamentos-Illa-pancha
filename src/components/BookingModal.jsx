@@ -6,10 +6,15 @@ import Ico, { paths } from './Ico';
 import { supabase } from '../lib/supabase';
 import { createPaymentIntent, confirmPayment } from '../lib/stripe';
 import { sendBookingConfirmation } from '../services/resendService';
-import { fetchExtras } from '../services/supabaseService';
+import { fetchExtras, fetchSettings } from '../services/supabaseService';
 import { useDiscount } from '../contexts/DiscountContext';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
+import { formatPrice } from '../utils/format';
 
 export default function BookingModal({ onClose, apartment }) {
+  const { lang, t } = useLang();
+  const T = useT(lang);
   const stripe = useStripe();
   const elements = useElements();
 
@@ -21,16 +26,22 @@ export default function BookingModal({ onClose, apartment }) {
   const [loading, setLoading] = useState(false);
   const [stripeError, setStripeError] = useState('');
   const [allExtras, setAllExtras] = useState([]);
+  const [globalSettings, setGlobalSettings] = useState({});
 
   // Cargar extras desde Supabase
   useEffect(() => {
-    fetchExtras().then(setAllExtras).catch(err => {
-      console.error('Error loading extras:', err);
-      setAllExtras([]);
+    Promise.all([
+      fetchExtras(),
+      fetchSettings()
+    ]).then(([extras, settings]) => {
+      setAllExtras(extras);
+      setGlobalSettings(settings);
+    }).catch(err => {
+      console.error('Error loading booking data:', err);
     });
   }, []);
 
-  const steps = ['Fechas', 'Datos', 'Extras', 'Pagar', 'Confirmado'];
+  const steps = T.booking.steps;
 
   const apt = apartment || { name: 'Apt. Cantábrico', price: 140 };
 
@@ -61,13 +72,18 @@ export default function BookingModal({ onClose, apartment }) {
   }, 0);
 
   const total = subtotalWithDiscount + cleaningFee + extrasTotal;
-  const depositPct = apt.deposit_percentage !== undefined ? apt.deposit_percentage : 50;
+
+  // Preferencias globales > Apt > Default
+  // Apt > Global > Default
+  const cancelDays = apt.cancellation_days ?? globalSettings.cancellation_days ?? 14;
+  const depositPct = apt.deposit_percentage ?? globalSettings.payment_deposit_percentage ?? 50;
+
   const deposit = Math.round(total * (depositPct / 100));
 
   // Formatear fechas para mostrar
   const formatDate = (date) => {
     if (!date) return '';
-    return new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+    return new Intl.DateTimeFormat(lang === 'ES' ? 'es-ES' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
   };
 
   const checkin = formatDate(checkinDate);
@@ -81,17 +97,17 @@ export default function BookingModal({ onClose, apartment }) {
 
   const handlePayment = async () => {
     if (!checkinDate || !checkoutDate) {
-      setStripeError('Por favor selecciona las fechas de entrada y salida');
+      setStripeError(T.booking.errorDates);
       return;
     }
 
     if (!form.name || !form.email || !form.phone) {
-      setStripeError('Por favor completa todos los datos');
+      setStripeError(T.booking.errorData);
       return;
     }
 
     if (!stripe || !elements) {
-      setStripeError('Stripe no está cargado correctamente');
+      setStripeError(T.booking.errorStripe);
       return;
     }
 
@@ -178,7 +194,7 @@ export default function BookingModal({ onClose, apartment }) {
 
       setStep(4);
     } catch (err) {
-      setStripeError(err.message || 'Error procesando el pago. Intenta de nuevo.');
+      setStripeError(err.message || T.booking.errorPayment);
       console.error('Payment error:', err);
     } finally {
       setLoading(false);
@@ -199,56 +215,52 @@ export default function BookingModal({ onClose, apartment }) {
           </div>
 
           <div className="booking-title" style={{ fontFamily: "'Cormorant Garamond',serif", color: '#ffffff' }}>
-            {step === 0 && 'Elige tus fechas'}
-            {step === 1 && 'Tus datos'}
-            {step === 2 && 'Extras'}
-            {step === 3 && 'Pago seguro'}
-            {step === 4 && '¡Confirmado!'}
+            {T.booking[`title${step}`]}
           </div>
           <div className="booking-sub">
             {step < 4
-              ? `${apt.name} · ${checkin} – ${checkout} · 2 huéspedes`
-              : 'Te hemos enviado la confirmación por email'}
+              ? `${apt.name} · ${checkin} – ${checkout} · 2 ${T.booking.guests}`
+              : T.booking.emailSent}
           </div>
 
           {step < 4 && (
             <>
               <div className="booking-summary-row">
-                <span style={{ color: 'rgba(255,255,255,0.55)' }}>{nights} noches × {apt.price} €</span>
-                <span style={{ textDecoration: discountAmount > 0 ? 'line-through' : 'none', opacity: discountAmount > 0 ? 0.6 : 1 }}>{subtotal} €</span>
+                <span style={{ color: 'rgba(255,255,255,0.55)' }}>{nights} {nights === 1 ? T.common.night : T.common.nights} × {formatPrice(apt.price)}</span>
+                <span style={{ textDecoration: discountAmount > 0 ? 'line-through' : 'none', opacity: discountAmount > 0 ? 0.6 : 1 }}>{formatPrice(subtotal)}</span>
               </div>
               {discountAmount > 0 && (
                 <div className="booking-summary-row" style={{ color: '#4CAF50', marginTop: -8, marginBottom: 8 }}>
-                  <span style={{ fontSize: 12 }}>Oferta aplicada: {activeDiscount.discount_code || 'Promo'} (-{activeDiscount.discount_percentage}%)</span>
-                  <span style={{ fontWeight: 600 }}>-{discountAmount} €</span>
+                  <span style={{ fontSize: 12 }}>{T.common.offerApplied}: {activeDiscount.discount_code || 'Promo'} (-{activeDiscount.discount_percentage}%)</span>
+                  <span style={{ fontWeight: 600 }}>-{formatPrice(discountAmount)}</span>
                 </div>
               )}
               <div className="booking-summary-row">
-                <span style={{ color: 'rgba(255,255,255,0.55)' }}>Limpieza final</span>
-                <span>{cleaningFee} €</span>
+                <span style={{ color: 'rgba(255,255,255,0.55)' }}>{T.booking.cleaning}</span>
+                <span>{formatPrice(cleaningFee)}</span>
               </div>
               {extrasTotal > 0 && (
                 <div className="booking-summary-row">
-                  <span style={{ color: 'rgba(255,255,255,0.55)' }}>Extras ({selectedExtras.length})</span>
-                  <span>{extrasTotal} €</span>
+                  <span style={{ color: 'rgba(255,255,255,0.55)' }}>{T.booking.extrasLabel} ({selectedExtras.length})</span>
+                  <span>{formatPrice(extrasTotal)}</span>
                 </div>
               )}
               <div className="booking-summary-row" style={{ borderBottom: 'none' }}>
                 <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18 }}>Total</span>
-                <strong style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20 }}>{total} €</strong>
+                <strong style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20 }}>{formatPrice(total)}</strong>
               </div>
               <div className="booking-highlight">
                 <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#7dd3fc', marginBottom: 12 }}>
-                  Modelo de pago
+                  {T.booking.payModel}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, marginBottom: 6 }}>
-                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>💳 Tarjeta ahora ({depositPct}%)</span>
-                  <span style={{ fontWeight: 600 }}>{deposit} €</span>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>💳 {T.booking.cardNow} ({depositPct}%)</span>
+                  <span style={{ fontWeight: 600 }}>{formatPrice(deposit)}</span>
                 </div>
                 {depositPct < 100 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-                    <span style={{ color: 'rgba(255,255,255,0.6)' }}>💵 Resto al llegar ({100 - depositPct}%)</span>
-                    <span style={{ fontWeight: 600 }}>{total - deposit} €</span>
+                    <span style={{ color: 'rgba(255,255,255,0.6)' }}>💵 {T.booking.cashArrival} ({100 - depositPct}%)</span>
+                    <span style={{ fontWeight: 600 }}>{formatPrice(total - deposit)}</span>
                   </div>
                 )}
               </div>
@@ -258,13 +270,13 @@ export default function BookingModal({ onClose, apartment }) {
           {step === 4 && (
             <div style={{ marginTop: 24 }}>
               {[
-                ['Referencia', 'IP-' + Math.floor(Math.random() * 900 + 100)],
-                ['Apartamento', apt.name],
-                ['Entrada', checkin],
-                ['Salida', checkout],
-                ['Depositado', `${deposit} € ✓`],
-                ...(depositPct < 100 ? [['Resto al llegar', `${total - deposit} €`]] : []),
-                ...(selectedExtras.length > 0 ? [['Extras', `${selectedExtras.length} seleccionado${selectedExtras.length > 1 ? 's' : ''}`]] : []),
+                [T.booking.ref, 'IP-' + Math.floor(Math.random() * 900 + 100)],
+                [T.booking.apartment, apt.name],
+                [T.booking.checkin, checkin],
+                [T.booking.checkout, checkout],
+                [T.booking.deposited, `${deposit} € ✓`],
+                ...(depositPct < 100 ? [[T.booking.cashRest, `${total - deposit} €`]] : []),
+                ...(selectedExtras.length > 0 ? [[T.booking.extrasLabel, `${selectedExtras.length} ${selectedExtras.length > 1 ? T.booking.extrasSelected : T.booking.extraSelected}`]] : []),
               ].map(([k, v], i) => (
                 <div key={i} className="booking-summary-row">
                   <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: 13 }}>{k}</span>
@@ -288,9 +300,9 @@ export default function BookingModal({ onClose, apartment }) {
           {step === 0 && (
             <>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: '#0f172a', marginBottom: 32 }}>
-                Elige tus fechas
+                {T.booking.title0}
               </div>
-              <label className="form-label">Entrada</label>
+              <label className="form-label">{T.booking.checkin}</label>
               <DatePicker
                 selected={checkinDate}
                 onChange={date => setCheckinDate(date)}
@@ -298,27 +310,27 @@ export default function BookingModal({ onClose, apartment }) {
                 maxDate={checkoutDate ? new Date(checkoutDate.getTime() - 86400000) : null}
                 dateFormat="dd/MM/yyyy"
                 className="form-input"
-                placeholderText="Selecciona fecha de entrada"
+                placeholderText={T.booking.placeholderCheckin}
               />
-              <label className="form-label" style={{ marginTop: 16 }}>Salida</label>
+              <label className="form-label" style={{ marginTop: 16 }}>{T.booking.checkout}</label>
               <DatePicker
                 selected={checkoutDate}
                 onChange={date => setCheckoutDate(date)}
                 minDate={checkinDate ? new Date(checkinDate.getTime() + 86400000) : new Date()}
                 dateFormat="dd/MM/yyyy"
                 className="form-input"
-                placeholderText="Selecciona fecha de salida"
+                placeholderText={T.booking.placeholderCheckout}
               />
               {nights > 0 && (
                 <div style={{ fontSize: 13, color: '#64748b', marginTop: 20, padding: 12, backgroundColor: '#f5f5f5', borderRadius: 4 }}>
-                  📅 {nights} noche{nights > 1 ? 's' : ''} × {apt.price}€/noche = {subtotal}€
+                  📅 {nights} {nights === 1 ? T.common.night : T.common.nights} × {apt.price}€/{T.common.night} = {subtotal}€
                 </div>
               )}
               <div style={{ fontSize: 11, color: '#64748b', lineHeight: 1.6, marginTop: 28, marginBottom: 28 }}>
-                Al continuar aceptas nuestros{' '}
-                <a href="/terminos" target="_blank" style={{ color: '#1a5f6e', textDecoration: 'underline' }}>términos y condiciones</a> y{' '}
-                <a href="/privacidad" target="_blank" style={{ color: '#1a5f6e', textDecoration: 'underline' }}>política de privacidad</a>.<br />
-                Cancelación gratuita hasta 14 días antes de la llegada.
+                {T.booking.termsText}{' '}
+                <a href="/terminos" target="_blank" style={{ color: '#1a5f6e', textDecoration: 'underline' }}>{T.booking.terms}</a> {T.booking.termsAnd}{' '}
+                <a href="/privacidad" target="_blank" style={{ color: '#1a5f6e', textDecoration: 'underline' }}>{T.booking.privacy}</a>.<br />
+                {T.booking.cancelFree.replace('{days}', cancelDays)}
               </div>
               <button
                 className="btn-primary"
@@ -326,7 +338,7 @@ export default function BookingModal({ onClose, apartment }) {
                 onClick={() => setStep(1)}
                 disabled={!checkinDate || !checkoutDate}
               >
-                Continuar → Tus datos
+                {T.booking.continueData}
               </button>
             </>
           )}
@@ -335,31 +347,34 @@ export default function BookingModal({ onClose, apartment }) {
           {step === 1 && (
             <>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: '#0f172a', marginBottom: 32 }}>
-                Tus datos
+                {T.booking.title1}
               </div>
-              <label className="form-label">Nombre completo</label>
+              <label className="form-label">{T.booking.fullName}</label>
               <input
                 className="form-input"
-                placeholder="María García López"
+                placeholder={T.booking.placeholderName}
                 value={form.name}
                 onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                style={{ borderColor: step === 1 && !form.name.trim() ? '#f44' : 'rgba(15,23,42,0.15)' }}
               />
-              <label className="form-label">Email</label>
+              <label className="form-label">{T.booking.email}</label>
               <input
                 className="form-input"
-                placeholder="maria@ejemplo.com"
+                placeholder={T.booking.placeholderEmail}
                 value={form.email}
                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                style={{ borderColor: step === 1 && !form.email.includes('@') ? '#f44' : 'rgba(15,23,42,0.15)' }}
               />
-              <label className="form-label">Teléfono</label>
+              <label className="form-label">{T.booking.phone}</label>
               <input
                 className="form-input"
-                placeholder="+34 600 000 000"
+                placeholder={T.booking.placeholderPhone}
                 value={form.phone}
                 onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
+                style={{ borderColor: step === 1 && !form.phone.trim() ? '#f44' : 'rgba(15,23,42,0.15)' }}
               />
               <div style={{ fontSize: 11, color: '#64748b', lineHeight: 1.6, marginBottom: 28 }}>
-                Cancelación gratuita hasta 14 días antes de la llegada.
+                {T.booking.cancelFree.replace('{days}', cancelDays)}
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
@@ -367,14 +382,22 @@ export default function BookingModal({ onClose, apartment }) {
                   style={{ flex: 1, padding: 14, fontSize: 12 }}
                   onClick={() => setStep(0)}
                 >
-                  ← Atrás
+                  {T.booking.back}
                 </button>
                 <button
                   className="btn-primary"
-                  style={{ flex: 2, padding: 14, fontSize: 13, letterSpacing: '0.1em' }}
+                  style={{
+                    flex: 2,
+                    padding: 14,
+                    fontSize: 13,
+                    letterSpacing: '0.1em',
+                    opacity: (!form.name.trim() || !form.email.includes('@') || !form.phone.trim()) ? 0.5 : 1,
+                    cursor: (!form.name.trim() || !form.email.includes('@') || !form.phone.trim()) ? 'not-allowed' : 'pointer'
+                  }}
                   onClick={() => setStep(2)}
+                  disabled={!form.name.trim() || !form.email.includes('@') || !form.phone.trim()}
                 >
-                  Continuar → Extras
+                  {T.booking.continueExtras}
                 </button>
               </div>
             </>
@@ -384,15 +407,15 @@ export default function BookingModal({ onClose, apartment }) {
           {step === 2 && (
             <>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: '#0f172a', marginBottom: 8 }}>
-                Extras opcionales
+                {T.booking.optionalExtras}
               </div>
               <div style={{ fontSize: 13, color: '#64748b', marginBottom: 24 }}>
-                Selecciona los servicios adicionales que quieres incluir en tu estancia.
+                {T.booking.extrasDesc}
               </div>
 
               {activeExtras.length === 0 ? (
                 <div style={{ fontSize: 13, color: '#64748b', padding: '20px 0' }}>
-                  No hay extras disponibles en este momento.
+                  {T.booking.noExtras}
                 </div>
               ) : (
                 <div className="extras-list">
@@ -410,7 +433,7 @@ export default function BookingModal({ onClose, apartment }) {
                         </div>
                         <div className="extra-item-right">
                           <span className={`extra-item-price ${extra.price === 0 ? 'free' : ''}`}>
-                            {extra.price === 0 ? 'Gratis' : `${extra.price} €`}
+                            {extra.price === 0 ? T.booking.free : `${extra.price} €`}
                           </span>
                           <div className={`extra-check ${isSelected ? 'checked' : ''}`}>
                             {isSelected && (
@@ -432,14 +455,14 @@ export default function BookingModal({ onClose, apartment }) {
                   style={{ flex: 1, padding: 14, fontSize: 12 }}
                   onClick={() => setStep(1)}
                 >
-                  ← Atrás
+                  {T.booking.back}
                 </button>
                 <button
                   className="btn-primary"
                   style={{ flex: 2, padding: 14, fontSize: 13, letterSpacing: '0.1em' }}
                   onClick={() => setStep(3)}
                 >
-                  Continuar → Pagar depósito ({deposit} €)
+                  {T.booking.continuePayment} ({deposit} €)
                 </button>
               </div>
             </>
@@ -449,30 +472,30 @@ export default function BookingModal({ onClose, apartment }) {
           {step === 3 && (
             <>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: '#0f172a', marginBottom: 8 }}>
-                Pago seguro
+                {T.booking.title3}
               </div>
               <div style={{ fontSize: 12, color: '#8a8a8a', marginBottom: 32, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Ico d={paths.lock} size={13} color="#8a8a8a" />
-                Procesado por Stripe · PCI DSS Level 1
+                {T.booking.secureProcessed}
               </div>
 
               {/* Información de pago */}
               <div style={{ background: '#e8e8e8', padding: 16, borderRadius: 6, marginBottom: 24 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, color: '#0f172a', marginBottom: 12 }}>
-                  💳 Depósito del 50%
+                  💳 {T.booking.cardNow} del {depositPct}%
                 </div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: '#1a5f6e' }}>
                   {deposit} €
                 </div>
-                <div style={{ fontSize: 11, color: '#6a6a6a', marginTop: 8 }}>
-                  50% restante en efectivo al llegar
+                <div style={{ fontSize: 11, color: '#64748b', marginTop: 8 }}>
+                  {depositPct < 100 ? `${100 - depositPct}% ${T.booking.cashRest}` : T.booking.paidFull}
                 </div>
               </div>
 
               {/* CardElement de Stripe */}
               <div style={{ marginBottom: 24 }}>
                 <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#8a8a8a', marginBottom: 8, display: 'block' }}>
-                  Datos de tarjeta
+                  {T.booking.cardData}
                 </label>
                 <div style={{ border: '1px solid rgba(58,58,58,0.15)', padding: 14, borderRadius: 4, background: '#f5f5f5' }}>
                   <CardElement options={{
@@ -488,7 +511,7 @@ export default function BookingModal({ onClose, apartment }) {
                   }} />
                 </div>
                 <div style={{ fontSize: 11, color: '#8a8a8a', marginTop: 8, lineHeight: 1.4 }}>
-                  <strong>Prueba:</strong> 4242 4242 4242 4242, fecha futura (ej: 12/27), CVC aleatorio (ej: 123)
+                  {T.booking.testCard}
                 </div>
               </div>
 
@@ -505,7 +528,7 @@ export default function BookingModal({ onClose, apartment }) {
                   onClick={() => setStep(2)}
                   disabled={loading}
                 >
-                  ← Atrás
+                  {T.booking.back}
                 </button>
                 <button
                   className="btn-primary"
@@ -513,7 +536,7 @@ export default function BookingModal({ onClose, apartment }) {
                   onClick={handlePayment}
                   disabled={loading || !stripe || !elements}
                 >
-                  {loading ? '⏳ Procesando...' : `Pagar ${deposit} €`}
+                  {loading ? T.booking.processing : `${T.booking.payConfirm} ${deposit} €`}
                 </button>
               </div>
               <div style={{ fontSize: 11, color: '#b0b0b0', textAlign: 'center', marginTop: 16 }}>
@@ -529,14 +552,14 @@ export default function BookingModal({ onClose, apartment }) {
                 <Ico d={paths.check} size={32} color="#ffffff" />
               </div>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 300, color: '#0f172a', marginBottom: 12 }}>
-                ¡Reserva confirmada!
+                {T.booking.bookingConfirmed}
               </div>
               <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.7, marginBottom: 32 }}>
-                Hemos enviado la confirmación a tu email. Recuerda traer{' '}
-                <strong>{deposit} €</strong> en efectivo para el día de tu llegada.
+                {T.booking.confirmText}{' '}
+                <strong>{total - deposit} €</strong> {T.booking.confirmCash}
               </p>
               <button className="btn-outline" style={{ width: '100%' }} onClick={onClose}>
-                Volver al inicio
+                {T.booking.backHome}
               </button>
             </div>
           )}

@@ -7,10 +7,10 @@ const navItems = [
   { path: '/admin/precios', label: 'Precios', icon: paths.tag },
   { path: '/admin/ofertas', label: 'Ofertas', icon: paths.star },
   { path: '/admin/extras', label: 'Extras', icon: paths.plus },
-  { path: '/admin/cancelacion', label: 'Cancelación', icon: paths.cash },
-  { path: '/admin/pagos', label: 'Pagos', icon: paths.lock },
-  { path: '/admin/ical', label: 'Canales iCal', icon: paths.sync },
-  { path: '/admin/usuarios', label: 'Usuarios', icon: paths.users },
+  //{ path: '/admin/cancelacion', label: 'Cancelación', icon: paths.cash },
+  //{ path: '/admin/pagos', label: 'Pagos', icon: paths.lock },
+  //{ path: '/admin/ical', label: 'Canales iCal', icon: paths.sync },
+  //{ path: '/admin/usuarios', label: 'Usuarios', icon: paths.users },
   { path: '/admin/web', label: 'Textos web', icon: paths.edit },
 ];
 

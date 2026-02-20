@@ -1,11 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
+import { fetchSettings, updateSetting } from '../../services/supabaseService';
 
 export default function Cancelacion() {
   const [cancelDays, setCancelDays] = useState(14);
+  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      const settings = await fetchSettings();
+      if (settings.cancellation_days !== undefined) {
+        setCancelDays(settings.cancellation_days);
+      }
+      setLoading(false);
+    }
+    load();
+  }, []);
 
   // Bulk update cancellation days for all active apartments
   const handleSave = async () => {
@@ -14,6 +27,10 @@ export default function Cancelacion() {
       setError(null);
       setSuccess(null);
 
+      // 1. Guardar en site_settings
+      await updateSetting('cancellation_days', cancelDays, 'number');
+
+      // 2. Aplicar a todos los apartamentos
       const { error: updateError } = await supabase
         .from('apartments')
         .update({ cancellation_days: cancelDays })
@@ -24,8 +41,9 @@ export default function Cancelacion() {
       setSuccess('✓ Política guardada y aplicada a todos los apartamentos');
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      console.error('Error saving policy:', err);
-      setError('Error al guardar política: ' + err.message);
+      console.error('Error FULL saving policy:', err);
+      const isRLS = err.code === '42501' || err.message?.includes('policy');
+      setError(`Error al guardar política: ${err.message}${isRLS ? '\n\nTIP: Esto suele ser un problema de permisos RLS en Supabase. Asegúrate de haber ejecutado el SQL de configuración.' : ''}`);
     } finally {
       setSaving(false);
     }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getApartments, getReservations } from '../../services/dataService';
-import { MESES } from '../../utils/formatDate';
+import { formatDateNumeric } from '../../utils/format';
 
 const APT_COLORS = [
   { bg: '#DDEEFF', text: '#1A4A8B', border: '#4A7AB5' },
@@ -11,6 +11,11 @@ const APT_COLORS = [
   { bg: '#F5D5D5', text: '#8B1A1A', border: '#BB5050' },
   { bg: '#D5E8FF', text: '#1A3A8B', border: '#4A6ABB' },
   { bg: '#F5EBD5', text: '#6B4A0A', border: '#9A7030' },
+];
+
+const MESES = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
 ];
 
 function getDaysInMonth(year, month) {
@@ -84,14 +89,14 @@ export default function Calendario() {
 
   useEffect(() => {
     getApartments().then(apts => {
-      console.log('Calendario: Apartamentos cargados:', apts.length);
+      //console.log('Calendario: Apartamentos cargados:', apts.length);
       setApartments(apts);
     });
     getReservations().then(data => {
       const active = data.filter(r => r.status !== 'cancelled');
-      console.log('Calendario: Reservas activas:', active.length);
+      //console.log('Calendario: Reservas activas:', active.length);
       if (active.length > 0) {
-        console.log('Calendario: Ejemplo de reserva:', active[0]);
+        //console.log('Calendario: Ejemplo de reserva:', active[0]);
       }
       setReservations(active);
     });
@@ -116,6 +121,7 @@ export default function Calendario() {
     targetDate.setHours(0, 0, 0, 0);
 
     return apartments.map((apt, idx) => {
+      let bookingGuest = null;
       // Buscar si hay alguna reserva para este apartamento en este día
       const hasBooking = reservations.some(res => {
         // Comparar por slug (normalizado o crudo)
@@ -131,13 +137,18 @@ export default function Calendario() {
         checkout.setHours(0, 0, 0, 0);
 
         // El día está ocupado si está entre checkin (inclusive) y checkout (exclusive)
-        return targetDate >= checkin && targetDate < checkout;
+        const isOccupied = targetDate >= checkin && targetDate < checkout;
+        if (isOccupied) {
+          bookingGuest = res.guest || 'Reserva';
+        }
+        return isOccupied;
       });
 
       return {
         ...apt,
         color: APT_COLORS[idx % APT_COLORS.length],
-        hasBooking,
+        hasBooking: !!bookingGuest,
+        guest: bookingGuest
       };
     }).filter(a => a.hasBooking);
   };
@@ -205,7 +216,7 @@ export default function Calendario() {
               return (
                 <div
                   key={idx}
-                  className={`month-cal-cell ${!day ? 'month-cal-cell-empty' : ''} ${isToday(day) ? 'month-cal-today' : ''}`}
+                  className={`month - cal - cell ${!day ? 'month-cal-cell-empty' : ''} ${isToday(day) ? 'month-cal-today' : ''} `}
                   onMouseEnter={e => handleCellEnter(e, day)}
                   onMouseLeave={handleCellLeave}
                 >
@@ -261,7 +272,7 @@ export default function Calendario() {
                     <div>
                       <div className="cal-tooltip-apt">{apt.name}</div>
                       <div className="cal-tooltip-meta">
-                        {apt.cap} pers. · desde {apt.price} €/noche
+                        👤 {apt.guest}
                       </div>
                     </div>
                   </div>

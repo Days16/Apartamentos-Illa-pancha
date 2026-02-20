@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
 import Ico, { paths } from '../components/Ico';
 
 export default function Login() {
@@ -9,6 +11,9 @@ export default function Login() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
+    const { lang } = useLang();
+    const T = useT(lang);
+    const L = T.login;
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -20,7 +25,7 @@ export default function Login() {
             await login(email, password);
             navigate('/gestion');
         } catch (err) {
-            setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
+            setError(L.error);
             console.error('Login error:', err);
         } finally {
             setLoading(false);
@@ -67,17 +72,17 @@ export default function Login() {
                         margin: 0,
                         letterSpacing: '0.02em'
                     }}>
-                        Panel de Control
+                        {L.title}
                     </h1>
                     <p style={{ opacity: 0.6, fontSize: '14px', marginTop: '8px' }}>
-                        Introduce tus credenciales para acceder
+                        {L.sub}
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '20px' }}>
                         <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px', opacity: 0.8 }}>
-                            Correo electrónico
+                            {L.email}
                         </label>
                         <input
                             type="email"
@@ -101,7 +106,7 @@ export default function Login() {
 
                     <div style={{ marginBottom: '32px' }}>
                         <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px', opacity: 0.8 }}>
-                            Contraseña
+                            {L.password}
                         </label>
                         <input
                             type="password"
@@ -157,7 +162,7 @@ export default function Login() {
                         onMouseEnter={(e) => { if (!loading) e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 4px 12px rgba(212, 168, 67, 0.3)' }}
                         onMouseLeave={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = 'none' }}
                     >
-                        {loading ? 'Iniciando sesión...' : 'Entrar'}
+                        {loading ? L.loading : L.button}
                     </button>
                 </form>
 
@@ -168,7 +173,7 @@ export default function Login() {
                         onMouseEnter={(e) => e.target.style.opacity = 0.8}
                         onMouseLeave={(e) => e.target.style.opacity = 0.5}
                     >
-                        ← Volver a la web principal
+                        {L.back}
                     </button>
                 </div>
             </div>

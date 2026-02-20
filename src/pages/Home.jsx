@@ -6,6 +6,7 @@ import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
 import { fetchApartments, fetchWebsiteContent } from '../services/supabaseService';
+import { formatPrice } from '../utils/format';
 
 const reviews = [
   { text: "El apartamento estaba impecable y las vistas a la ría son increíbles. Repetiremos seguro.", author: "María Gómez", date: "Octubre 2025" },
@@ -14,10 +15,13 @@ const reviews = [
 ];
 
 import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
+import { assets } from '../constants/assets';
 
 export default function Home() {
   const navigate = useNavigate();
   const { lang, t } = useLang();
+  const T = useT(lang);
 
   const [checkin, setCheckin] = useState('2026-07-12');
   const [checkout, setCheckout] = useState('2026-07-19');
@@ -57,15 +61,15 @@ export default function Home() {
   return (
     <>
       <SEO
-        title={t('Inicio', 'Home')}
-        description={t('Reserva tu estancia en Illa Pancha, apartamentos turísticos de lujo en Ribadeo con vistas al mar.', 'Book your stay at Illa Pancha, luxury tourist apartments in Ribadeo with sea views.')}
+        title={T.seo.homeTitle}
+        description={T.seo.homeDesc}
       />
       <Navbar onOpenBooking={() => setBookingOpen(true)} />
 
       {/* HERO */}
       <div className="hero">
-        <div className="hero-bg" />
-        <div className="hero-noise" />
+        <div className="hero-bg" style={{ backgroundImage: `url(${assets.hero.background})` }} />
+        <div className="hero-noise" style={{ backgroundImage: `url(${assets.hero.noise})` }} />
         <div className="hero-overlay" />
         <div className="hero-content">
           <div className="hero-eyebrow">Ribadeo, Galicia</div>
@@ -118,7 +122,7 @@ export default function Home() {
               </select>
             </div>
             <button className="search-btn" onClick={handleSearch}>
-              {t('Buscar apartamentos →', 'Search apartments →')}
+              {T.home.searchApts}
             </button>
           </div>
         </div>
@@ -158,7 +162,7 @@ export default function Home() {
               onClick={() => navigate('/apartamentos')}
               style={{ alignSelf: 'flex-end' }}
             >
-              {t('Ver todos', 'View all')}
+              {T.home.viewAll}
             </button>
           </div>
         </div>
@@ -191,7 +195,7 @@ export default function Home() {
                   <div className="apt-meta">
                     <span>{apt.capacity} pers · {apt.beds} dorm</span>
                     <span className="apt-price">
-                      {apt.price} €
+                      {formatPrice(apt.price)}
                       <span style={{ fontSize: 12, color: 'rgba(168,197,160,0.7)' }}>/{t('noche', 'night')}</span>
                     </span>
                   </div>
@@ -243,10 +247,10 @@ export default function Home() {
             style={{ marginBottom: 12, display: 'block' }}
             onClick={() => setBookingOpen(true)}
           >
-            {t('Reservar ahora sin comisión', 'Book now no commission')}
+            {T.home.bookNowNoComm}
           </button>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', textAlign: 'center' }}>
-            {t('Cancelación gratuita · 14 días antes', 'Free cancellation · 14 days before')}
+            {T.home.freeCancel14}
           </div>
         </div>
       </div>

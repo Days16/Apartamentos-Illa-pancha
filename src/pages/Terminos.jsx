@@ -1,17 +1,23 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
 
 export default function Terminos() {
+  const { lang } = useLang();
+  const T = useT(lang);
+  const L = T.legal;
+
   return (
     <>
-      <SEO title="Términos y Condiciones" description="Lee nuestros términos y condiciones de reserva y estancia." />
+      <SEO title={L.termsTitle} description={L.termsDesc} />
       <Navbar />
       <div className="policy-page">
         <div className="policy-page-hero policy-hero-legal">
-          <div className="section-eyebrow legal-eyebrow">Documentos legales</div>
-          <h1 className="policy-page-title">Términos y Condiciones</h1>
-          <p style={{ fontSize: 13, color: '#6B7E94', marginTop: 8 }}>Última actualización: enero de 2026</p>
+          <div className="section-eyebrow legal-eyebrow">{L.docs}</div>
+          <h1 className="policy-page-title">{L.termsTitle}</h1>
+          <p style={{ fontSize: 13, color: '#6B7E94', marginTop: 8 }}>{L.lastUpdate}</p>
         </div>
         <div className="policy-content">
           <p>Estos Términos y Condiciones regulan la contratación de servicios de alojamiento turístico ofrecidos por <strong>Illa Pancha Ribadeo</strong> (en adelante, «el Propietario» o «nosotros») a través del sitio web <strong>illapancha.com</strong>. Al realizar una reserva, el cliente (en adelante, «el Huésped») acepta expresamente los presentes términos.</p>

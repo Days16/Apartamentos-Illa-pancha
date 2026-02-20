@@ -5,10 +5,10 @@ import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
-import { fetchApartments } from '../services/supabaseService';
+import { fetchApartments, fetchWebsiteContent } from '../services/supabaseService';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
-import { formatDateShort } from '../utils/formatDate';
+import { formatDateShort, formatPrice } from '../utils/format';
 
 // Convierte "2026-07-12" en número de día del mes (12)
 function dayOfMonth(dateStr) {
@@ -93,7 +93,7 @@ export default function Apartments() {
     <>
       <SEO
         title={T.nav.apartments}
-        description={t('Explora nuestra selección de apartamentos turísticos en Ribadeo. Totalmente equipados y listos para tu estancia.', 'Explore our selection of tourist apartments in Ribadeo. Fully equipped and ready for your stay.')}
+        description={T.seo.aptsDesc}
       />
       <Navbar onOpenBooking={() => setBookingOpen(true)} />
 
@@ -152,7 +152,7 @@ export default function Apartments() {
               className="avail-search-input"
             >
               {[1, 2, 3, 4, 5, 6].map(n => (
-                <option key={n} value={n}>{n} {n === 1 ? 'persona' : A.persons}</option>
+                <option key={n} value={n}>{n} {n === 1 ? T.common.person : A.persons}</option>
               ))}
             </select>
           </div>
@@ -168,10 +168,14 @@ export default function Apartments() {
 
         {searched && checkin && checkout && (
           <div className="avail-search-result">
-            <span style={{ color: '#1a5f6e', fontWeight: 600 }}>{availableCount}</span>
-            {' '}apartamento{availableCount !== 1 ? 's' : ''} disponible{availableCount !== 1 ? 's' : ''} del{' '}
-            <strong>{formatDateShort(checkin)}</strong> al <strong>{formatDateShort(checkout)}</strong>
-            {' '}para {guests} {guests === 1 ? 'persona' : A.persons}
+            {A.searchResult
+              .replace('{count}', availableCount)
+              .replace('{s}', availableCount !== 1 ? (lang === 'ES' ? 's' : 's') : '')
+              .replace('{start}', formatDateShort(checkin))
+              .replace('{end}', formatDateShort(checkout))
+              .replace('{guests}', guests)
+              .replace('{persons}', guests === 1 ? T.common.person : A.persons)
+            }
           </div>
         )}
       </div>
@@ -188,7 +192,9 @@ export default function Apartments() {
           </button>
         ))}
         <span style={{ fontSize: 12, color: '#64748b', marginLeft: 8 }}>
-          {filtered.length} apartamento{filtered.length !== 1 ? 's' : ''}
+          {A.countApts
+            .replace('{count}', filtered.length)
+            .replace('{s}', filtered.length !== 1 ? 's' : '')}
         </span>
       </div>
 
@@ -234,7 +240,7 @@ export default function Apartments() {
                 </div>
                 <div className="apt-list-bottom">
                   <div className="apt-list-price">
-                    {apt.price} €
+                    {formatPrice(apt.price)}
                     <span style={{ fontSize: 13, color: 'rgba(168,197,160,0.7)', fontFamily: 'Jost, sans-serif', fontWeight: 300 }}> {A.perNight}</span>
                   </div>
                   <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -248,7 +254,7 @@ export default function Apartments() {
                     className="apt-book-direct-btn"
                     onClick={e => { e.stopPropagation(); setSelectedApt(apt); setBookingOpen(true); }}
                   >
-                    Reservar ahora →
+                    {A.bookNow}
                   </button>
                 )}
               </div>
