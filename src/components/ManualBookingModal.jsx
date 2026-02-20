@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { fetchApartments, createReservation } from '../services/supabaseService';
+import { normalizeReservation } from '../services/dataService';
 import Ico, { paths } from './Ico';
 
 export default function ManualBookingModal({ onClose, onSuccess }) {
@@ -57,8 +58,14 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
                 source: form.source
             };
 
-            await createReservation(newReservation);
-            onSuccess(newReservation);
+            const { data, error: createError } = await supabase
+                .from('reservations')
+                .insert([newReservation])
+                .select()
+                .single();
+
+            if (createError) throw createError;
+            onSuccess(normalizeReservation(data));
         } catch (err) {
             setError(err.message || 'Error al crear la reserva.');
         } finally {

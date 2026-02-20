@@ -104,6 +104,36 @@ export async function markCashPaid(id) {
   }
 }
 
+
+export async function confirmAndMarkPaid(id) {
+  try {
+    const { error } = await supabase
+      .from('reservations')
+      .update({
+        status: 'confirmed',
+        fully_paid: true
+      })
+      .eq('id', id);
+    if (error) throw error;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteReservation(id) {
+  try {
+    const { error } = await supabase
+      .from('reservations')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // ─── EXTRAS ──────────────────────────────────────────────────────────────────
 export async function getExtras() {
   try {
@@ -185,7 +215,7 @@ function normalizeApartment(d) {
   };
 }
 
-function normalizeReservation(d) {
+export function normalizeReservation(d) {
   return {
     id: d.id,
     guest: d.guest_name ?? d.guest ?? '',

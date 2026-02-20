@@ -389,7 +389,7 @@ export async function fetchSettings() {
 export async function updateSetting(key, value, type = 'string') {
   const { data, error } = await supabase
     .from('site_settings')
-    .upsert({ key, value, type }, { onConflict: 'key' });
+    .upsert({ key, value: String(value), type }, { onConflict: 'key' });
 
   if (error) throw error;
   return data;

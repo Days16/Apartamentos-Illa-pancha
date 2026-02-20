@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { getReservations, getApartmentBySlug, getExtras, markCashPaid, updateReservationStatus } from '../../services/dataService';
+import { getReservations, getApartmentBySlug, getExtras, markCashPaid, updateReservationStatus, deleteReservation, confirmAndMarkPaid } from '../../services/dataService';
 import generateInvoice from '../../utils/generateInvoice';
 import exportReservationsExcel from '../../utils/exportExcel';
 import ManualBookingModal from '../../components/ManualBookingModal';
@@ -168,6 +168,42 @@ export default function Reservas() {
     }
   };
 
+  const handleConfirmAndMarkPaid = async (id) => {
+    setSaving(true);
+    try {
+      const success = await confirmAndMarkPaid(id);
+      if (success) {
+        const updated = reservations.map(r => r.id === id ? { ...r, status: 'confirmed', cashPaid: true } : r);
+        setReservations(updated);
+        if (selectedId === id) {
+          setSelectedReservation(updated.find(r => r.id === id));
+        }
+      } else {
+        setError('Error al confirmar y marcar como pagado.');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteReservation = async (id) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar esta reserva? Esta acción no se puede deshacer.')) return;
+
+    setSaving(true);
+    try {
+      const success = await deleteReservation(id);
+      if (success) {
+        setReservations(prev => prev.filter(r => r.id !== id));
+        setSelectedId(null);
+        setSelectedReservation(null);
+      } else {
+        setError('Error al eliminar la reserva.');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleSelectReservation = (reservation) => {
     setSelectedId(reservation.id);
     setSelectedReservation(reservation);
@@ -294,6 +330,26 @@ export default function Reservas() {
                 </button>
               )}
 
+              {selectedReservation.status === 'pending' && (
+                <button
+                  onClick={() => handleConfirmAndMarkPaid(selectedReservation.id)}
+                  disabled={saving}
+                  style={{
+                    background: COLORS.success,
+                    border: 'none',
+                    color: 'white',
+                    padding: '8px 14px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    opacity: saving ? 0.6 : 1,
+                  }}
+                >
+                  {saving ? '⏳ Procesando...' : '✓ Confirmar y Marcar Pagado'}
+                </button>
+              )}
+
               {getStatusOptions().length > 0 && (
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <button
@@ -348,6 +404,24 @@ export default function Reservas() {
                   )}
                 </div>
               )}
+
+              <button
+                onClick={() => handleDeleteReservation(selectedReservation.id)}
+                disabled={saving}
+                style={{
+                  background: 'transparent',
+                  border: `1px solid ${COLORS.error}`,
+                  color: COLORS.error,
+                  padding: '8px 14px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: 12,
+                  fontWeight: 500,
+                  opacity: saving ? 0.6 : 1,
+                }}
+              >
+                {saving ? '⏳...' : '🗑 Eliminar'}
+              </button>
             </div>
           </div>
         </div>

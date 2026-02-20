@@ -6,7 +6,8 @@ export default function WebTextos() {
     titleEs: '', titleEn: '',
     subtitleEs: '', subtitleEn: '',
     phone: '', email: '', address: '',
-    metaEs: '', metaEn: ''
+    metaEs: '', metaEn: '',
+    maintenanceMode: false
   });
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,7 @@ export default function WebTextos() {
         if (siteSet.site_phone !== undefined) newSettings.phone = siteSet.site_phone;
         if (siteSet.site_email !== undefined) newSettings.email = siteSet.site_email;
         if (siteSet.site_address !== undefined) newSettings.address = siteSet.site_address;
+        if (siteSet.maintenance_mode !== undefined) newSettings.maintenanceMode = siteSet.maintenance_mode === true;
       }
 
       // Mapear website_content a state
@@ -53,6 +55,7 @@ export default function WebTextos() {
       await updateSetting('site_phone', settings.phone);
       await updateSetting('site_email', settings.email);
       await updateSetting('site_address', settings.address);
+      await updateSetting('maintenance_mode', settings.maintenanceMode, 'boolean');
 
       // Guardar website_content
       await updateWebsiteContent('home_hero_title', { content_es: settings.titleEs, content_en: settings.titleEn });
@@ -63,6 +66,18 @@ export default function WebTextos() {
     } catch (err) {
       console.error('Error saving texts:', err);
       alert('Error al guardar los textos. Revisa la consola.');
+    }
+  };
+
+  const handleToggleMaintenance = async (active) => {
+    setSettings(p => ({ ...p, maintenanceMode: active }));
+    try {
+      console.log('Cambiando modo mantenimiento a:', active);
+      await updateSetting('maintenance_mode', active, 'boolean');
+      console.log('Modo mantenimiento guardado con éxito.');
+    } catch (err) {
+      console.error('Error al cambiar modo mantenimiento:', err);
+      alert('No se pudo cambiar el modo mantenimiento. Revisa la consola.');
     }
   };
 
@@ -78,6 +93,62 @@ export default function WebTextos() {
       </div>
 
       <div className="main-body">
+        <div className="card" style={{
+          padding: '28px 32px',
+          maxWidth: 760,
+          marginBottom: 20,
+          border: '1px solid',
+          borderColor: settings.maintenanceMode ? '#fecaca' : '#e2e8f0',
+          background: settings.maintenanceMode ? '#fff5f5' : '#ffffff',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minHeight: '44px' }}>
+            <div>
+              <div style={{ fontWeight: 600, color: settings.maintenanceMode ? '#b91c1c' : '#0f172a', fontSize: 15 }}>
+                {settings.maintenanceMode ? '⚠️ Modo Mantenimiento ACTIVO' : 'Modo Mantenimiento'}
+              </div>
+              <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
+                Cuando está activo, los clientes verán una pantalla de aviso y no podrán acceder a la web.
+              </div>
+            </div>
+            <label className="premium-switch">
+              <input
+                type="checkbox"
+                checked={settings.maintenanceMode}
+                onChange={(e) => handleToggleMaintenance(e.target.checked)}
+              />
+              <span className="premium-slider">
+                <span className="status-icon status-on">ON</span>
+                <span className="status-icon status-off">OFF</span>
+              </span>
+            </label>
+          </div>
+
+          <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'flex-start' }}>
+            <button
+              onClick={() => {
+                sessionStorage.setItem('maintenance_preview', 'true');
+                window.open('/', '_blank');
+              }}
+              style={{
+                background: 'transparent',
+                border: '1px solid #0f172a',
+                color: '#0f172a',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8
+              }}
+            >
+              👁️ Ver Vista Previa de la Web
+            </button>
+          </div>
+        </div>
+
         <div className="card" style={{ padding: 32, maxWidth: 760, marginBottom: 16 }}>
           <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#0f172a', marginBottom: 20 }}>
             Hero principal

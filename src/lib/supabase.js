@@ -11,7 +11,7 @@ export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co',
   supabaseKey || 'placeholder-key',
   {
-    auth: { persistSession: false },
+    auth: { persistSession: true },
     global: { fetch: (...args) => fetch(...args).catch(() => ({ json: () => ({}) })) },
   }
 );
