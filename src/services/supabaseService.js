@@ -1,0 +1,439 @@
+import { supabase } from '../lib/supabase';
+
+// ─── APARTAMENTOS ────────────────────────────────────────────────────────
+export async function fetchApartments() {
+  const { data, error } = await supabase
+    .from('apartments')
+    .select('*')
+    .eq('active', true)
+    .order('name');
+
+  if (error) {
+    console.error('Error fetching apartments:', error);
+    return [];
+  }
+  return data;
+}
+
+export async function fetchApartmentBySlug(slug) {
+  const { data, error } = await supabase
+    .from('apartments')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    console.error('Error fetching apartment:', error);
+    return null;
+  }
+  return data;
+}
+
+export async function fetchAllApartments() {
+  const { data, error } = await supabase
+    .from('apartments')
+    .select('*')
+    .order('name');
+
+  if (error) {
+    console.error('Error fetching all apartments:', error);
+    return [];
+  }
+  return data;
+}
+
+export async function fetchActiveOffers() {
+  try {
+    const { data, error } = await supabase
+      .from('offers')
+      .select('*')
+      .eq('active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.warn("Offers table might not exist yet:", error.message);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.error('Error fetching active offers', err);
+    return [];
+  }
+}
+
+export async function createApartment(apartment) {
+  const { data, error } = await supabase
+    .from('apartments')
+    .insert([apartment]);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateApartment(slug, updates) {
+  const { data, error } = await supabase
+    .from('apartments')
+    .update(updates)
+    .eq('slug', slug);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteApartment(slug) {
+  const { data, error } = await supabase
+    .from('apartments')
+    .delete()
+    .eq('slug', slug);
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── PHOTOS ──────────────────────────────────────────────────────────────
+export async function fetchApartmentPhotos(slug) {
+  const { data, error } = await supabase
+    .from('apartment_photos')
+    .select('*')
+    .eq('apartment_slug', slug)
+    .order('display_order');
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addPhoto(slug, photo) {
+  const { data, error } = await supabase
+    .from('apartment_photos')
+    .insert([{ apartment_slug: slug, ...photo }]);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deletePhoto(id) {
+  const { data, error } = await supabase
+    .from('apartment_photos')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updatePhoto(id, updates) {
+  const { data, error } = await supabase
+    .from('apartment_photos')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── SEASON PRICES ────────────────────────────────────────────────────────
+export async function fetchSeasonPrices(slug) {
+  const { data, error } = await supabase
+    .from('season_prices')
+    .select('*')
+    .eq('apartment_slug', slug)
+    .order('start_date');
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addSeasonPrice(seasonPrice) {
+  const { data, error } = await supabase
+    .from('season_prices')
+    .insert([seasonPrice]);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateSeasonPrice(id, updates) {
+  const { data, error } = await supabase
+    .from('season_prices')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteSeasonPrice(id) {
+  const { data, error } = await supabase
+    .from('season_prices')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── EXTRAS ──────────────────────────────────────────────────────────────
+export async function fetchExtras() {
+  const { data, error } = await supabase
+    .from('extras')
+    .select('*')
+    .eq('active', true)
+    .order('price');
+
+  if (error) {
+    console.error('Error fetching extras:', error);
+    return [];
+  }
+  return data;
+}
+
+export async function fetchAllExtras() {
+  const { data, error } = await supabase
+    .from('extras')
+    .select('*')
+    .order('name');
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createExtra(extra) {
+  const { data, error } = await supabase
+    .from('extras')
+    .insert([extra]);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateExtra(id, updates) {
+  const { data, error } = await supabase
+    .from('extras')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteExtra(id) {
+  const { data, error } = await supabase
+    .from('extras')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── RESERVAS ────────────────────────────────────────────────────────────
+export async function createReservation(reservation) {
+  const { data, error } = await supabase
+    .from('reservations')
+    .insert([{
+      ...reservation,
+      created_at: new Date().toISOString(),
+    }]);
+
+  if (error) {
+    console.error('Error creating reservation:', error);
+    throw error;
+  }
+  return data;
+}
+
+export async function fetchReservationById(id) {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching reservation:', error);
+    return null;
+  }
+  return data;
+}
+
+export async function fetchAllReservations(status = null) {
+  let query = supabase
+    .from('reservations')
+    .select('*');
+
+  if (status) {
+    query = query.eq('status', status);
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function updateReservation(id, updates) {
+  const { data, error } = await supabase
+    .from('reservations')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error updating reservation:', error);
+    throw error;
+  }
+  return data;
+}
+
+// ─── MENSAJES ────────────────────────────────────────────────────────────
+export async function createMessage(message) {
+  const { data, error } = await supabase
+    .from('messages')
+    .insert([{
+      ...message,
+      created_at: new Date().toISOString(),
+    }]);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchAllMessages(status = null) {
+  let query = supabase
+    .from('messages')
+    .select('*');
+
+  if (status) {
+    query = query.eq('status', status);
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function updateMessage(id, updates) {
+  const { data, error } = await supabase
+    .from('messages')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteMessage(id) {
+  const { data, error } = await supabase
+    .from('messages')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── PÁGINAS ─────────────────────────────────────────────────────────────
+export async function fetchPageBySlug(slug, lang = 'es') {
+  const { data, error } = await supabase
+    .from('site_pages')
+    .select('*')
+    .eq('slug', slug)
+    .eq('active', true)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchAllPages(lang = 'es') {
+  const { data, error } = await supabase
+    .from('site_pages')
+    .select('*')
+    .eq('active', true)
+    .order('display_order');
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function updatePage(slug, updates) {
+  const { data, error } = await supabase
+    .from('site_pages')
+    .update(updates)
+    .eq('slug', slug);
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── CONFIGURACIÓN ───────────────────────────────────────────────────────
+export async function fetchSettings() {
+  const { data, error } = await supabase
+    .from('site_settings')
+    .select('key, value, type');
+
+  if (error) {
+    console.error('Error fetching settings:', error);
+    return {};
+  }
+
+  const settings = {};
+  data.forEach(row => {
+    if (row.type === 'number') settings[row.key] = parseInt(row.value);
+    else if (row.type === 'boolean') settings[row.key] = row.value === 'true';
+    else settings[row.key] = row.value;
+  });
+  return settings;
+}
+
+export async function updateSetting(key, value, type = 'string') {
+  const { data, error } = await supabase
+    .from('site_settings')
+    .upsert({ key, value, type }, { onConflict: 'key' });
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── TEXTOS EDITABLES (CMS) ──────────────────────────────────────────────
+export async function fetchWebsiteContent(page = null) {
+  let query = supabase.from('website_content').select('*');
+  if (page) {
+    query = query.eq('page', page);
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error('Error fetching website_content:', error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function updateWebsiteContent(section_key, updates) {
+  const { data, error } = await supabase
+    .from('website_content')
+    .update(updates)
+    .eq('section_key', section_key);
+
+  if (error) throw error;
+  return data;
+}
+
+// ─── MENSAJES DE CONTACTO ──────────────────────────────────────────────────
+export async function submitContactMessage(message) {
+  const { data, error } = await supabase
+    .from('messages')
+    .insert([
+      {
+        name: message.name,
+        email: message.email,
+        phone: message.phone || null,
+        apartment_slug: message.apt || null,
+        message: message.msg,
+      }
+    ]);
+
+  if (error) throw error;
+  return data;
+}
