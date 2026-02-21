@@ -37,6 +37,23 @@ export function toInputDate(date) {
 }
 
 /**
+ * "2026-07-12" → Date object (sin problemas de zona horaria)
+ */
+export function strToDate(str) {
+  if (!str) return null;
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/**
+ * Date object → "2026-07-12"
+ */
+export function dateToStr(date) {
+  if (!date) return '';
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+/**
  * "2026-07-12" → "julio 2026"
  */
 export function formatMonthYear(dateStr) {

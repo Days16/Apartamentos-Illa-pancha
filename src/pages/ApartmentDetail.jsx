@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
@@ -8,7 +10,7 @@ import SEO from '../components/SEO';
 import { fetchApartmentBySlug, fetchSettings } from '../services/supabaseService';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
-import { formatDateShort, MESES, formatPrice } from '../utils/format';
+import { formatDateShort, MESES, formatPrice, strToDate, dateToStr } from '../utils/format';
 import { useDiscount } from '../contexts/DiscountContext';
 
 const amenityIcons = {
@@ -147,23 +149,26 @@ function BookingWidget({ apt, onBook, T, globalSettings }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, marginBottom: 2 }}>
         <div className="apt-booking-field" style={{ borderRight: '1px solid rgba(15,23,42,0.15)' }}>
           <div className="apt-booking-field-label">{T.detail.checkin}</div>
-          <input
-            type="date"
-            value={checkin}
-            onChange={e => setCheckin(e.target.value)}
-            min={new Date().toISOString().split('T')[0]}
+          <DatePicker
+            selected={strToDate(checkin)}
+            onChange={date => setCheckin(dateToStr(date))}
+            minDate={new Date()}
+            maxDate={strToDate(checkout) ? new Date(strToDate(checkout).getTime() - 86400000) : null}
+            dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+            placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
+            className="apt-date-input"
           />
-          {checkinLabel && <div style={{ fontSize: 10, color: '#64748b', marginTop: 2 }}>{checkinLabel}</div>}
         </div>
         <div className="apt-booking-field">
           <div className="apt-booking-field-label">{T.detail.checkout}</div>
-          <input
-            type="date"
-            value={checkout}
-            onChange={e => setCheckout(e.target.value)}
-            min={checkin || new Date().toISOString().split('T')[0]}
+          <DatePicker
+            selected={strToDate(checkout)}
+            onChange={date => setCheckout(dateToStr(date))}
+            minDate={strToDate(checkin) ? new Date(strToDate(checkin).getTime() + 86400000) : new Date()}
+            dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+            placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
+            className="apt-date-input"
           />
-          {checkoutLabel && <div style={{ fontSize: 10, color: '#64748b', marginTop: 2 }}>{checkoutLabel}</div>}
         </div>
       </div>
 

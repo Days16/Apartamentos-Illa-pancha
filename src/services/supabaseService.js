@@ -383,12 +383,10 @@ export async function fetchSettings() {
     else if (row.type === 'boolean') settings[row.key] = row.value === 'true';
     else settings[row.key] = row.value;
   });
-  console.log('Ajustes cargados:', settings);
   return settings;
 }
 
 export async function updateSetting(key, value, type = 'string') {
-  console.log(`Actualizando ajuste: ${key} = ${value} (${type})`);
   const { data, error } = await supabase
     .from('site_settings')
     .upsert({ key, value: String(value), type }, { onConflict: 'key' })

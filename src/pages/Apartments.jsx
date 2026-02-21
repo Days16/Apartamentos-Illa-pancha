@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
@@ -8,7 +10,7 @@ import SEO from '../components/SEO';
 import { fetchApartments, fetchWebsiteContent } from '../services/supabaseService';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
-import { formatDateShort, formatPrice } from '../utils/format';
+import { formatDateShort, formatPrice, strToDate, dateToStr } from '../utils/format';
 
 // Convierte "2026-07-12" en número de día del mes (12)
 function dayOfMonth(dateStr) {
@@ -112,14 +114,15 @@ export default function Apartments() {
               <Ico d={paths.cal} size={12} color="#64748b" />
               {A.checkin}
             </div>
-            <input
-              type="date"
-              value={checkin}
-              min={today}
-              onChange={e => { setCheckin(e.target.value); setSearched(false); }}
+            <DatePicker
+              selected={strToDate(checkin)}
+              onChange={date => { setCheckin(dateToStr(date)); setSearched(false); }}
+              minDate={strToDate(today)}
+              maxDate={strToDate(checkout) ? new Date(strToDate(checkout).getTime() - 86400000) : null}
+              dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+              placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
               className="avail-search-input"
             />
-            {checkin && <div className="avail-search-date-es">{formatDateShort(checkin)}</div>}
           </div>
 
           <div className="avail-search-divider" />
@@ -129,14 +132,14 @@ export default function Apartments() {
               <Ico d={paths.cal} size={12} color="#64748b" />
               {A.checkout}
             </div>
-            <input
-              type="date"
-              value={checkout}
-              min={checkin || today}
-              onChange={e => { setCheckout(e.target.value); setSearched(false); }}
+            <DatePicker
+              selected={strToDate(checkout)}
+              onChange={date => { setCheckout(dateToStr(date)); setSearched(false); }}
+              minDate={strToDate(checkin) ? new Date(strToDate(checkin).getTime() + 86400000) : strToDate(today)}
+              dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+              placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
               className="avail-search-input"
             />
-            {checkout && <div className="avail-search-date-es">{formatDateShort(checkout)}</div>}
           </div>
 
           <div className="avail-search-divider" />

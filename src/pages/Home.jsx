@@ -6,7 +6,8 @@ import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
 import { fetchApartments, fetchWebsiteContent } from '../services/supabaseService';
-import { formatPrice } from '../utils/format';
+import { formatPrice, strToDate, dateToStr } from '../utils/format';
+import { safeHtml } from '../utils/sanitize';
 
 const reviews = [
   { text: "El apartamento estaba impecable y las vistas a la ría son increíbles. Repetiremos seguro.", author: "María Gómez", date: "Octubre 2025" },
@@ -14,9 +15,10 @@ const reviews = [
   { text: "La comunicación fue genial y el check-in automático súper cómodo. Muy recomendable.", author: "Laura F.", date: "Julio 2025" }
 ];
 
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
-import { assets } from '../constants/assets';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -68,12 +70,12 @@ export default function Home() {
 
       {/* HERO */}
       <div className="hero">
-        <div className="hero-bg" style={{ backgroundImage: `url(${assets.hero.background})` }} />
-        <div className="hero-noise" style={{ backgroundImage: `url(${assets.hero.noise})` }} />
+        <div className="hero-bg" />
+        <div className="hero-noise" />
         <div className="hero-overlay" />
         <div className="hero-content">
           <div className="hero-eyebrow">Ribadeo, Galicia</div>
-          <h1 className="hero-title" dangerouslySetInnerHTML={{ __html: getText('home_hero_title', 'Alquila<br /><em>directo,</em><br />sin comisiones', 'Book<br /><em>direct,</em><br />no commissions') }} />
+          <h1 className="hero-title" dangerouslySetInnerHTML={safeHtml(getText('home_hero_title', 'Alquila<br /><em>directo,</em><br />sin comisiones', 'Book<br /><em>direct,</em><br />no commissions'))} />
           <p className="hero-desc">
             {getText('home_hero_desc', 'Ocho apartamentos junto a la ría del Eo. Reserva con nosotros y paga menos que en cualquier plataforma.', 'Eight apartments by the Eo estuary. Book with us and pay less than on any platform.')}
           </p>
@@ -92,19 +94,24 @@ export default function Home() {
           <div className="search-inner">
             <div className="search-field">
               <div className="search-label">{t('Llegada', 'Check-in')}</div>
-              <input
-                type="date"
-                value={checkin}
-                onChange={e => setCheckin(e.target.value)}
+              <DatePicker
+                selected={strToDate(checkin)}
+                onChange={date => setCheckin(dateToStr(date))}
+                minDate={new Date()}
+                maxDate={strToDate(checkout) ? new Date(strToDate(checkout).getTime() - 86400000) : null}
+                dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
                 className="search-input"
               />
             </div>
             <div className="search-field">
               <div className="search-label">{t('Salida', 'Check-out')}</div>
-              <input
-                type="date"
-                value={checkout}
-                onChange={e => setCheckout(e.target.value)}
+              <DatePicker
+                selected={strToDate(checkout)}
+                onChange={date => setCheckout(dateToStr(date))}
+                minDate={strToDate(checkin) ? new Date(strToDate(checkin).getTime() + 86400000) : new Date()}
+                dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
                 className="search-input"
               />
             </div>
@@ -150,7 +157,7 @@ export default function Home() {
       <div className="section" id="apartments-section">
         <div className="section-eyebrow">{t('Nuestros apartamentos', 'Our apartments')}</div>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-          <div className="section-title" style={{ marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: t('Ocho espacios<br /><em>para descansar</em>', 'Eight spaces<br /><em>to rest</em>') }} />
+          <div className="section-title" style={{ marginBottom: 0 }} dangerouslySetInnerHTML={safeHtml(t('Ocho espacios<br /><em>para descansar</em>', 'Eight spaces<br /><em>to rest</em>'))} />
           <div style={{ display: 'flex', gap: 12 }}>
             {searched && (
               <div style={{ fontSize: 13, color: '#475569', fontWeight: 300, alignSelf: 'flex-end' }}>
@@ -236,7 +243,7 @@ export default function Home() {
       {/* BANNER RESERVA DIRECTA */}
       <div style={{ background: '#1a5f6e', padding: '80px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40 }}>
         <div>
-          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 44, fontWeight: 300, color: '#ffffff', lineHeight: 1.1, marginBottom: 12 }} dangerouslySetInnerHTML={{ __html: getText('home_banner_title', '¿Por qué reservar<br /><em>directo con nosotros?</em>', 'Why book<br /><em>direct with us?</em>') }} />
+          <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 44, fontWeight: 300, color: '#ffffff', lineHeight: 1.1, marginBottom: 12 }} dangerouslySetInnerHTML={safeHtml(getText('home_banner_title', '¿Por qué reservar<br /><em>directo con nosotros?</em>', 'Why book<br /><em>direct with us?</em>'))} />
           <p style={{ fontSize: 15, fontWeight: 300, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, maxWidth: 500 }}>
             {getText('home_banner_desc', 'Ahorra entre un 15 y un 20% respecto a Booking.com o Airbnb. El mismo apartamento, el mismo servicio, sin comisiones de intermediarios.', 'Save between 15% and 20% compared to Booking.com or Airbnb. Same apartment, same service, no commissions.')}
           </p>

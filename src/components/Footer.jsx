@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Ico, { paths } from './Ico';
 import { useLang } from '../contexts/LangContext';
@@ -7,6 +8,11 @@ export default function Footer() {
   const { lang } = useLang();
   const T = useT(lang);
   const F = T.footer;
+  const [expandedSection, setExpandedSection] = useState(null);
+
+  const toggleSection = (section) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
   return (
     <footer className="footer">
@@ -28,32 +34,62 @@ export default function Footer() {
           </div>
         </div>
 
-        <div>
-          <div className="footer-col-title">{T.nav.apartments}</div>
-          {['Cantábrico', 'Ribadeo', 'Illa Pancha', 'Eo', 'Castro'].map(name => (
-            <Link key={name} to="/apartamentos" className="footer-link">Apt. {name}</Link>
-          ))}
-          <Link to="/apartamentos" className="footer-link">{T.home.viewAll}</Link>
+        {/* Apartments Section */}
+        <div className="footer-col">
+          <button
+            className={`footer-col-title footer-col-toggle${expandedSection === 'apartments' ? ' expanded' : ''}`}
+            onClick={() => toggleSection('apartments')}
+            aria-expanded={expandedSection === 'apartments'}
+          >
+            {T.nav.apartments}
+            <span className="footer-toggle-icon">+</span>
+          </button>
+          <div className={`footer-col-content${expandedSection === 'apartments' ? ' expanded' : ''}`}>
+            {['Cantábrico', 'Ribadeo', 'Illa Pancha', 'Eo', 'Castro'].map(name => (
+              <Link key={name} to="/apartamentos" className="footer-link">Apt. {name}</Link>
+            ))}
+            <Link to="/apartamentos" className="footer-link">{T.home.viewAll}</Link>
+          </div>
         </div>
 
-        <div>
-          <div className="footer-col-title">{F.infoCol}</div>
-          <Link to="/nosotros" className="footer-link">{F.about}</Link>
-          <Link to="/contacto" className="footer-link">{F.contact}</Link>
-          <Link to="/apartamentos" className="footer-link">{F.availability}</Link>
-          <span className="footer-link">{F.howToGet}</span>
-          <span className="footer-link">{F.faq}</span>
+        {/* Info Section */}
+        <div className="footer-col">
+          <button
+            className={`footer-col-title footer-col-toggle${expandedSection === 'info' ? ' expanded' : ''}`}
+            onClick={() => toggleSection('info')}
+            aria-expanded={expandedSection === 'info'}
+          >
+            {F.infoCol}
+            <span className="footer-toggle-icon">+</span>
+          </button>
+          <div className={`footer-col-content${expandedSection === 'info' ? ' expanded' : ''}`}>
+            <Link to="/nosotros" className="footer-link">{F.about}</Link>
+            <Link to="/contacto" className="footer-link">{F.contact}</Link>
+            <Link to="/apartamentos" className="footer-link">{F.availability}</Link>
+            <span className="footer-link">{F.howToGet}</span>
+            <span className="footer-link">{F.faq}</span>
+          </div>
         </div>
 
-        <div>
-          <div className="footer-col-title">{F.bookOn}</div>
-          <span className="footer-link">Booking.com ↗</span>
-          <span className="footer-link">Airbnb ↗</span>
+        {/* Book On Section */}
+        <div className="footer-col">
+          <button
+            className={`footer-col-title footer-col-toggle${expandedSection === 'book' ? ' expanded' : ''}`}
+            onClick={() => toggleSection('book')}
+            aria-expanded={expandedSection === 'book'}
+          >
+            {F.bookOn}
+            <span className="footer-toggle-icon">+</span>
+          </button>
+          <div className={`footer-col-content${expandedSection === 'book' ? ' expanded' : ''}`}>
+            <span className="footer-link">Booking.com ↗</span>
+            <span className="footer-link">Airbnb ↗</span>
+          </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <span style={{ color: 'rgba(255,255,255,0.3)' }}>{F.rights}</span>
+        <span className="footer-rights">{F.rights}</span>
         <div className="footer-legal">
           <Link to="/terminos">{F.terms}</Link>
           <Link to="/privacidad">{F.privacy}</Link>

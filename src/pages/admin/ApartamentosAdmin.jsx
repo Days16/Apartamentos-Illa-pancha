@@ -1040,14 +1040,17 @@ export default function ApartamentosAdmin() {
                               onClick={() => deletePhoto(photo.id)}
                               style={{
                                 flex: 1,
-                                background: '#f44',
+                                background: '#dc2626',
                                 border: 'none',
-                                color: '#fff',
-                                padding: '4px 6px',
+                                color: '#ffffff',
+                                padding: '5px 4px',
                                 borderRadius: 4,
                                 cursor: 'pointer',
-                                fontSize: 10,
-                                fontWeight: 600
+                                fontSize: 11,
+                                fontWeight: 700,
+                                whiteSpace: 'nowrap',
+                                textAlign: 'center',
+                                lineHeight: 1
                               }}
                             >
                               Eliminar

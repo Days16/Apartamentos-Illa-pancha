@@ -3,6 +3,9 @@ import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise } from './lib/stripe';
 import { useEffect, useState } from 'react';
 import './index.css';
+import './styles/responsive-utils.css';
+import './styles/typography.css';
+import './styles/forms.css';
 import { fetchSettings } from './services/supabaseService';
 import Maintenance from './pages/Maintenance';
 

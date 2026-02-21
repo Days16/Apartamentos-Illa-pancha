@@ -8,7 +8,7 @@ import SEO from '../components/SEO';
 import { fetchWebsiteContent } from '../services/supabaseService';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
-import { assets } from '../constants/assets';
+import { safeHtml } from '../utils/sanitize';
 
 export default function About() {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export default function About() {
       {/* HERO */}
       <div className="page-hero">
         <div className="page-hero-eyebrow">{A.history}</div>
-        <h1 className="page-hero-title" dangerouslySetInnerHTML={{ __html: getText('about_hero_title', A.heroTitle) }} />
+        <h1 className="page-hero-title" dangerouslySetInnerHTML={safeHtml(getText('about_hero_title', A.heroTitle))} />
         <p className="page-hero-desc">
           {getText('about_hero_desc', A.heroDesc)}
         </p>
@@ -68,7 +68,7 @@ export default function About() {
       {/* HISTORIA */}
       <div className="about-story">
         <div>
-          <div className="about-story-title" dangerouslySetInnerHTML={{ __html: getText('about_story_title', A.storyTitle) }} />
+          <div className="about-story-title" dangerouslySetInnerHTML={safeHtml(getText('about_story_title', A.storyTitle))} />
           <p className="about-story-text" style={{ fontFamily: "'Jost', sans-serif" }}>
             {getText('about_story_text_1', A.storyText1)}
           </p>
@@ -146,7 +146,7 @@ export default function About() {
 
       {/* CTA */}
       <div style={{ padding: '80px', textAlign: 'center', background: '#f8fafc' }}>
-        <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 48, fontWeight: 300, color: '#0f172a', marginBottom: 16, lineHeight: 1.1 }} dangerouslySetInnerHTML={{ __html: A.ctaTitle }} />
+        <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 48, fontWeight: 300, color: '#0f172a', marginBottom: 16, lineHeight: 1.1 }} dangerouslySetInnerHTML={safeHtml(A.ctaTitle)} />
         <p style={{ fontSize: 15, color: '#475569', lineHeight: 1.7, maxWidth: 500, margin: '0 auto 32px' }}>
           {A.ctaDesc}
         </p>

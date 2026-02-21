@@ -6,8 +6,8 @@ import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
-import { assets } from '../constants/assets';
 import { fetchApartments, submitContactMessage } from '../services/supabaseService';
+import { safeHtml } from '../utils/sanitize';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', apt: '', msg: '' });
@@ -51,7 +51,7 @@ export default function Contact() {
       {/* HERO */}
       <div className="page-hero">
         <div className="page-hero-eyebrow">{C.heroEyebrow}</div>
-        <h1 className="page-hero-title" dangerouslySetInnerHTML={{ __html: C.heroTitle }} />
+        <h1 className="page-hero-title" dangerouslySetInnerHTML={safeHtml(C.heroTitle)} />
         <p className="page-hero-desc">
           {C.heroDesc}
         </p>

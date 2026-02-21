@@ -25,6 +25,7 @@ export default function BookingModal({ onClose, apartment }) {
   const [selectedExtras, setSelectedExtras] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stripeError, setStripeError] = useState('');
+  const [confirmedId, setConfirmedId] = useState('');
   const [allExtras, setAllExtras] = useState([]);
   const [globalSettings, setGlobalSettings] = useState({});
 
@@ -115,8 +116,8 @@ export default function BookingModal({ onClose, apartment }) {
     setStripeError('');
 
     try {
-      // Crear ID de reserva
-      const reservationId = 'IP-' + Math.floor(Math.random() * 900000 + 100000);
+      // Crear ID de reserva (criptográficamente seguro)
+      const reservationId = 'IP-' + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000 + 100000);
 
       // 1. Crear PaymentIntent en Edge Function
       const paymentData = await createPaymentIntent({
@@ -192,6 +193,7 @@ export default function BookingModal({ onClose, apartment }) {
         console.warn('PDF generación fallida:', pdfError);
       }
 
+      setConfirmedId(reservationId);
       setStep(4);
     } catch (err) {
       setStripeError(err.message || T.booking.errorPayment);
@@ -270,7 +272,7 @@ export default function BookingModal({ onClose, apartment }) {
           {step === 4 && (
             <div style={{ marginTop: 24 }}>
               {[
-                [T.booking.ref, 'IP-' + Math.floor(Math.random() * 900 + 100)],
+                [T.booking.ref, confirmedId],
                 [T.booking.apartment, apt.name],
                 [T.booking.checkin, checkin],
                 [T.booking.checkout, checkout],
@@ -308,7 +310,7 @@ export default function BookingModal({ onClose, apartment }) {
                 onChange={date => setCheckinDate(date)}
                 minDate={new Date()}
                 maxDate={checkoutDate ? new Date(checkoutDate.getTime() - 86400000) : null}
-                dateFormat="dd/MM/yyyy"
+                dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                 className="form-input"
                 placeholderText={T.booking.placeholderCheckin}
               />
@@ -317,7 +319,7 @@ export default function BookingModal({ onClose, apartment }) {
                 selected={checkoutDate}
                 onChange={date => setCheckoutDate(date)}
                 minDate={checkinDate ? new Date(checkinDate.getTime() + 86400000) : new Date()}
-                dateFormat="dd/MM/yyyy"
+                dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                 className="form-input"
                 placeholderText={T.booking.placeholderCheckout}
               />
