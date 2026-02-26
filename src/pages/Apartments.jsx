@@ -29,6 +29,10 @@ export default function Apartments() {
   const [searched, setSearched] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedApt, setSelectedApt] = useState(null);
+  const [priceRange, setPriceRange] = useState('all');
+  const [sortBy, setSortBy] = useState('default');
+  const [amenityFilters, setAmenityFilters] = useState([]);
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   // Cargar apartamentos y reservas desde la capa de servicios unificada
   useEffect(() => {
@@ -72,41 +76,73 @@ export default function Apartments() {
     setSearched(true);
   };
 
-  const filtered = apartments.filter(apt => {
-    if (!apt.active) return false;
-    const capacity = apt.cap || apt.capacity || 2;
-    const amenities = apt.amenities || [];
+  const checkOverlap = (apt) => {
+    if (!searched || !checkin || !checkout) return false;
+    return reservations.some(r => {
+      if (r.status === 'cancelled') return false;
+      if (r.aptSlug !== apt.slug && r.apt !== apt.slug) return false;
+      const rIn = new Date(r.checkin + 'T00:00:00');
+      const rOut = new Date(r.checkout + 'T00:00:00');
+      const sIn = new Date(checkin + 'T00:00:00');
+      const sOut = new Date(checkout + 'T00:00:00');
+      return (sIn < rOut && sOut > rIn);
+    });
+  };
 
-    // Filtros de categoría/comodidades
-    if (filter === '2' && capacity > 2) return false;
-    if (filter === '4' && (capacity < 3 || capacity > 4)) return false;
-    if (filter === '6' && capacity < 5) return false;
-    if (filter === 'sea' && !amenities.some(a => typeof a === 'string' && a.includes('Vistas'))) return false;
+  const AMENITY_OPTIONS = [
+    { key: 'WiFi', label: 'WiFi' },
+    { key: 'Parking', label: lang === 'EN' ? 'Parking' : 'Parking' },
+    { key: 'Terraza', label: lang === 'EN' ? 'Terrace' : 'Terraza' },
+    { key: 'Vistas', label: lang === 'EN' ? 'Sea views' : 'Vistas al mar' },
+    { key: 'Barbacoa', label: lang === 'EN' ? 'BBQ' : 'Barbacoa' },
+  ];
 
-    // Filtro de búsqueda (Fechas + Personas)
-    if (searched) {
-      if (guests > capacity) return false;
-      if (checkin && checkout) {
-        const hasOverlap = reservations.some(r => {
-          if (r.status === 'cancelled') return false;
-          if (r.aptSlug !== apt.slug && r.apt !== apt.slug) return false;
-          const rIn = new Date(r.checkin + 'T00:00:00');
-          const rOut = new Date(r.checkout + 'T00:00:00');
-          const sIn = new Date(checkin + 'T00:00:00');
-          const sOut = new Date(checkout + 'T00:00:00');
-          return (sIn < rOut && sOut > rIn);
-        });
-        if (hasOverlap) return false;
+  const toggleAmenity = (key) => {
+    setAmenityFilters(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]);
+  };
+
+  const filtered = apartments
+    .filter(apt => {
+      if (!apt.active) return false;
+      const capacity = apt.cap || apt.capacity || 2;
+      const amenities = apt.amenities || [];
+      // Filtro categoría
+      if (filter === '2' && capacity > 2) return false;
+      if (filter === '4' && (capacity < 3 || capacity > 4)) return false;
+      if (filter === '6' && capacity < 5) return false;
+      if (filter === 'sea' && !amenities.some(a => typeof a === 'string' && a.includes('Vistas'))) return false;
+      // Filtro huéspedes
+      if (searched && guests > capacity) return false;
+      // Filtro precio
+      const price = apt.price || 0;
+      if (priceRange === '<100' && price >= 100) return false;
+      if (priceRange === '100-150' && (price < 100 || price > 150)) return false;
+      if (priceRange === '150+' && price <= 150) return false;
+      // Filtro comodidades
+      if (amenityFilters.length > 0) {
+        if (!amenityFilters.every(f => amenities.some(a => typeof a === 'string' && a.toLowerCase().includes(f.toLowerCase())))) return false;
       }
-    }
-    return true;
-  });
+      return true;
+    })
+    .map(apt => ({ ...apt, dateAvailable: !checkOverlap(apt) }))
+    .sort((a, b) => {
+      // Disponibles primero si hay búsqueda de fechas
+      if (searched && checkin && checkout) {
+        if (a.dateAvailable && !b.dateAvailable) return -1;
+        if (!a.dateAvailable && b.dateAvailable) return 1;
+      }
+      // Ordenación secundaria por el criterio del usuario
+      if (sortBy === 'price_asc') return (a.price || 0) - (b.price || 0);
+      if (sortBy === 'price_desc') return (b.price || 0) - (a.price || 0);
+      if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+      if (sortBy === 'capacity') return (b.cap || 0) - (a.cap || 0);
+      return 0;
+    });
 
   const getAvailStatus = (apt) => {
     if (!apt.active) return 'inactive';
     if (!searched || !checkin || !checkout) return 'unknown';
-    // Lógica simplificada de disponibilidad para la vista
-    return 'available';
+    return apt.dateAvailable ? 'available' : 'unavailable';
   };
 
   const availableCount = filtered.filter(a => getAvailStatus(a) === 'available').length;
@@ -130,7 +166,8 @@ export default function Apartments() {
                 selected={strToDate(checkin)}
                 onChange={d => setCheckin(dateToStr(d))}
                 minDate={new Date()}
-                placeholderText="Entrada"
+                dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
                 className="w-full h-11 px-4 border border-gray-300 rounded focus:ring-2 focus:ring-teal/20 outline-none transition-all"
               />
             </div>
@@ -140,7 +177,8 @@ export default function Apartments() {
                 selected={strToDate(checkout)}
                 onChange={d => setCheckout(dateToStr(d))}
                 minDate={strToDate(checkin) || new Date()}
-                placeholderText="Salida"
+                dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
+                placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
                 className="w-full h-11 px-4 border border-gray-300 rounded focus:ring-2 focus:ring-teal/20 outline-none transition-all"
               />
             </div>
@@ -165,17 +203,113 @@ export default function Apartments() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex flex-wrap gap-2 mb-12">
+        {searched && checkin && checkout && (
+          <div className="mb-4 text-sm text-gray-600">
+            <span className="font-semibold text-navy">{availableCount}</span> {lang === 'EN' ? `apartment${availableCount !== 1 ? 's' : ''} available` : `apartamento${availableCount !== 1 ? 's' : ''} disponible${availableCount !== 1 ? 's' : ''}`} · {checkin} → {checkout}
+          </div>
+        )}
+
+        {/* FILTROS DE CATEGORÍA + BOTÓN MÁS FILTROS */}
+        <div className="flex flex-wrap gap-2 items-center mb-3">
           {FILTERS.map(f => (
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
-              className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${filter === f.id ? 'bg-teal text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${filter === f.id ? 'bg-teal text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             >
               {f.label}
             </button>
           ))}
+          <button
+            onClick={() => setShowMoreFilters(v => !v)}
+            className={`ml-auto px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${showMoreFilters || priceRange !== 'all' || sortBy !== 'default' || amenityFilters.length > 0 ? 'bg-navy text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-100'}`}
+          >
+            {lang === 'EN' ? 'More filters' : 'Más filtros'}
+            {(priceRange !== 'all' || sortBy !== 'default' || amenityFilters.length > 0) && (
+              <span className="bg-white text-navy rounded-full w-4 h-4 text-xs flex items-center justify-center font-bold">
+                {[priceRange !== 'all' ? 1 : 0, sortBy !== 'default' ? 1 : 0, amenityFilters.length > 0 ? 1 : 0].reduce((a, b) => a + b, 0)}
+              </span>
+            )}
+            <span className={`transition-transform ${showMoreFilters ? 'rotate-180' : ''}`}>▾</span>
+          </button>
         </div>
+
+        {/* PANEL DE MÁS FILTROS */}
+        {showMoreFilters && (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6 space-y-5">
+            {/* PRECIO */}
+            <div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{lang === 'EN' ? 'Price per night' : 'Precio por noche'}</div>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'all', label: lang === 'EN' ? 'All' : 'Todos' },
+                  { id: '<100', label: lang === 'EN' ? 'Under 100€' : 'Hasta 100€' },
+                  { id: '100-150', label: '100 – 150€' },
+                  { id: '150+', label: lang === 'EN' ? 'Over 150€' : 'Más de 150€' },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setPriceRange(opt.id)}
+                    className={`px-4 py-1.5 rounded-full text-sm transition-all ${priceRange === opt.id ? 'bg-navy text-white font-semibold' : 'bg-white border border-gray-300 text-gray-600 hover:border-navy'}`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* ORDENAR */}
+            <div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{lang === 'EN' ? 'Sort by' : 'Ordenar por'}</div>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'default', label: lang === 'EN' ? 'Default' : 'Por defecto' },
+                  { id: 'price_asc', label: lang === 'EN' ? 'Price ↑' : 'Precio ↑' },
+                  { id: 'price_desc', label: lang === 'EN' ? 'Price ↓' : 'Precio ↓' },
+                  { id: 'rating', label: lang === 'EN' ? 'Rating' : 'Puntuación' },
+                  { id: 'capacity', label: lang === 'EN' ? 'Capacity' : 'Capacidad' },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setSortBy(opt.id)}
+                    className={`px-4 py-1.5 rounded-full text-sm transition-all ${sortBy === opt.id ? 'bg-navy text-white font-semibold' : 'bg-white border border-gray-300 text-gray-600 hover:border-navy'}`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* COMODIDADES */}
+            <div>
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{lang === 'EN' ? 'Amenities' : 'Comodidades'}</div>
+              <div className="flex flex-wrap gap-2">
+                {AMENITY_OPTIONS.map(opt => (
+                  <button
+                    key={opt.key}
+                    onClick={() => toggleAmenity(opt.key)}
+                    className={`px-4 py-1.5 rounded-full text-sm transition-all flex items-center gap-1.5 ${amenityFilters.includes(opt.key) ? 'bg-teal text-white font-semibold' : 'bg-white border border-gray-300 text-gray-600 hover:border-teal'}`}
+                  >
+                    {amenityFilters.includes(opt.key) && <span>✓</span>}
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* LIMPIAR */}
+            {(priceRange !== 'all' || sortBy !== 'default' || amenityFilters.length > 0) && (
+              <button
+                onClick={() => { setPriceRange('all'); setSortBy('default'); setAmenityFilters([]); }}
+                className="text-sm text-red-500 hover:text-red-700 font-semibold transition-colors"
+              >
+                {lang === 'EN' ? '× Clear filters' : '× Limpiar filtros'}
+              </button>
+            )}
+          </div>
+        )}
+
+        <div className="mb-6" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
           {filtered.map(apt => {
@@ -194,13 +328,22 @@ export default function Apartments() {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center" style={{ background: apt.gradient }}>
+                    <div className={`w-full h-full flex items-center justify-center bg-[${apt.gradient}]`}>
                       <Ico d={paths.photo} size={48} color="rgba(255,255,255,0.2)" />
                     </div>
                   )}
-                  <div className="absolute top-4 right-4 bg-white/95 backdrop-blur shadow-sm px-3 py-1 rounded-full text-[11px] font-bold text-navy uppercase tracking-wider">
-                    {lang === 'EN' ? (apt.taglineEn || apt.tagline) : apt.tagline}
-                  </div>
+                  {status === 'unavailable' ? (
+                    <div className="absolute top-4 right-4 bg-gray-700/90 text-white px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider">
+                      {lang === 'EN' ? 'Not available' : 'No disponible'}
+                    </div>
+                  ) : (
+                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur shadow-sm px-3 py-1 rounded-full text-[11px] font-bold text-navy uppercase tracking-wider">
+                      {lang === 'EN' ? (apt.taglineEn || apt.tagline) : apt.tagline}
+                    </div>
+                  )}
+                  {status === 'unavailable' && (
+                    <div className="absolute inset-0 bg-gray-900/30" />
+                  )}
                   {!apt.active && (
                     <div className="absolute inset-0 bg-navy/60 backdrop-blur-[2px] flex items-center justify-center">
                       <span className="text-white font-serif text-xl border-2 border-white px-6 py-2 uppercase tracking-widest">{A.unavailable}</span>

@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Ico, { paths } from '../components/Ico';
-import { getReservationById, getApartmentBySlug } from '../services/dataService';
+import { getReservationById, getApartmentBySlug, updateReservationStatus } from '../services/dataService';
+import { sendCancellationEmail, sendOwnerNotification } from '../services/resendService';
+import { fetchSettings } from '../services/supabaseService';
 import { formatPrice } from '../utils/format';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
@@ -18,6 +20,13 @@ export default function PortalReserva() {
     const [apt, setApt] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [cancelling, setCancelling] = useState(false);
+    const [settings, setSettings] = useState(null);
+
+    // Cargar settings globales preventivamente
+    useState(() => {
+        fetchSettings().then(setSettings);
+    }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -61,6 +70,56 @@ export default function PortalReserva() {
         } catch (err) {
             setError('Error al generar el PDF.');
         }
+    };
+
+    const handleCancelReservation = async () => {
+        if (!reservation || !apt) return;
+        if (!window.confirm(T.common?.confirmCancel || '¿Estás seguro de que deseas cancelar la reserva?')) return;
+
+        setCancelling(true);
+        setError('');
+        try {
+            const success = await updateReservationStatus(reservation.id, 'cancelled');
+            if (success) {
+                setReservation(prev => ({ ...prev, status: 'cancelled' }));
+
+                // Notificar por email a usuario y gestor
+                await Promise.all([
+                    sendCancellationEmail({
+                        guestEmail: reservation.email,
+                        guestName: reservation.guest,
+                        reservationId: reservation.id,
+                        apartmentName: apt.name
+                    }),
+                    sendOwnerNotification({
+                        type: 'cancellation',
+                        reservationId: reservation.id,
+                        guestName: reservation.guest,
+                        guestEmail: reservation.email,
+                        apartmentName: apt.name
+                    })
+                ]);
+            } else {
+                setError('Error al cancelar la reserva. Por favor contacta con nosotros directamente.');
+            }
+        } catch (err) {
+            setError('Ocurrió un error inesperado al cancelar.');
+        } finally {
+            setCancelling(false);
+        }
+    };
+
+    // Calcular si la reserva se puede cancelar sin penalización
+    const canCancel = () => {
+        if (!reservation || !apt || reservation.status === 'cancelled') return false;
+
+        const cancelDays = apt.cancellation_days ?? settings?.cancellation_free_days ?? 14;
+        const checkinDate = new Date(reservation.checkin + 'T00:00:00');
+        const now = new Date();
+        const diffTime = Math.abs(checkinDate - now);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return diffDays >= cancelDays;
     };
 
     return (
@@ -179,13 +238,28 @@ export default function PortalReserva() {
                                     <Ico d={paths.download} size={20} color="#fff" />
                                     Descargar Factura PDF
                                 </button>
-                                <button
-                                    onClick={() => setReservation(null)}
-                                    className="flex-1 bg-white border-2 border-slate-200 text-navy px-8 py-4 rounded-xl font-bold flex items-center justify-center hover:bg-gray-50 transition-all"
-                                >
-                                    Nueva consulta
-                                </button>
+                                {canCancel() ? (
+                                    <button
+                                        onClick={handleCancelReservation}
+                                        disabled={cancelling}
+                                        className="flex-1 bg-white border-2 border-red-500 text-red-600 px-8 py-4 rounded-xl font-bold flex items-center justify-center hover:bg-red-50 transition-all disabled:opacity-50"
+                                    >
+                                        {cancelling ? 'Cancelando...' : 'Cancelar Reserva'}
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => setReservation(null)}
+                                        className="flex-1 bg-white border-2 border-slate-200 text-navy px-8 py-4 rounded-xl font-bold flex items-center justify-center hover:bg-gray-50 transition-all"
+                                    >
+                                        Nueva consulta
+                                    </button>
+                                )}
                             </div>
+                            {reservation.status === 'confirmed' && !canCancel() && (
+                                <div className="mt-4 text-center text-xs text-amber-600">
+                                    Periodo de cancelación gratuita superado. Contacta con nosotros para gestionar tu reserva alojamientosillapancha@gmail.com.
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}

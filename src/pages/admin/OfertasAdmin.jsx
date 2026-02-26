@@ -172,19 +172,10 @@ export default function OfertasAdmin() {
         const isNew = editing === 'new';
         return (
             <>
-                <div className="flex items-center justify-between pb-6 mb-8 px-8 pt-8" style={{ borderBottom: `4px solid ${PRIMARY_COLOR}` }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div className="flex items-center justify-between pb-6 mb-8 px-8 pt-8 border-b-[4px] border-[#1a5f6e]">
+                    <div className="flex items-center gap-3">
                         <button
-                            style={{
-                                background: 'none',
-                                border: `2px solid ${PRIMARY_COLOR}`,
-                                color: PRIMARY_COLOR,
-                                padding: '8px 16px',
-                                borderRadius: 8,
-                                cursor: 'pointer',
-                                fontSize: 14,
-                                fontWeight: 600
-                            }}
+                            className="bg-transparent border-2 border-[#1a5f6e] text-[#1a5f6e] px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold hover:bg-[#1a5f6e] hover:text-white transition-colors"
                             onClick={() => {
                                 setEditing(null);
                                 setFormData({});
@@ -193,31 +184,26 @@ export default function OfertasAdmin() {
                             ← Volver
                         </button>
                         <div>
-                            <div style={{ fontSize: 28, fontWeight: 700, color: SECONDARY_COLOR }}>
+                            <div className="text-[28px] font-bold text-[#0f172a]">
                                 {isNew ? 'Nueva Oferta Especial' : `Editando Oferta`}
                             </div>
-                            <div style={{ fontSize: 14, color: '#888', marginTop: 4 }}>
+                            <div className="text-sm text-gray-500 mt-1">
                                 Los cambios se guardarán en Supabase
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div style={{ padding: '24px', background: LIGHT_BG, minHeight: 'calc(100vh - 120px)' }}>
-                    <div style={{ maxWidth: 800 }}>
-                        <div style={{
-                            background: '#fff',
-                            border: `1px solid #ddd`,
-                            borderRadius: 12,
-                            padding: 28
-                        }}>
-                            <div style={{ fontSize: 22, fontWeight: 600, color: PRIMARY_COLOR, marginBottom: 24 }}>
+                <div className="p-6 bg-[#f5f5f5] min-h-[calc(100vh-120px)]">
+                    <div className="max-w-[800px]">
+                        <div className="bg-white border border-gray-200 rounded-xl p-7">
+                            <div className="text-[22px] font-semibold text-[#1a5f6e] mb-6">
                                 Información de la oferta
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                            <div className="grid grid-cols-2 gap-4 mb-5">
                                 <div>
-                                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 8 }}>
+                                    <label className="block text-[13px] font-semibold text-[#0f172a] mb-2">
                                         Título (ES) *
                                     </label>
                                     <input
@@ -225,18 +211,11 @@ export default function OfertasAdmin() {
                                         value={formData.title_es || ''}
                                         onChange={(e) => handleInputChange('title_es', e.target.value)}
                                         placeholder="Ej: Descuento de Verano"
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            border: `1px solid #ddd`,
-                                            borderRadius: 6,
-                                            fontSize: 14,
-                                            fontFamily: 'inherit'
-                                        }}
+                                        className="w-full p-3 border border-gray-200 rounded-md text-sm font-sans focus:outline-none focus:border-[#1a5f6e] focus:ring-1 focus:ring-[#1a5f6e]"
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 8 }}>
+                                    <label className="block text-[13px] font-semibold text-[#0f172a] mb-2">
                                         Título (EN)
                                     </label>
                                     <input
@@ -244,63 +223,38 @@ export default function OfertasAdmin() {
                                         value={formData.title_en || ''}
                                         onChange={(e) => handleInputChange('title_en', e.target.value)}
                                         placeholder="Ej: Summer Discount"
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            border: `1px solid #ddd`,
-                                            borderRadius: 6,
-                                            fontSize: 14,
-                                            fontFamily: 'inherit'
-                                        }}
+                                        className="w-full p-3 border border-gray-200 rounded-md text-sm font-sans focus:outline-none focus:border-[#1a5f6e] focus:ring-1 focus:ring-[#1a5f6e]"
                                     />
                                 </div>
                             </div>
 
-                            <div style={{ marginBottom: 20 }}>
-                                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 8 }}>
+                            <div className="mb-5">
+                                <label className="block text-[13px] font-semibold text-[#0f172a] mb-2">
                                     Descripción (ES)
                                 </label>
                                 <textarea
                                     value={formData.description_es || ''}
                                     onChange={(e) => handleInputChange('description_es', e.target.value)}
                                     placeholder="Detalles sobre la oferta"
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        border: `1px solid #ddd`,
-                                        borderRadius: 6,
-                                        fontSize: 14,
-                                        minHeight: 80,
-                                        fontFamily: 'inherit',
-                                        resize: 'vertical'
-                                    }}
+                                    className="w-full p-3 border border-gray-200 rounded-md text-sm min-h-[80px] font-sans resize-y focus:outline-none focus:border-[#1a5f6e] focus:ring-1 focus:ring-[#1a5f6e]"
                                 />
                             </div>
 
-                            <div style={{ marginBottom: 20 }}>
-                                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 8 }}>
+                            <div className="mb-5">
+                                <label className="block text-[13px] font-semibold text-[#0f172a] mb-2">
                                     Descripción (EN)
                                 </label>
                                 <textarea
                                     value={formData.description_en || ''}
                                     onChange={(e) => handleInputChange('description_en', e.target.value)}
                                     placeholder="Details about the offer"
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px',
-                                        border: `1px solid #ddd`,
-                                        borderRadius: 6,
-                                        fontSize: 14,
-                                        minHeight: 80,
-                                        fontFamily: 'inherit',
-                                        resize: 'vertical'
-                                    }}
+                                    className="w-full p-3 border border-gray-200 rounded-md text-sm min-h-[80px] font-sans resize-y focus:outline-none focus:border-[#1a5f6e] focus:ring-1 focus:ring-[#1a5f6e]"
                                 />
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                            <div className="grid grid-cols-2 gap-4 mb-5">
                                 <div>
-                                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 8 }}>
+                                    <label className="block text-[13px] font-semibold text-[#0f172a] mb-2">
                                         Porcentaje de descuento (%) *
                                     </label>
                                     <input
@@ -310,18 +264,11 @@ export default function OfertasAdmin() {
                                         min="1"
                                         max="100"
                                         placeholder="10"
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            border: `1px solid #ddd`,
-                                            borderRadius: 6,
-                                            fontSize: 14,
-                                            fontFamily: 'monospace'
-                                        }}
+                                        className="w-full p-3 border border-gray-200 rounded-md text-sm font-mono focus:outline-none focus:border-[#1a5f6e] focus:ring-1 focus:ring-[#1a5f6e]"
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 8 }}>
+                                    <label className="block text-[13px] font-semibold text-[#0f172a] mb-2">
                                         Código de descuento (Opcional)
                                     </label>
                                     <input
@@ -329,16 +276,9 @@ export default function OfertasAdmin() {
                                         value={formData.discount_code?.toUpperCase() || ''}
                                         onChange={(e) => handleInputChange('discount_code', e.target.value.toUpperCase())}
                                         placeholder="VERANO26"
-                                        style={{
-                                            width: '100%',
-                                            padding: '12px',
-                                            border: `1px solid #ddd`,
-                                            borderRadius: 6,
-                                            fontSize: 14,
-                                            fontFamily: 'monospace'
-                                        }}
+                                        className="w-full p-3 border border-gray-200 rounded-md text-sm font-mono focus:outline-none focus:border-[#1a5f6e] focus:ring-1 focus:ring-[#1a5f6e]"
                                     />
-                                    <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
+                                    <div className="text-[11px] text-gray-400 mt-1">
                                         Si se deja vacío, la oferta se aplica globalmente (banner automático).
                                     </div>
                                 </div>
@@ -348,51 +288,20 @@ export default function OfertasAdmin() {
                     </div>
                 </div>
 
-                <div style={{
-                    position: 'fixed',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    background: '#fff',
-                    borderTop: '1px solid #ddd',
-                    padding: '16px 24px',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    gap: 12,
-                    zIndex: 999
-                }}>
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-4 px-6 flex justify-end gap-3 z-50">
                     <button
                         onClick={() => {
                             setEditing(null);
                             setFormData({});
                         }}
-                        style={{
-                            background: '#fff',
-                            border: '2px solid #ddd',
-                            color: SECONDARY_COLOR,
-                            padding: '10px 20px',
-                            borderRadius: 8,
-                            cursor: 'pointer',
-                            fontSize: 14,
-                            fontWeight: 600
-                        }}
+                        className="bg-white border-2 border-gray-200 text-[#0f172a] px-5 py-2.5 rounded-lg cursor-pointer text-sm font-semibold hover:bg-gray-50 transition-colors"
                     >
                         Cancelar
                     </button>
                     <button
                         onClick={isNew ? handleCreate : handleSave}
                         disabled={saving}
-                        style={{
-                            background: PRIMARY_COLOR,
-                            border: 'none',
-                            color: '#fff',
-                            padding: '10px 20px',
-                            borderRadius: 8,
-                            cursor: 'pointer',
-                            fontSize: 14,
-                            fontWeight: 600,
-                            opacity: saving ? 0.7 : 1
-                        }}
+                        className={`bg-[#1a5f6e] border-none text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${saving ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer hover:bg-[#1a5f6e]/90'}`}
                     >
                         {saving ? 'Guardando...' : 'Guardar'}
                     </button>
@@ -438,12 +347,12 @@ export default function OfertasAdmin() {
     // Listado
     return (
         <>
-            <div className="flex items-center justify-between pb-6 mb-8 px-8 pt-8" style={{ borderBottom: `4px solid ${PRIMARY_COLOR}` }}>
+            <div className="flex items-center justify-between pb-6 mb-8 px-8 pt-8 border-b-[4px] border-[#1a5f6e]">
                 <div>
-                    <div style={{ fontSize: 28, fontWeight: 700, color: SECONDARY_COLOR }}>
+                    <div className="text-[28px] font-bold text-[#0f172a]">
                         Ofertas Especiales
                     </div>
-                    <div style={{ fontSize: 14, color: '#888', marginTop: 4 }}>
+                    <div className="text-sm text-gray-500 mt-1">
                         Gestiona {offers.length} ofertas promocionales · {offers.filter(e => e.active).length} activas
                     </div>
                 </div>
@@ -453,60 +362,31 @@ export default function OfertasAdmin() {
                         setEditing('new');
                     }}
                     disabled={error && error.includes('no existe en Supabase')}
-                    style={{
-                        background: ACCENT_COLOR,
-                        border: 'none',
-                        color: '#fff',
-                        padding: '10px 20px',
-                        borderRadius: 8,
-                        cursor: error && error.includes('no existe') ? 'not-allowed' : 'pointer',
-                        fontSize: 14,
-                        fontWeight: 600,
-                        opacity: error && error.includes('no existe') ? 0.5 : 1
-                    }}
+                    className={`bg-[#D4A843] border-none text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${error && error.includes('no existe') ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-[#D4A843]/90'}`}
                 >
                     + Nueva oferta
                 </button>
             </div>
 
-            <div style={{ padding: '24px', background: LIGHT_BG, minHeight: 'calc(100vh - 120px)' }}>
+            <div className="p-6 bg-[#f5f5f5] min-h-[calc(100vh-120px)]">
                 {error && error.includes('no existe') && (
-                    <div style={{
-                        background: '#fff3cd',
-                        border: '1px solid #ffc107',
-                        color: '#856404',
-                        padding: '16px',
-                        borderRadius: 8,
-                        marginBottom: 20
-                    }}>
+                    <div className="bg-amber-50 border border-amber-400 text-amber-800 p-4 rounded-lg mb-5">
                         <strong>Atención:</strong> {error}
                     </div>
                 )}
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '40px 20px', color: '#888' }}>
+                    <div className="text-center py-10 px-5 text-gray-500">
                         Cargando ofertas...
                     </div>
                 ) : !error || !error.includes('no existe') ? (
                     offers.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '40px 20px', color: '#888', background: '#fff', borderRadius: 8, border: '1px solid #ddd' }}>
+                        <div className="text-center py-10 px-5 text-gray-500 bg-white rounded-lg border border-gray-200">
                             No hay ofertas configuradas. Haz clic en "Nueva oferta" para añadir una.
                         </div>
                     ) : (
-                        <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #ddd', overflow: 'hidden' }}>
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'minmax(250px, 1.5fr) 100px 150px 100px 150px',
-                                gap: 16,
-                                padding: '16px 24px',
-                                background: '#fafafa',
-                                borderBottom: '2px solid #ddd',
-                                fontSize: 12,
-                                fontWeight: 700,
-                                color: SECONDARY_COLOR,
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em'
-                            }}>
+                        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                            <div className="grid grid-cols-[minmax(250px,1.5fr)_100px_150px_100px_150px] gap-4 py-4 px-6 bg-slate-50 border-b-2 border-slate-200 text-xs font-bold text-[#0f172a] uppercase tracking-wider">
                                 <div>Oferta</div>
                                 <div>Descuento</div>
                                 <div>Código</div>
@@ -517,28 +397,21 @@ export default function OfertasAdmin() {
                             {offers.map((offer, index) => (
                                 <div
                                     key={offer.id}
-                                    style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: 'minmax(250px, 1.5fr) 100px 150px 100px 150px',
-                                        gap: 16,
-                                        alignItems: 'center',
-                                        padding: '16px 24px',
-                                        borderBottom: index < offers.length - 1 ? '1px solid #eee' : 'none'
-                                    }}
+                                    className={`grid grid-cols-[minmax(250px,1.5fr)_100px_150px_100px_150px] gap-4 items-center py-4 px-6 ${index < offers.length - 1 ? 'border-b border-gray-100' : ''}`}
                                 >
                                     {/* Info */}
                                     <div>
-                                        <div style={{ fontSize: 14, fontWeight: 600, color: SECONDARY_COLOR, marginBottom: 4 }}>
+                                        <div className="text-sm font-semibold text-[#0f172a] mb-1">
                                             {offer.title_es}
                                         </div>
-                                        <div style={{ fontSize: 12, color: '#666', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                        <div className="text-xs text-gray-500 line-clamp-2">
                                             {offer.description_es}
                                         </div>
                                     </div>
 
                                     {/* Info 2 */}
                                     <div>
-                                        <div style={{ fontSize: 14, fontWeight: 700, color: PRIMARY_COLOR }}>
+                                        <div className="text-sm font-bold text-[#1a5f6e]">
                                             -{offer.discount_percentage}%
                                         </div>
                                     </div>
@@ -546,75 +419,37 @@ export default function OfertasAdmin() {
                                     {/* Código */}
                                     <div>
                                         {offer.discount_code ? (
-                                            <div style={{
-                                                display: 'inline-block',
-                                                padding: '4px 8px',
-                                                background: '#f8fafc',
-                                                border: '1px dashed #94a3b8',
-                                                borderRadius: 4,
-                                                fontFamily: 'monospace',
-                                                fontSize: 12,
-                                                fontWeight: 600,
-                                                color: ACCENT_COLOR
-                                            }}>
+                                            <div className="inline-block px-2 py-1 bg-slate-50 border border-dashed border-slate-400 rounded font-mono text-xs font-semibold text-[#D4A843]">
                                                 {offer.discount_code}
                                             </div>
                                         ) : (
-                                            <div style={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}>
+                                            <div className="text-xs text-gray-400 italic">
                                                 Automático
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Estado */}
-                                    <div style={{ textAlign: 'center' }}>
+                                    <div className="text-center">
                                         <button
                                             onClick={() => toggleActiveStatus(offer)}
-                                            style={{
-                                                background: offer.active ? '#4CAF50' : '#ccc',
-                                                border: 'none',
-                                                color: '#fff',
-                                                padding: '6px 12px',
-                                                borderRadius: 6,
-                                                cursor: 'pointer',
-                                                fontSize: 11,
-                                                fontWeight: 600,
-                                                transition: 'all 0.2s'
-                                            }}
+                                            className={`border-none text-white px-3 py-1.5 rounded-md cursor-pointer text-[11px] font-semibold transition-colors ${offer.active ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 hover:bg-gray-500'}`}
                                         >
                                             {offer.active ? 'Activa' : 'Inactiva'}
                                         </button>
                                     </div>
 
                                     {/* Acciones */}
-                                    <div style={{ display: 'flex', gap: 8 }}>
+                                    <div className="flex gap-2">
                                         <button
                                             onClick={() => startEdit(offer)}
-                                            style={{
-                                                background: PRIMARY_COLOR,
-                                                border: 'none',
-                                                color: '#fff',
-                                                padding: '6px 12px',
-                                                borderRadius: 6,
-                                                cursor: 'pointer',
-                                                fontSize: 11,
-                                                fontWeight: 600
-                                            }}
+                                            className="bg-[#1a5f6e] border-none text-white px-3 py-1.5 rounded-md cursor-pointer text-[11px] font-semibold hover:bg-[#1a5f6e]/90 transition-colors"
                                         >
                                             Editar
                                         </button>
                                         <button
                                             onClick={() => handleDelete(offer.id)}
-                                            style={{
-                                                background: '#fff',
-                                                border: `1px solid #f44444`,
-                                                color: '#f44444',
-                                                padding: '6px 12px',
-                                                borderRadius: 6,
-                                                cursor: 'pointer',
-                                                fontSize: 11,
-                                                fontWeight: 600
-                                            }}
+                                            className="bg-white border border-red-500 text-red-500 px-3 py-1.5 rounded-md cursor-pointer text-[11px] font-semibold hover:bg-red-50 transition-colors"
                                         >
                                             Eliminar
                                         </button>
@@ -626,35 +461,13 @@ export default function OfertasAdmin() {
             </div>
 
             {saved && (
-                <div style={{
-                    position: 'fixed',
-                    bottom: 24,
-                    right: 24,
-                    background: '#4CAF50',
-                    color: '#fff',
-                    padding: '12px 20px',
-                    borderRadius: 8,
-                    fontSize: 14,
-                    fontWeight: 600,
-                    zIndex: 1001
-                }}>
+                <div className="fixed bottom-6 right-6 bg-green-500 text-white px-5 py-3 rounded-lg text-sm font-semibold z-[1001] shadow-lg animate-fade-in">
                     ✓ Cambios guardados correctamente
                 </div>
             )}
 
             {error && !error.includes('no existe') && (
-                <div style={{
-                    position: 'fixed',
-                    bottom: 24,
-                    right: 24,
-                    background: '#f44444',
-                    color: '#fff',
-                    padding: '12px 20px',
-                    borderRadius: 8,
-                    fontSize: 14,
-                    fontWeight: 600,
-                    zIndex: 1001
-                }}>
+                <div className="fixed bottom-6 right-6 bg-red-500 text-white px-5 py-3 rounded-lg text-sm font-semibold z-[1001] shadow-lg animate-fade-in">
                     ✗ {error}
                 </div>
             )}

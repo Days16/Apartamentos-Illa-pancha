@@ -35,20 +35,26 @@ export const paths = {
   calendar: "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z",
 };
 
-export default function Ico({ d, size = 16, color = 'currentColor', strokeWidth = 1.6 }) {
+export default function Ico({ d, size = 16, color = 'currentColor', strokeWidth = 1.6, filled = false, ...props }) {
+  // Allow passing a key from `paths` or a raw path string
+  const pathData = (typeof d === 'string' && paths[d]) ? paths[d] : d;
+
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth={strokeWidth}
+      fill={filled ? color : 'none'}
+      stroke={filled ? 'none' : color}
+      strokeWidth={filled ? 0 : strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       style={{ flexShrink: 0 }}
+      role="img"
+      aria-hidden={props['aria-hidden'] ?? true}
+      {...props}
     >
-      <path d={d} />
+      <path d={pathData} />
     </svg>
   );
 }

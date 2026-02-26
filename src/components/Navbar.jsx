@@ -62,10 +62,9 @@ export default function Navbar({ onOpenBooking }) {
   };
 
   return (
-    <nav 
-      className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white" 
+    <nav
+      className={`sticky top-0 z-50 flex items-center justify-between px-6 py-4 bg-white transition-[box-shadow] duration-300 ${scrolled ? 'shadow-[0_2px_20px_rgba(15,23,42,0.08)]' : 'shadow-none'}`}
       ref={navRef}
-      style={{ boxShadow: scrolled ? '0 2px 20px rgba(15,23,42,0.08)' : 'none', transition: 'box-shadow 0.3s' }}
     >
       <Link to="/" className="text-2xl font-serif font-bold text-navy">Illa Pancha</Link>
 
@@ -77,8 +76,8 @@ export default function Navbar({ onOpenBooking }) {
         <Link to="/nosotros" className={`py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium ${isActive('/nosotros') ? 'text-teal border-b-2 border-teal' : ''}`}>
           {T.nav.ribadeo}
         </Link>
-        <span 
-          className="py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium cursor-pointer" 
+        <span
+          className="py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium cursor-pointer"
           onClick={() => {
             setMobileOpen(false);
             if (location.pathname === '/nosotros') {
@@ -118,8 +117,8 @@ export default function Navbar({ onOpenBooking }) {
           aria-label="English"
         >EN</button>
 
-        <button 
-          className="hidden md:inline-block bg-teal text-white px-6 py-2 rounded hover:bg-teal-600 transition-all font-semibold" 
+        <button
+          className="hidden md:inline-block bg-teal text-white px-6 py-2 rounded hover:bg-teal-600 transition-all font-semibold"
           onClick={handleBook}
           aria-label={T.nav.book}
         >

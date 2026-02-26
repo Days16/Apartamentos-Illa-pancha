@@ -6,14 +6,15 @@ import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
 import { fetchApartments, fetchWebsiteContent, fetchApartmentPhotos } from '../services/supabaseService';
+import { getReservations, getReviews } from '../services/dataService';
 import { formatPrice, strToDate, dateToStr } from '../utils/format';
 import { safeHtml } from '../utils/sanitize';
 import { getMockPhotosForApartment } from '../data/mockPhotos';
 
-const reviews = [
-  { text: "El apartamento estaba impecable y las vistas a la ría son increíbles. Repetiremos seguro.", author: "María Gómez", date: "Octubre 2025" },
-  { text: "Ubicación perfecta para descubrir Ribadeo y Asturias. Todo muy nuevo y cómodo.", author: "David Ruiz", date: "Agosto 2025" },
-  { text: "La comunicación fue genial y el check-in automático súper cómodo. Muy recomendable.", author: "Laura F.", date: "Julio 2025" }
+const STATIC_REVIEWS = [
+  { name: "María Gómez", origin: "Madrid", text: "El apartamento estaba impecable y las vistas a la ría son increíbles. Repetiremos seguro.", stars: 5, date: "Octubre 2025" },
+  { name: "David Ruiz", origin: "Barcelona", text: "Ubicación perfecta para descubrir Ribadeo y Asturias. Todo muy nuevo y cómodo.", stars: 5, date: "Agosto 2025" },
+  { name: "Laura F.", origin: "Bilbao", text: "La comunicación fue genial y el check-in automático súper cómodo. Muy recomendable.", stars: 5, date: "Julio 2025" }
 ];
 
 import DatePicker from 'react-datepicker';
@@ -42,14 +43,17 @@ export default function Home() {
   const [featuredApts, setFeaturedApts] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [texts, setTexts] = useState({});
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     Promise.all([
       fetchApartments(),
       fetchWebsiteContent('home'),
-      import('../services/dataService').then(m => m.getReservations())
-    ]).then(async ([aptsData, homeTexts, resData]) => {
+      getReservations(),
+      getReviews()
+    ]).then(async ([aptsData, homeTexts, resData, reviewsData]) => {
       setReservations(resData);
+      setReviews(reviewsData.filter(r => r.active !== false).slice(0, 6));
 
       const apts = aptsData.slice(0, 6);
 
@@ -203,26 +207,31 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-          {featuredApts
-            .filter(a => {
-              if (!searched) return true;
-              if (guests > a.capacity) return false;
-              // Chequear disponibilidad real
+          {[...featuredApts]
+            .map(apt => {
+              if (!searched) return { ...apt, available: true };
+              const capacityOk = guests <= (apt.capacity || 2);
               const hasOverlap = reservations.some(r => {
                 if (r.status === 'cancelled') return false;
-                if (r.aptSlug !== a.slug && r.apt !== a.slug) return false;
+                if (r.aptSlug !== apt.slug && r.apt !== apt.slug) return false;
                 const rIn = new Date(r.checkin + 'T00:00:00');
                 const rOut = new Date(r.checkout + 'T00:00:00');
                 const sIn = new Date(checkin + 'T00:00:00');
                 const sOut = new Date(checkout + 'T00:00:00');
                 return (sIn < rOut && sOut > rIn);
               });
-              return !hasOverlap;
+              return { ...apt, available: capacityOk && !hasOverlap };
+            })
+            .sort((a, b) => {
+              if (!searched) return 0;
+              if (a.available && !b.available) return -1;
+              if (!a.available && b.available) return 1;
+              return 0;
             })
             .map((apt, i) => (
               <div
                 key={apt.slug}
-                className="group relative flex flex-col rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all h-full min-h-[300px]"
+                className={`group relative flex flex-col rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all h-full min-h-[300px] ${searched && !apt.available ? 'opacity-70' : ''}`}
                 onClick={() => navigate(`/apartamentos/${apt.slug}`)}
               >
                 <div
@@ -237,7 +246,13 @@ export default function Home() {
                   {!apt.coverPhoto && <Ico d={paths.photo} size={40} color="rgba(255,255,255,0.12)" />}
                 </div>
                 {i === 0 && <div style={{ paddingTop: '100%' }} />}
-                <div className="absolute top-4 right-4 bg-teal text-white px-3 py-1 rounded text-sm z-10 font-medium">{apt.tagline}</div>
+                {searched && !apt.available ? (
+                  <div className="absolute top-4 right-4 bg-gray-700 text-white px-3 py-1 rounded text-sm z-10 font-medium">
+                    {t('No disponible', 'Not available')}
+                  </div>
+                ) : (
+                  <div className="absolute top-4 right-4 bg-teal text-white px-3 py-1 rounded text-sm z-10 font-medium">{apt.tagline}</div>
+                )}
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all" />
                 <div className="p-6 bg-white">
                   <h3 className="text-xl font-serif font-bold text-navy mb-2">{apt.name}</h3>
@@ -270,12 +285,12 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reviews.map((r, i) => (
+            {(reviews.length > 0 ? reviews : STATIC_REVIEWS).map((r, i) => (
               <div key={i} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                <div className="text-gold text-lg mb-2">{'★'.repeat(r.stars)}</div>
+                <div className="text-[#D4A843] text-lg mb-2">{'★'.repeat(r.stars || 5)}</div>
                 <div className="text-gray-700 italic mb-3">"{r.text}"</div>
                 <div className="flex justify-between items-center">
-                  <div className="text-sm font-semibold text-navy">{r.name} · {r.origin}</div>
+                  <div className="text-sm font-semibold text-navy">{r.name}{r.origin ? ` · ${r.origin}` : ''}</div>
                   <div className="text-xs text-gray-400">{r.date}</div>
                 </div>
               </div>
@@ -297,7 +312,7 @@ export default function Home() {
             <div className="flex flex-col items-center md:items-start gap-4">
               <button
                 className="bg-white text-navy px-8 py-4 rounded hover:bg-gray-100 transition-all font-semibold text-lg w-full md:w-auto"
-                onClick={() => setBookingOpen(true)}
+                onClick={() => navigate('/apartamentos')}
               >
                 {T.home.bookNowNoComm}
               </button>

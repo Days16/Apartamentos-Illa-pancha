@@ -73,13 +73,12 @@ export default function Pagos() {
           <div className="flex items-center gap-6 mb-7">
             <input
               type="range"
-              className="slider flex-1"
+              className="slider flex-1 h-1.5 rounded-full appearance-none bg-slate-200"
               min={10}
               max={100}
               step={5}
               value={depositPct}
               onChange={e => setDepositPct(+e.target.value)}
-              style={{ height: '6px', borderRadius: '3px', appearance: 'none', background: '#e2e8f0' }}
             />
             <div className="text-center flex-shrink-0">
               <div className="font-serif text-5xl text-navy leading-none">
@@ -128,13 +127,12 @@ export default function Pagos() {
           <div className="flex items-center gap-6 mb-7">
             <input
               type="range"
-              className="slider flex-1"
+              className="slider flex-1 h-1.5 rounded-full appearance-none bg-slate-200"
               min={0}
               max={25}
               step={1}
               value={taxPct}
               onChange={e => setTaxPct(+e.target.value)}
-              style={{ height: '6px', borderRadius: '3px', appearance: 'none', background: '#e2e8f0' }}
             />
             <div className="text-center flex-shrink-0 min-w-[60px]">
               <div className="font-serif text-5xl text-navy leading-none">
@@ -149,10 +147,9 @@ export default function Pagos() {
       <div className="fixed bottom-0 right-0 left-0 bg-white border-t border-gray-200 py-4 px-6 flex justify-between items-center z-50">
         <span className="text-xs text-gray-600">Configuración actual: {depositPct}% tarjeta · {100 - depositPct}% efectivo</span>
         <button
-          className="px-4 py-2 rounded-lg font-semibold transition-all cursor-pointer border-0 bg-teal-600 text-white hover:bg-teal-700"
+          className={`px-4 py-2 rounded-lg font-semibold transition-all border-0 bg-teal-600 text-white hover:bg-teal-700 ${saving ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
           onClick={handleSave}
           disabled={saving}
-          style={{ opacity: saving ? 0.7 : 1 }}
         >
           {saving ? 'Guardando...' : 'Guardar configuración'}
         </button>

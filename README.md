@@ -12,8 +12,16 @@ Aplicación web completa para la gestión y reserva de apartamentos turísticos 
 - **Email:** Resend
 - **Estilos:** CSS propio (index.css)
 - **Routing:** React Router DOM v7
-- **PWA:** vite-plugin-pwa
+- **PWA:** Vite Plugin PWA (Removido temporalmente por conflictos)
 - **Otros:** jsPDF (facturas), xlsx (exportación Excel), React Datepicker
+
+---
+
+## Historial de Versiones (Changelog)
+- **v1.2.0**: Migración completa a Tailwind CSS, resolución de problemas de compilación en Vite.
+- **v1.1.0**: Mejoras en la lógica de calendario y reservas (solapamiento, desfase de fechas).
+- **v1.0.5**: Responsividad en todo el panel de administración.
+- **v1.0.0**: Lanzamiento inicial.
 
 ---
 
@@ -34,6 +42,7 @@ src/
 │   │   ├── Precios.jsx
 │   │   ├── OfertasAdmin.jsx
 │   │   ├── ExtrasAdmin.jsx
+│   │   ├── Changelog.jsx      # Historial de versiones del sitio
 │   │   └── WebTextos.jsx      # CMS de textos e imágenes
 │   └── gestion/               # Panel de gestión diaria
 │       ├── Dashboard.jsx
@@ -93,6 +102,7 @@ src/
 | `/admin/ofertas` | Ofertas y descuentos |
 | `/admin/extras` | Servicios adicionales |
 | `/admin/web` | Textos e imágenes (CMS) |
+| `/admin/changelog` | Historial de versiones y actualizaciones |
 
 ---
 
@@ -133,6 +143,7 @@ Tablas principales:
 | `site_settings` | Configuración general del sitio (clave-valor) |
 | `website_content` | Textos editables del CMS (bilingüe) |
 | `site_pages` | Páginas legales editables |
+| `changelog` | Historial público e interno de versiones |
 
 El script SQL completo consolidado está en [`docs/database_schema_completo.sql`](docs/database_schema_completo.sql). Este archivo incluye todas las tablas, vistas, políticas RLS y datos iniciales necesarios para levantar el proyecto desde cero.
 

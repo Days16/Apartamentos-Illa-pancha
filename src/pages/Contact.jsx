@@ -7,6 +7,7 @@ import SEO from '../components/SEO';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { fetchApartments, submitContactMessage } from '../services/supabaseService';
+import { sendOwnerNotification } from '../services/resendService';
 import { safeHtml } from '../utils/sanitize';
 
 export default function Contact() {
@@ -26,6 +27,15 @@ export default function Contact() {
     try {
       await submitContactMessage(form);
       setSent(true);
+      // Notificar al propietario (silencioso, no bloquea)
+      sendOwnerNotification({
+        type: 'contact',
+        guestName: form.name,
+        guestEmail: form.email,
+        guestPhone: form.phone,
+        subject: form.apt ? `Consulta sobre ${form.apt}` : 'Consulta general',
+        message: form.msg,
+      });
     } catch (err) {
       console.error('Error enviando mensaje:', err);
       alert('Hubo un error al enviar tu mensaje. Inténtalo de nuevo.');
@@ -202,34 +212,36 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="contact-info-item">
+          <div className="flex gap-4 mb-8 pb-8 border-b border-gray-200">
             <Ico d={paths.map} size={18} color="#7dd3fc" />
             <div>
-              <div className="contact-info-label">{T.detail.location}</div>
-              <div className="contact-info-value">
+              <div className="text-sm font-semibold text-navy">{T.detail.location}</div>
+              <div className="text-lg font-semibold text-gray-700">
                 Ribadeo, Lugo<br />Galicia, Spain
               </div>
             </div>
           </div>
 
-          <div style={{ marginTop: 40, padding: '24px', background: 'rgba(168,197,160,0.12)' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, color: '#ffffff', marginBottom: 8 }}>
+          <div className="mt-10 p-6 bg-teal/10 rounded-xl border border-teal/20">
+            <div className="font-serif text-xl text-navy mb-4 font-bold">
               {T.detail.checkin} y {T.detail.checkout}
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: 13 }}>
-              <span style={{ color: 'rgba(255,255,255,0.55)' }}>{T.booking.checkin}</span>
-              <span>{C.checkinTime}</span>
+            <div className="flex justify-between py-3 border-b border-teal/10 text-sm">
+              <span className="text-gray-600 font-medium">{T.booking.checkin}</span>
+              <span className="text-navy font-semibold">{C.checkinTime}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: 13 }}>
-              <span style={{ color: 'rgba(255,255,255,0.55)' }}>{T.booking.checkout}</span>
-              <span>{C.checkoutTime}</span>
+            <div className="flex justify-between py-3 text-sm">
+              <span className="text-gray-600 font-medium">{T.booking.checkout}</span>
+              <span className="text-navy font-semibold">{C.checkoutTime}</span>
             </div>
           </div>
 
-          <div className="map-placeholder">
-            <div style={{ textAlign: 'center' }}>
-              <Ico d={paths.map} size={40} color="rgba(255,255,255,0.15)" />
-              <div style={{ marginTop: 8, fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
+          <div className="mt-8 bg-slate-100 rounded-xl h-48 flex items-center justify-center border border-slate-200">
+            <div className="text-center">
+              <div className="flex justify-center mb-2">
+                <Ico d={paths.map} size={32} color="#94a3b8" />
+              </div>
+              <div className="text-xs text-slate-500 font-medium">
                 Ribadeo, Galicia · 43.5350° N, 7.0412° W
               </div>
             </div>

@@ -8,7 +8,7 @@ import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
 import { fetchApartmentBySlug, fetchApartmentPhotos, fetchMinStayRules } from '../services/supabaseService';
-import { getReservations } from '../services/dataService';
+import { getReservations, getReviews } from '../services/dataService';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
@@ -123,6 +123,11 @@ function BookingWidget({ apt, onBook, T }) {
 
   const occupiedDatesList = apt.occupiedDatesList || [];
 
+  // Primer día ocupado DESPUÉS del checkin seleccionado → techo máximo para el checkout
+  const firstBlockedNightAfterCheckin = checkin
+    ? occupiedDatesList.filter(d => d > checkin).sort()[0] || null
+    : null;
+
   // Apt > Global > Default
   const cancelDays = apt.cancellation_days ?? globalSettings.cancellation_free_days ?? 14;
   const depositPct = apt.deposit_percentage ?? globalSettings.payment_deposit_percentage ?? 50;
@@ -187,6 +192,7 @@ function BookingWidget({ apt, onBook, T }) {
 
     if (type === 'checkin') {
       setCheckin(dStr);
+      setCheckout(''); // Reset checkout para forzar re-selección con el nuevo rango válido
     } else {
       setCheckout(dStr);
     }
@@ -216,8 +222,8 @@ function BookingWidget({ apt, onBook, T }) {
           <DatePicker
             selected={strToDate(checkout)}
             onChange={date => handleDateClick(date, 'checkout')}
-            excludeDates={occupiedDatesList.map(d => strToDate(d))}
             minDate={strToDate(checkin) ? new Date(strToDate(checkin).getTime() + 86400000) : new Date()}
+            maxDate={firstBlockedNightAfterCheckin ? strToDate(firstBlockedNightAfterCheckin) : null}
             dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
             placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
             className="w-full px-2 py-2 border border-gray-300 rounded text-xs focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20"
@@ -249,10 +255,10 @@ function BookingWidget({ apt, onBook, T }) {
           <div className="h-px bg-gray-200 my-4" />
           <div className="flex justify-between items-center text-sm text-gray-700">
             <span>{formatPrice(apt.price)} × {nights} {nights === 1 ? T.common.night : T.common.nights}</span>
-            <strong style={{ textDecoration: discountAmount > 0 ? 'line-through' : 'none', opacity: discountAmount > 0 ? 0.6 : 1 }}>{formatPrice(subtotal)}</strong>
+            <strong className={`${discountAmount > 0 ? 'line-through opacity-60' : 'no-underline opacity-100'}`}>{formatPrice(subtotal)}</strong>
           </div>
           {discountAmount > 0 && (
-            <div className="flex justify-between items-center text-sm text-green-500" style={{ marginTop: -6 }}>
+            <div className="flex justify-between items-center text-sm text-green-500 -mt-1.5">
               <span className="text-xs">{T.common.offerApplied} {activeDiscount.discount_percentage}%</span>
               <strong>-{formatPrice(discountAmount)}</strong>
             </div>
@@ -284,7 +290,7 @@ function BookingWidget({ apt, onBook, T }) {
           </div>
         </>
       ) : (
-        <div style={{ height: 8 }} />
+        <div className="h-2" />
       )}
 
       <button
@@ -322,9 +328,12 @@ export default function ApartmentDetail() {
   const [apt, setApt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState([]);
+  const [aptReviews, setAptReviews] = useState([]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingDates, setBookingDates] = useState({ checkin: '', checkout: '' });
   const [nightsRule, setNightsRule] = useState(1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -381,6 +390,13 @@ export default function ApartmentDetail() {
           } catch {
             setPhotos(getMockPhotosForApartment(slug));
           }
+
+          try {
+            const reviewsData = await getReviews(slug);
+            setAptReviews(reviewsData.filter(r => r.active !== false));
+          } catch {
+            setAptReviews([]);
+          }
         }
       } catch (err) {
         console.error('Error loading detail data:', err);
@@ -390,6 +406,17 @@ export default function ApartmentDetail() {
     }
     load();
   }, [slug]);
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'ArrowRight') setLightboxIdx(i => Math.min(photos.length - 1, i + 1));
+      if (e.key === 'ArrowLeft') setLightboxIdx(i => Math.max(0, i - 1));
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [lightboxOpen, photos.length]);
 
   if (!apt) {
     return (
@@ -406,7 +433,6 @@ export default function ApartmentDetail() {
     );
   }
 
-  const aptReviews = [];
   const galleryColors = [
     apt.gradient,
     apt.gradient.replace('135deg', '160deg'),
@@ -430,9 +456,12 @@ export default function ApartmentDetail() {
 
       <div className="w-full">
         {/* GALERÍA */}
-        <div className="grid grid-cols-4 gap-4 mb-8 max-w-7xl mx-auto px-4 py-8">
+        <div className="relative grid grid-cols-4 gap-4 mb-8 max-w-7xl mx-auto px-4 py-8">
           <div className="col-span-2 row-span-2">
-            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group">
+            <div
+              className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
+              onClick={() => { setLightboxIdx(0); setLightboxOpen(true); }}
+            >
               {photos[0] ? (
                 <img src={photos[0].photo_url} alt={photos[0].caption || aptName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               ) : (
@@ -440,10 +469,15 @@ export default function ApartmentDetail() {
                   <Ico d={paths.photo} size={48} color="rgba(255,255,255,0.1)" />
                 </div>
               )}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all" />
             </div>
           </div>
           {[1, 2, 3].map(i => (
-            <div key={i} className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group">
+            <div
+              key={i}
+              className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
+              onClick={() => { setLightboxIdx(i); setLightboxOpen(true); }}
+            >
               {photos[i] ? (
                 <img src={photos[i].photo_url} alt={photos[i].caption || `${aptName} ${i + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
               ) : (
@@ -451,8 +485,18 @@ export default function ApartmentDetail() {
                   <Ico d={paths.photo} size={28} color="rgba(255,255,255,0.1)" />
                 </div>
               )}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all" />
             </div>
           ))}
+          {photos.length > 0 && (
+            <button
+              className="absolute bottom-12 right-8 bg-white text-navy text-sm font-semibold px-4 py-2 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all flex items-center gap-2"
+              onClick={() => { setLightboxIdx(0); setLightboxOpen(true); }}
+            >
+              <Ico d={paths.photo} size={14} color="#0f172a" />
+              {lang === 'EN' ? `See all photos (${photos.length})` : `Ver todas las fotos (${photos.length})`}
+            </button>
+          )}
         </div>
 
         {/* CUERPO */}
@@ -570,6 +614,63 @@ export default function ApartmentDetail() {
 
       {bookingOpen && (
         <BookingModal apartment={apt} initialCheckin={bookingDates?.checkin} initialCheckout={bookingDates?.checkout} onClose={() => setBookingOpen(false)} />
+      )}
+
+      {/* LIGHTBOX */}
+      {lightboxOpen && photos.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+          onClick={() => setLightboxOpen(false)}
+        >
+          {/* Cerrar */}
+          <button
+            className="absolute top-4 right-4 text-white/70 hover:text-white text-3xl font-light z-10 w-10 h-10 flex items-center justify-center"
+            onClick={() => setLightboxOpen(false)}
+          >
+            ✕
+          </button>
+
+          {/* Contador */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/60 text-sm font-medium">
+            {lightboxIdx + 1} / {photos.length}
+          </div>
+
+          {/* Flecha anterior */}
+          {lightboxIdx > 0 && (
+            <button
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl font-light z-10 w-12 h-12 flex items-center justify-center"
+              onClick={e => { e.stopPropagation(); setLightboxIdx(i => i - 1); }}
+            >
+              ‹
+            </button>
+          )}
+
+          {/* Imagen */}
+          <div className="max-w-5xl max-h-[85vh] w-full h-full flex items-center justify-center px-16" onClick={e => e.stopPropagation()}>
+            <img
+              src={photos[lightboxIdx].photo_url}
+              alt={photos[lightboxIdx].caption || `${aptName} ${lightboxIdx + 1}`}
+              className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+            />
+          </div>
+
+          {/* Flecha siguiente */}
+          {lightboxIdx < photos.length - 1 && (
+            <button
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl font-light z-10 w-12 h-12 flex items-center justify-center"
+              onClick={e => { e.stopPropagation(); setLightboxIdx(i => i + 1); }}
+            >
+              ›
+            </button>
+          )}
+
+          {/* Caption */}
+          {photos[lightboxIdx].caption && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 text-sm text-center max-w-md">
+              {photos[lightboxIdx].caption}
+            </div>
+          )}
+        </div>
       )}
     </>
   );

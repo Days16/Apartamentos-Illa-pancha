@@ -4,6 +4,7 @@ import { formatPrice } from '../../utils/format';
 import { supabase } from '../../lib/supabase';
 import Ico, { paths } from '../../components/Ico';
 import { useSettings } from '../../contexts/SettingsContext';
+import ConfirmDialog from '../../components/ConfirmDialog';
 
 export default function ConfiguracionGeneral() {
     const { refreshSettings } = useSettings();
@@ -17,6 +18,7 @@ export default function ConfiguracionGeneral() {
     const [saving, setSaving] = useState(false);
     const [success, setSuccess] = useState(null);
     const [error, setError] = useState(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -83,6 +85,7 @@ export default function ConfiguracionGeneral() {
     if (loading) return <div className="p-10 text-gray-500">Cargando configuración global...</div>;
 
     return (
+        <>
         <div className="pb-24">
             {/* HEADER */}
             <div className="pl-6 pr-6 py-8 border-b border-gray-200 bg-white">
@@ -243,7 +246,7 @@ export default function ConfiguracionGeneral() {
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
                     <button
-                        onClick={handleSave}
+                        onClick={() => setConfirmOpen(true)}
                         disabled={saving}
                         className="flex-1 md:flex-none bg-teal-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-700 transition-all shadow-lg shadow-teal-900/10 disabled:opacity-50"
                     >
@@ -253,5 +256,14 @@ export default function ConfiguracionGeneral() {
             </div>
 
         </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="¿Guardar configuración?"
+        message="Se aplicarán los cambios globales de cancelación, depósito e impuestos a todos los apartamentos."
+        onConfirm={() => { setConfirmOpen(false); handleSave(); }}
+        onCancel={() => setConfirmOpen(false)}
+      />
+        </>
     );
 }

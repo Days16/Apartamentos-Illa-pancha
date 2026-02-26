@@ -3,12 +3,18 @@ import { Link } from 'react-router-dom';
 import Ico, { paths } from './Ico';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
+import { useSettings } from '../contexts/SettingsContext';
 
 export default function Footer() {
   const { lang } = useLang();
   const T = useT(lang);
   const F = T.footer;
+  const { settings } = useSettings();
   const [expandedSection, setExpandedSection] = useState(null);
+
+  const phone = settings?.site_phone || '+34 982 XXX XXX';
+  const email = settings?.site_email || 'info@illapancha.com';
+  const address = settings?.site_address || 'Ribadeo, Lugo, Galicia';
 
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
@@ -25,15 +31,15 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Ico d={paths.phone} size={13} color="rgba(255,255,255,0.4)" />
-                <span className="text-sm">+34 982 XXX XXX</span>
+                <span className="text-sm">{phone}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Ico d={paths.mail} size={13} color="rgba(255,255,255,0.4)" />
-                <span className="text-sm">info@illapancha.com</span>
+                <span className="text-sm">{email}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Ico d={paths.map} size={13} color="rgba(255,255,255,0.4)" />
-                <span className="text-sm">Ribadeo, Lugo, Galicia</span>
+                <span className="text-sm">{address}</span>
               </div>
             </div>
           </div>

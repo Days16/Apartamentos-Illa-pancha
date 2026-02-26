@@ -75,10 +75,10 @@ export default function About() {
             {getText('about_story_text_1', A.storyText1)}
           </p>
           <p className="text-gray-700 leading-relaxed mb-6 font-sans">
-            {A.storyText2}
+            {getText('about_story_text_2', A.storyText2)}
           </p>
           <p className="text-gray-700 leading-relaxed font-sans">
-            {A.storyText3}
+            {getText('about_story_text_3', A.storyText3)}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 border-t border-gray-200 pt-12">
@@ -116,34 +116,56 @@ export default function About() {
         </div>
       </div>
 
-      {/* RIBADEO */}
-      <div id="experiencias" className="py-24 px-4 bg-white">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="text-sm font-semibold text-teal uppercase tracking-widest mb-4">{A.zone}</div>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy mb-4">
-              {A.whyRibadeo}
-            </h2>
-            <div className="text-xl text-teal italic font-serif mb-8">
-              ✦ {A.charmingView}
+      {/* SECCIÓN: LA ZONA */}
+      <div className="py-24 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-slate-50 transform -skew-x-12 translate-x-1/2 opacity-50" />
+        <div className="max-w-7xl mx-auto px-4 relative">
+          <div className="flex flex-col lg:flex-row gap-16 items-center">
+            <div className="flex-1 space-y-8 animate-in slide-in-from-left duration-700">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal/10 text-teal text-xs font-bold uppercase tracking-widest">
+                <Ico d={paths.map} size={14} color="#1a5f6e" />
+                {lang === 'EN' ? 'The Region' : 'La Zona'}
+              </div>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy leading-tight" dangerouslySetInnerHTML={safeHtml(getText('about_ribadeo_title', A.whyRibadeo))} />
+              <div className="w-20 h-1 bg-teal" />
+              <div className="prose prose-lg text-gray-600 prose-p:leading-relaxed">
+                <p>{getText('about_ribadeo_desc_1', A.ribadeoDesc1)}</p>
+                <p>{getText('about_ribadeo_desc_2', A.ribadeoDesc2)}</p>
+              </div>
             </div>
-            <p className="text-lg text-gray-600 leading-relaxed mb-6">
-              {A.ribadeoDesc1}
-            </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              {A.ribadeoDesc2}
-            </p>
+            <div className="flex-1 relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in duration-1000 delay-300 group">
+              <img
+                src="https://images.unsplash.com/photo-1598516244439-5095d3119156?q=80&w=1200"
+                alt="Ribadeo"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent" />
+              <div className="absolute bottom-6 left-6 text-white font-serif text-xl font-medium flex items-center gap-2">
+                <Ico d={paths.location} size={20} color="#fff" />
+                Ría de Ribadeo
+              </div>
+            </div>
           </div>
-          <div className="bg-gray-50 rounded-2xl p-8 md:p-12 border border-gray-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-teal/5 rounded-bl-full -z-0"></div>
-            <div className="relative z-10 space-y-6">
-              {(A.poi || []).map((item, i) => (
-                <div key={i} className="flex flex-col border-b border-gray-200 pb-6 last:border-0 last:pb-0">
-                  <div className="text-3xl font-serif font-bold text-teal mb-2">{item.t}</div>
-                  <div className="text-gray-700 font-medium text-lg">{item.d}</div>
-                </div>
-              ))}
-            </div>
+        </div>
+      </div>
+
+      {/* SECCIÓN: EXPERIENCIAS */}
+      <div className="py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy mb-6" dangerouslySetInnerHTML={safeHtml(getText('about_exp_title', A.experienceRibadeo))} />
+          <div className="w-24 h-1 bg-teal mx-auto mb-10" />
+          <div className="max-w-3xl mx-auto text-lg text-gray-600 space-y-6 mb-16">
+            <p>{getText('about_exp_desc_1', A.expDesc1)}</p>
+            <p>{getText('about_exp_desc_2', A.expDesc2)}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {(A.poi || []).map((item, i) => (
+              <div key={i} className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-left">
+                <div className="text-3xl font-serif font-bold text-teal mb-3">{item.t}</div>
+                <div className="text-gray-700 font-medium text-lg">{item.d}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -171,19 +171,7 @@ export default function OffersBanner() {
                         <button
                             onClick={() => handleApplyDiscount(offer)}
                             title={t('Aplicar y copiar código', 'Apply and copy code')}
-                            className={`px-3 py-1 rounded-md font-mono text-sm font-bold cursor-pointer flex items-center gap-1.5 transition-all ${activeDiscount?.id === offer.id ? 'bg-white/30 border border-solid border-white/50' : 'bg-white/10 border border-dashed border-white/40 hover:bg-white/20 hover:border-white/100 pulseGlow'}`}
-                            onMouseEnter={(e) => {
-                                if (activeDiscount?.id !== offer.id) {
-                                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                                    e.currentTarget.style.borderColor = '#fff';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                if (activeDiscount?.id !== offer.id) {
-                                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)';
-                                }
-                            }}
+                            className={`px-3 py-1 rounded-md font-mono text-sm font-bold cursor-pointer flex items-center gap-1.5 transition-all ${activeDiscount?.id === offer.id ? 'bg-white/30 border border-solid border-white/50' : 'bg-white/10 border border-dashed border-white/40 hover:bg-white/20 hover:border-white pulseGlow'}`}
                         >
                             {offer.discount_code}
                             {activeDiscount?.id === offer.id ? (
@@ -220,14 +208,6 @@ export default function OffersBanner() {
                     removeDiscount(); // User wants it removed if banner is gone
                 }}
                 className="absolute right-4 bg-white/10 border-0 text-white rounded-full p-1.5 flex items-center justify-center opacity-60 hover:opacity-100 hover:bg-white/20 transition-all cursor-pointer"
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.opacity = '1';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                }}
-                onMouseLeave={(e) => {
-                    e.currentTarget.style.opacity = '0.6';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                }}
             >
                 <Ico d={paths.close} size={14} />
             </button>

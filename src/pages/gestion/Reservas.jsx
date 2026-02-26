@@ -5,6 +5,7 @@ import { getReservations, getApartmentBySlug, getExtras, markCashPaid, updateRes
 import generateInvoice from '../../utils/generateInvoice';
 import exportReservationsExcel from '../../utils/exportExcel';
 import ManualBookingModal from '../../components/ManualBookingModal';
+import { sendOwnerNotification } from '../../services/resendService';
 
 const COLORS = {
   blue: '#1a5f6e',
@@ -171,8 +172,21 @@ export default function Reservas() {
       if (success) {
         const updated = reservations.map(r => r.id === id ? { ...r, status: newStatus } : r);
         setReservations(updated);
+
+        const currentReservation = updated.find(r => r.id === id);
         if (selectedId === id) {
-          setSelectedReservation(updated.find(r => r.id === id));
+          setSelectedReservation(currentReservation);
+        }
+
+        if (newStatus === 'cancelled' && currentReservation) {
+          const apt = apartmentData[currentReservation.aptSlug];
+          sendOwnerNotification({
+            type: 'cancellation',
+            reservationId: currentReservation.id,
+            guestName: currentReservation.guest,
+            guestEmail: currentReservation.email,
+            apartmentName: apt?.name || currentReservation.apt,
+          });
         }
       } else {
         setError('Error actualizando estado.');
@@ -208,6 +222,17 @@ export default function Reservas() {
     try {
       const success = await deleteReservation(id);
       if (success) {
+        const resToDelete = reservations.find(r => r.id === id);
+        if (resToDelete) {
+          const apt = apartmentData[resToDelete.aptSlug];
+          sendOwnerNotification({
+            type: 'cancellation',
+            reservationId: resToDelete.id,
+            guestName: resToDelete.guest,
+            guestEmail: resToDelete.email,
+            apartmentName: apt?.name || resToDelete.apt,
+          });
+        }
         setReservations(prev => prev.filter(r => r.id !== id));
         setSelectedId(null);
         setSelectedReservation(null);

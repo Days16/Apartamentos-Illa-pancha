@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
+import { useSettings } from '../contexts/SettingsContext';
 
 export default function Maintenance() {
     const navigate = useNavigate();
     const { lang } = useLang();
     const T = useT(lang);
     const M = T.maintenance;
+    const { settings } = useSettings();
+    const contactEmail = settings?.site_email || 'info@illapancha.com';
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white text-center px-5 py-10">
@@ -28,7 +31,7 @@ export default function Maintenance() {
 
                 <p className="text-sm text-slate-500 mb-10">
                     {M.contact}<br />
-                    <strong>info@illapancha.com</strong>
+                    <strong>{contactEmail}</strong>
                 </p>
 
                 <button

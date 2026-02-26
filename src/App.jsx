@@ -36,6 +36,7 @@ import IcalAdmin from './pages/admin/IcalAdmin';
 import Usuarios from './pages/admin/Usuarios';
 import WebTextos from './pages/admin/WebTextos';
 import ReglasReserva from './pages/admin/ReglasReserva';
+import Cancelacion from './pages/admin/Cancelacion';
 import Changelog from './pages/admin/Changelog';
 
 // Componentes
@@ -48,6 +49,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Admin
 import ExtrasAdmin from './pages/admin/ExtrasAdmin';
+import ResenasAdmin from './pages/admin/ResenasAdmin';
 import OfertasAdmin from './pages/admin/OfertasAdmin';
 import { DiscountProvider } from './contexts/DiscountContext';
 import Login from './pages/Login';
@@ -134,6 +136,8 @@ export default function App() {
                         <Route path="ofertas" element={<OfertasAdmin />} />
                         <Route path="extras" element={<ExtrasAdmin />} />
                         <Route path="reglas" element={<ReglasReserva />} />
+                        <Route path="resenas" element={<ResenasAdmin />} />
+                        <Route path="cancelacion" element={<Cancelacion />} />
                         <Route path="changelog" element={<Changelog />} />
                       </Route>
                     </Route>

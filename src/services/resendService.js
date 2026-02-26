@@ -90,6 +90,29 @@ export async function sendContactReply(data) {
 }
 
 /**
+ * Notificar al propietario/gestor de un evento importante
+ * @param {{ type: 'booking'|'contact'|'cancellation', ...data }} data
+ * @returns {Promise<Object>}
+ */
+export async function sendOwnerNotification(data) {
+  try {
+    const { error } = await supabase.functions.invoke('send-owner-notification', {
+      body: {
+        type: data.type,
+        panelUrl: `${window.location.origin}/gestion`,
+        ...data,
+      },
+    });
+    if (error) console.warn('Owner notification failed (non-critical):', error);
+    return { success: !error };
+  } catch (err) {
+    // Silencioso: no debe bloquear el flujo principal
+    console.warn('Owner notification error (non-critical):', err);
+    return { success: false };
+  }
+}
+
+/**
  * Enviar email de cancelación
  * @param {Object} data
  * @returns {Promise<Object>}

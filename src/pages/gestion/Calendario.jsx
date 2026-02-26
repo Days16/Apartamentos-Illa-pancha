@@ -179,7 +179,7 @@ export default function Calendario() {
           <div className="flex items-center gap-4 text-[11px] font-medium text-gray-500 uppercase tracking-wider">
             {Object.entries(STATUS_COLORS).map(([key, config]) => (
               <div key={key} className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded border" style={{ backgroundColor: config.bg, borderColor: config.border }} />
+                <div className={`w-4 h-4 rounded border`} style={{ backgroundColor: config.bg, borderColor: config.border }} />
                 <span>{config.label}</span>
               </div>
             ))}
@@ -311,7 +311,7 @@ export default function Calendario() {
                         <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                           {res.apartmentName}
                         </div>
-                        <div className="text-lg font-bold text-navy truncate">
+                        <div className="text-lg font-bold text-[#0f172a] truncate">
                           {res.guest}
                         </div>
                       </div>

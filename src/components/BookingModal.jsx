@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Ico, { paths } from './Ico';
 import { supabase } from '../lib/supabase';
 import { createPaymentIntent, confirmPayment } from '../lib/stripe';
-import { sendBookingConfirmation } from '../services/resendService';
+import { sendBookingConfirmation, sendOwnerNotification } from '../services/resendService';
 import { fetchExtras, fetchSettings } from '../services/supabaseService';
 import { useDiscount } from '../contexts/DiscountContext';
 import { useLang } from '../contexts/LangContext';
@@ -18,6 +18,7 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
   const navigate = useNavigate();
   const { lang, t } = useLang();
   const T = useT(lang);
+  const apt = apartment || { name: 'Apt. Cantábrico', price: 140 };
   const stripe = useStripe();
   const elements = useElements();
 
@@ -61,8 +62,6 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
   }, [apt.slug]);
 
   const steps = T.booking.steps;
-
-  const apt = apartment || { name: 'Apt. Cantábrico', price: 140 };
 
   // Calcular noches dinámicamente
   const calculateNights = () => {
@@ -208,6 +207,20 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
         console.warn('Email envío fallido pero reserva creada:', emailError);
       }
 
+      // 4b. Notificar al propietario (silencioso, no bloquea)
+      sendOwnerNotification({
+        type: 'booking',
+        reservationId,
+        guestName: form.name,
+        guestEmail: form.email,
+        apartmentName: apartment?.name || 'Apt. Cantábrico',
+        checkin: checkin,
+        checkout: checkout,
+        nights,
+        total,
+        deposit,
+      });
+
       // 5. Generar PDF de factura
       try {
         const { default: generateInvoice } = await import('../utils/generateInvoice');
@@ -345,27 +358,24 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
               </div>
               <label className="block text-xs font-semibold text-slate-900 mb-2">{T.booking.fullName}</label>
               <input
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20"
+                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${step === 1 && !form.name.trim() ? 'border-[#f44]' : 'border-gray-300'}`}
                 placeholder={T.booking.placeholderName}
                 value={form.name}
                 onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
-                style={{ borderColor: step === 1 && !form.name.trim() ? '#f44' : undefined }}
               />
               <label className="block text-xs font-semibold text-slate-900 mb-2 mt-4">{T.booking.email}</label>
               <input
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20"
+                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${step === 1 && !form.email.includes('@') ? 'border-[#f44]' : 'border-gray-300'}`}
                 placeholder={T.booking.placeholderEmail}
                 value={form.email}
                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
-                style={{ borderColor: step === 1 && !form.email.includes('@') ? '#f44' : undefined }}
               />
               <label className="block text-xs font-semibold text-slate-900 mb-2 mt-4">{T.booking.phone}</label>
               <input
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20"
+                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${step === 1 && !form.phone.trim() ? 'border-[#f44]' : 'border-gray-300'}`}
                 placeholder={T.booking.placeholderPhone}
                 value={form.phone}
                 onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
-                style={{ borderColor: step === 1 && !form.phone.trim() ? '#f44' : undefined }}
               />
               <div className="text-xs text-slate-600 leading-relaxed mb-4">
                 {T.booking.cancelFree.replace('{days}', cancelDays)}
@@ -391,11 +401,7 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
                 )}
 
                 <button
-                  className="bg-[#82c8bd] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#6bb5a9] transition-all flex-[2] disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{
-                    opacity: (!form.name.trim() || !form.email.includes('@') || !form.phone.trim() || !acceptedTerms || hasOverlap) ? 0.5 : 1,
-                    cursor: (!form.name.trim() || !form.email.includes('@') || !form.phone.trim() || !acceptedTerms || hasOverlap) ? 'not-allowed' : 'pointer'
-                  }}
+                  className={`bg-[#82c8bd] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#6bb5a9] transition-all flex-[2] disabled:opacity-50 disabled:cursor-not-allowed ${(!form.name.trim() || !form.email.includes('@') || !form.phone.trim() || !acceptedTerms || hasOverlap) ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                   onClick={() => setStep(1)}
                   disabled={!form.name.trim() || !form.email.includes('@') || !form.phone.trim() || !acceptedTerms || hasOverlap}
                 >

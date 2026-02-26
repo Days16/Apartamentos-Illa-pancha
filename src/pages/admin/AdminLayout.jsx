@@ -8,6 +8,8 @@ const navItems = [
   { path: '/admin/precios', label: 'Precios', icon: paths.tag },
   { path: '/admin/ofertas', label: 'Ofertas', icon: paths.star },
   { path: '/admin/extras', label: 'Servicios extra', icon: paths.plus },
+  { path: '/admin/resenas', label: 'Reseñas', icon: paths.msg },
+  { path: '/admin/cancelacion', label: 'Cancelaciones', icon: paths.close },
   { path: '/admin/web', label: 'Textos web', icon: paths.edit },
   { path: '/admin/reglas', label: 'Reglas de reserva', icon: paths.cal },
 ];
