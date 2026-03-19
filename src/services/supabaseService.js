@@ -107,7 +107,7 @@ export async function fetchApartmentPhotos(slug) {
     .from('apartment_photos')
     .select('*')
     .eq('apartment_slug', slug)
-    .order('display_order');
+    .order('order_index');
 
   if (error) throw error;
   return (data || []).map(p => ({
@@ -391,7 +391,7 @@ export async function fetchAllPages(lang = 'es') {
     .from('site_pages')
     .select('*')
     .eq('active', true)
-    .order('display_order');
+    .order('order_index');
 
   if (error) throw error;
   return data || [];

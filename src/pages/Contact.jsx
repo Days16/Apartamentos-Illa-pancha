@@ -240,16 +240,21 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="mt-8 bg-slate-100 rounded-xl h-48 flex items-center justify-center border border-slate-200">
+          <a
+            href="https://www.google.com/maps/place/Av.+de+Rosal%C3%ADa+de+Castro,+25,+27700+Ribadeo,+Lugo/@43.5397524,-7.0411052,199m/data=!3m1!1e3!4m6!3m5!1s0xd317e5724d77fed:0x5b60c517683c15a5!8m2!3d43.5399657!4d-7.0410569!16s%2Fg%2F11c19xgmd5?entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 bg-slate-100 rounded-xl h-48 flex items-center justify-center border border-slate-200 hover:border-teal hover:bg-slate-200 transition-all cursor-pointer block"
+          >
             <div className="text-center">
               <div className="flex justify-center mb-2">
-                <Ico d={paths.map} size={32} color="#94a3b8" />
+                <Ico d={paths.map} size={32} color="#1a5f6e" />
               </div>
               <div className="text-xs text-slate-500 font-medium">
-                Ribadeo, Galicia · 43.5350° N, 7.0412° W
+                Ribadeo, Galicia · Ver en Google Maps ↗
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
 

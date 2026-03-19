@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Ico, { paths } from './Ico';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { useSettings } from '../contexts/SettingsContext';
+import { fetchApartments } from '../services/supabaseService';
 
 export default function Footer() {
   const { lang } = useLang();
@@ -11,6 +12,11 @@ export default function Footer() {
   const F = T.footer;
   const { settings } = useSettings();
   const [expandedSection, setExpandedSection] = useState(null);
+  const [apartments, setApartments] = useState([]);
+
+  useEffect(() => {
+    fetchApartments().then(data => { if (data) setApartments(data); });
+  }, []);
 
   const phone = settings?.site_phone || '+34 982 XXX XXX';
   const email = settings?.site_email || 'info@illapancha.com';
@@ -55,8 +61,8 @@ export default function Footer() {
               <span className={`text-lg transition-transform md:hidden ${expandedSection === 'apartments' ? 'rotate-45' : ''}`}>+</span>
             </button>
             <div className={`flex flex-col gap-3 pl-0 max-h-0 overflow-hidden transition-all duration-300 md:max-h-full md:overflow-visible ${expandedSection === 'apartments' ? 'max-h-64 mt-3' : 'md:mt-4'}`}>
-              {['Cantábrico', 'Ribadeo', 'Illa Pancha', 'Eo', 'Castro'].map(name => (
-                <Link key={name} to="/apartamentos" className="text-gray-300 hover:text-teal transition-colors text-sm">Apt. {name}</Link>
+              {apartments.map(apt => (
+                <Link key={apt.slug} to={`/apartamentos/${apt.slug}`} className="text-gray-300 hover:text-teal transition-colors text-sm">{apt.name}</Link>
               ))}
               <Link to="/apartamentos" className="text-gray-300 hover:text-teal transition-colors text-sm">{T.home.viewAll}</Link>
             </div>
@@ -76,7 +82,7 @@ export default function Footer() {
               <Link to="/nosotros" className="text-gray-300 hover:text-teal transition-colors text-sm">{F.about}</Link>
               <Link to="/contacto" className="text-gray-300 hover:text-teal transition-colors text-sm">{F.contact}</Link>
               <Link to="/apartamentos" className="text-gray-300 hover:text-teal transition-colors text-sm">{F.availability}</Link>
-              <Link to="/mi-reserva" className="text-teal font-semibold hover:text-white transition-colors text-sm">{F.myReservation} ↗</Link>
+              {/*<Link to="/mi-reserva" className="text-teal font-semibold hover:text-white transition-colors text-sm">{F.myReservation} ↗</Link>*/}
               <span className="text-gray-300 hover:text-teal transition-colors text-sm cursor-default">{F.howToGet}</span>
               <span className="text-gray-300 hover:text-teal transition-colors text-sm cursor-default">{F.faq}</span>
             </div>
@@ -94,7 +100,7 @@ export default function Footer() {
             </button>
             <div className={`flex flex-col gap-3 pl-0 max-h-0 overflow-hidden transition-all duration-300 md:max-h-full md:overflow-visible ${expandedSection === 'book' ? 'max-h-64 mt-3' : 'md:mt-4'}`}>
               <span className="text-gray-300 hover:text-teal transition-colors text-sm cursor-default">Booking.com ↗</span>
-              <span className="text-gray-300 hover:text-teal transition-colors text-sm cursor-default">Airbnb ↗</span>
+              {/*<span className="text-gray-300 hover:text-teal transition-colors text-sm cursor-default">Airbnb ↗</span>*/}
             </div>
           </div>
         </div>
