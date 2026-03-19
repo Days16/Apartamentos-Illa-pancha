@@ -244,28 +244,34 @@
         "charmingView": "Vista al mar con encanto",
         "poi": [
             {
-                "t": "0 min",
-                "d": "Playa de As Catedrais"
+                "t": "20 min",
+                "d": "Playa de As Catedrais",
+                "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=600"
             },
             {
                 "t": "5 min",
-                "d": "Centro histórico de Ribadeo"
+                "d": "Centro histórico de Ribadeo",
+                "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=600"
             },
             {
-                "t": "10 min",
-                "d": "Puente Internacional España-Portugal"
+                "t": "5 min",
+                "d": "Puente de los Santos (Galicia-Asturias)",
+                "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=600"
             },
             {
-                "t": "30 min",
-                "d": "Isla Pancha (faro)"
+                "t": "5 min",
+                "d": "Isla Pancha (faro)",
+                "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=600"
+            },
+            {
+                "t": "45 min",
+                "d": "Mondoñedo (ciudad episcopal)",
+                "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=600"
             },
             {
                 "t": "1h",
-                "d": "Mondoñedo (ciudad episcopal)"
-            },
-            {
-                "t": "1h 15",
-                "d": "Lugo (muralla romana)"
+                "d": "Lugo (muralla romana)",
+                "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=600"
             }
         ]
     },

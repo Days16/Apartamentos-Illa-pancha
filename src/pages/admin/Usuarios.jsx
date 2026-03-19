@@ -1,6 +1,6 @@
 export default function Usuarios() {
   const users = [
-    { name: 'Propietario', email: 'info@illapancha.com', role: 'Admin', apts: 'Todos', avatar: 'P', lastLogin: 'Hoy, 09:14' },
+    { name: 'Propietario', email: 'info@apartamentosillapancha.com', role: 'Admin', apts: 'Todos', avatar: 'P', lastLogin: 'Hoy, 09:14' },
     { name: 'Carmen López', email: 'carmen@illapancha.com', role: 'Manager', apts: 'Cantábrico, Ribadeo, Eo', avatar: 'C', lastLogin: 'Ayer, 18:32' },
   ];
 

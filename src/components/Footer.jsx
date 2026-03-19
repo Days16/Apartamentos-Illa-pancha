@@ -18,8 +18,8 @@ export default function Footer() {
     fetchApartments().then(data => { if (data) setApartments(data); });
   }, []);
 
-  const phone = settings?.site_phone || '+34 982 XXX XXX';
-  const email = settings?.site_email || 'info@illapancha.com';
+  const phone = (settings?.site_phone || 'XXX XXX XXX').replace(/^\+34\s?/, '');
+  const email = settings?.site_email || 'info@apartamentosillapancha.com';
   const address = settings?.site_address || 'Ribadeo, Lugo, Galicia';
 
   const toggleSection = (section) => {

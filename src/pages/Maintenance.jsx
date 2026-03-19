@@ -9,7 +9,7 @@ export default function Maintenance() {
     const T = useT(lang);
     const M = T.maintenance;
     const { settings } = useSettings();
-    const contactEmail = settings?.site_email || 'info@illapancha.com';
+    const contactEmail = settings?.site_email || 'info@apartamentosillapancha.com';
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white text-center px-5 py-10">

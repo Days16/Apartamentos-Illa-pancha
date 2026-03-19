@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Fondo circular teal -->
+  <circle cx="32" cy="32" r="32" fill="#1a5f6e"/>
+
+  <!-- Faro - cuerpo -->
+  <rect x="27" y="18" width="10" height="22" rx="1.5" fill="white"/>
+  <!-- Faro - franja decorativa -->
+  <rect x="27" y="24" width="10" height="4" fill="#D4A843"/>
+  <!-- Faro - linterna (cúpula) -->
+  <rect x="25" y="14" width="14" height="5" rx="1" fill="white"/>
+  <rect x="29" y="10" width="6" height="5" rx="1" fill="white"/>
+
+  <!-- Rayos de luz -->
+  <line x1="32" y1="10" x2="32" y2="4" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="32" y1="10" x2="38" y2="5" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="32" y1="10" x2="26" y2="5" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Casa pequeña -->
+  <rect x="37" y="32" width="8" height="8" rx="1" fill="white" opacity="0.85"/>
+  <polygon points="37,32 45,32 41,28" fill="white" opacity="0.7"/>
+
+  <!-- Isla / terreno -->
+  <ellipse cx="32" cy="42" rx="16" ry="5" fill="white" opacity="0.9"/>
+
+  <!-- Olas -->
+  <path d="M14 48 Q20 45 26 48 Q32 51 38 48 Q44 45 50 48" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M18 53 Q24 50 30 53 Q36 56 42 53 Q46 51 50 53" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

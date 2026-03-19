@@ -63,7 +63,7 @@ export const emailTemplates = {
             </p>
           </div>
           <p style="font-size: 13px; color: #64748b;">
-            Si tienes cualquier duda, contactanos en <a href="mailto:info@illapancha.com" style="color: #1a5f6e;">info@illapancha.com</a>
+            Si tienes cualquier duda, contactanos en <a href="mailto:info@apartamentosillapancha.com" style="color: #1a5f6e;">info@apartamentosillapancha.com</a>
             o por WhatsApp.
           </p>
         </div>

@@ -37,16 +37,15 @@ export function toInputDate(date) {
 }
 
 /**
- * "2026-07-12" → Date object (sin problemas de zona horaria)
+ * "2026-07-12" → Date object UTC midnight (compatible con react-datepicker v9 que compara en UTC)
  */
 export function strToDate(str) {
   if (!str) return null;
-  const [y, m, d] = str.split('-').map(Number);
-  return new Date(y, m - 1, d);
+  return new Date(str + 'T00:00:00Z');
 }
 
 /**
- * Date object → "2026-07-12"
+ * Date object → "2026-07-12" (usa métodos locales; funciona con fechas locales o UTC midnight en UTC+)
  */
 export function dateToStr(date) {
   if (!date) return '';

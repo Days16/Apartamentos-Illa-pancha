@@ -245,22 +245,8 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Estado sync */}
+        {/* Mensajes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-center mb-3">
-              <div className="text-lg font-semibold text-gray-900">Sincronización iCal</div>
-              <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium">Todo OK</span>
-            </div>
-            <div className="text-xs text-slate-500 mb-1">Última sincronización: hace 4 minutos</div>
-            <div className="text-xs text-slate-500">Próxima: en 26 minutos</div>
-            <button
-              className="mt-4 w-full text-xs px-3 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors font-medium"
-              onClick={() => navigate('/gestion/sync')}
-            >
-              Ver detalles de sync
-            </button>
-          </div>
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="mb-3">
               <div className="text-lg font-semibold text-gray-900">Mensajes sin leer</div>

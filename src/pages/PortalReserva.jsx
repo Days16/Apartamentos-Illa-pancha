@@ -96,7 +96,11 @@ export default function PortalReserva() {
                         reservationId: reservation.id,
                         guestName: reservation.guest,
                         guestEmail: reservation.email,
-                        apartmentName: apt.name
+                        apartmentName: apt.name,
+                        checkin: reservation.checkin,
+                        checkout: reservation.checkout,
+                        nights: reservation.nights,
+                        total: reservation.total,
                     })
                 ]);
             } else {
@@ -257,7 +261,7 @@ export default function PortalReserva() {
                             </div>
                             {reservation.status === 'confirmed' && !canCancel() && (
                                 <div className="mt-4 text-center text-xs text-amber-600">
-                                    Periodo de cancelación gratuita superado. Contacta con nosotros para gestionar tu reserva alojamientosillapancha@gmail.com.
+                                    Periodo de cancelación gratuita superado. Contacta con nosotros para gestionar tu reserva info@apartamentosillapancha.com.
                                 </div>
                             )}
                         </div>

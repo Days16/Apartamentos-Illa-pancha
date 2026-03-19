@@ -25,7 +25,7 @@ export default function Privacy() {
           <h2>1. Responsable del tratamiento</h2>
           <p><strong>Titular:</strong> Illa Pancha Ribadeo S.L. (en constitución)<br />
             <strong>Dirección:</strong> Ribadeo, Lugo, Galicia, España<br />
-            <strong>Email:</strong> info@illapancha.com</p>
+            <strong>Email:</strong> info@apartamentosillapancha.com</p>
 
           <h2>2. Datos que recopilamos</h2>
           <ul>
@@ -64,7 +64,7 @@ export default function Privacy() {
             <li><strong>Portabilidad:</strong> recibir tus datos en formato estructurado.</li>
             <li><strong>Oposición:</strong> oponerte al tratamiento basado en interés legítimo.</li>
           </ul>
-          <p>Para ejercerlos, escríbenos a <strong>info@illapancha.com</strong> con asunto «Ejercicio de derechos RGPD». También puedes reclamar ante la <strong>Agencia Española de Protección de Datos</strong> (www.aepd.es).</p>
+          <p>Para ejercerlos, escríbenos a <strong>info@apartamentosillapancha.com</strong> con asunto «Ejercicio de derechos RGPD». También puedes reclamar ante la <strong>Agencia Española de Protección de Datos</strong> (www.aepd.es).</p>
 
           <h2>7. Seguridad</h2>
           <p>Aplicamos medidas técnicas y organizativas adecuadas: comunicaciones cifradas mediante HTTPS/TLS, control de acceso a los sistemas y copias de seguridad periódicas.</p>

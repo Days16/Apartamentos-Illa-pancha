@@ -12,8 +12,14 @@ export const assets = {
 
     // Hero / General
     hero: {
-        background: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=2000", // Placeholder sea image
+        // Reemplaza esta URL con tu propia foto de Ribadeo (sube a Supabase Storage o a /public)
+        background: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=2000",
         noise: "https://www.transparenttextures.com/patterns/p6.png",
+    },
+
+    // Locations
+    locations: {
+        riaRibadeo: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=2000",
     },
 
     // Social / Contact

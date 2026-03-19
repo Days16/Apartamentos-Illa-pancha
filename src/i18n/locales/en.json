@@ -246,28 +246,34 @@
         "charmingView": "Charming sea view",
         "poi": [
             {
-                "t": "0 min",
-                "d": "As Catedrais Beach"
+                "t": "20 min",
+                "d": "As Catedrais Beach",
+                "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=600"
             },
             {
                 "t": "5 min",
-                "d": "Ribadeo Historic Center"
+                "d": "Ribadeo Historic Center",
+                "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=600"
             },
             {
-                "t": "10 min",
-                "d": "Spain-Portugal International Bridge"
+                "t": "5 min",
+                "d": "Ponte dos Santos (Galicia-Asturias)",
+                "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=600"
             },
             {
-                "t": "30 min",
-                "d": "Pancha Island (lighthouse)"
+                "t": "5 min",
+                "d": "Pancha Island (lighthouse)",
+                "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=600"
+            },
+            {
+                "t": "45 min",
+                "d": "Mondoñedo (episcopal city)",
+                "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=600"
             },
             {
                 "t": "1h",
-                "d": "Mondoñedo (episcopal city)"
-            },
-            {
-                "t": "1h 15",
-                "d": "Lugo (Roman wall)"
+                "d": "Lugo (Roman wall)",
+                "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=600"
             }
         ]
     },

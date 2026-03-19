@@ -30,7 +30,7 @@ export default function Terminos() {
           <h2>1. Identificación del prestador</h2>
           <p><strong>Denominación:</strong> Illa Pancha Ribadeo S.L. (en constitución)<br />
             <strong>Domicilio:</strong> Ribadeo, Lugo, Galicia, España<br />
-            <strong>Email:</strong> info@illapancha.com<br />
+            <strong>Email:</strong> info@apartamentosillapancha.com<br />
             <strong>Teléfono:</strong> +34 982 XXX XXX</p>
 
           <h2>2. Objeto</h2>

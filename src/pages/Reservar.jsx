@@ -97,7 +97,7 @@ export default function Reservar() {
                   <input
                     name="phone" value={form.phone} onChange={handleChange}
                     className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-teal focus:ring-1 focus:ring-teal"
-                    placeholder="+34 600 000 000"
+                    placeholder="600 000 000"
                   />
                 </div>
                 <div>

@@ -10,7 +10,7 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
     const [form, setForm] = useState({
         name: '', email: '', phone: '', aptSlug: '',
         checkin: null, checkout: null, price: 0, deposit: 0,
-        status: 'confirmed', source: 'manual'
+        status: 'confirmed', source: 'direct'
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -48,25 +48,11 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
             const diffTime = Math.abs(form.checkout - form.checkin);
             const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-            const newReservation = {
-                id: resId,
-                guest_name: form.name,
-                guest_email: form.email || 'manual@reservas.app',
-                guest_phone: form.phone,
-                apartment_slug: form.aptSlug,
-                check_in: formatDate(form.checkin),
-                check_out: formatDate(form.checkout),
-                nights: nights,
-                total_price: parseFloat(form.price),
-                deposit_paid: parseFloat(form.deposit),
-                status: form.status,
-                source: form.source
-            };
-
             const data = await createReservation({
                 id: resId,
                 guest: form.name,
-                email: form.email || 'manual@reservas.app',
+                apt: apartments.find(a => a.slug === form.aptSlug)?.name || form.aptSlug,
+                email: form.email || '',
                 phone: form.phone,
                 aptSlug: form.aptSlug,
                 checkin: formatDate(form.checkin),
@@ -196,7 +182,7 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
                         <div>
                             <label className="form-label">Origen</label>
                             <select className="form-input" value={form.source} onChange={e => setForm(f => ({ ...f, source: e.target.value }))}>
-                                <option value="manual">Manual (Teléfono/Email)</option>
+                                <option value="direct">Manual (Teléfono/Email)</option>
                                 <option value="booking">Booking.com</option>
                                 <option value="airbnb">Airbnb</option>
                             </select>

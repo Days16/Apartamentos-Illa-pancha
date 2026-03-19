@@ -1,10 +1,9 @@
 import { supabase } from '../lib/supabase';
 
-/**
- * Enviar email de confirmación de reserva
- * @param {Object} reservation - Información de la reserva
- * @returns {Promise<Object>}
- */
+const anonHeaders = {
+  Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+};
+
 export async function sendBookingConfirmation(reservation) {
   try {
     const { data, error } = await supabase.functions.invoke('send-reservation-email', {
@@ -20,6 +19,7 @@ export async function sendBookingConfirmation(reservation) {
         reservationId: reservation.id || reservation.reservationId,
         portalUrl: `${window.location.origin}/mi-reserva`,
       },
+      headers: anonHeaders,
     });
 
     if (error) {
@@ -27,22 +27,13 @@ export async function sendBookingConfirmation(reservation) {
       throw new Error(error.message || 'Error al enviar email');
     }
 
-    //console.log('Email sent successfully:', data);
-    return {
-      success: true,
-      messageId: data?.id,
-    };
+    return { success: true, messageId: data?.id };
   } catch (err) {
     console.error('Resend service error:', err);
     throw err;
   }
 }
 
-/**
- * Enviar email de recordatorio de pago
- * @param {Object} data
- * @returns {Promise<Object>}
- */
 export async function sendPaymentReminder(data) {
   try {
     const { data: result, error } = await supabase.functions.invoke('send-payment-reminder', {
@@ -53,10 +44,10 @@ export async function sendPaymentReminder(data) {
         daysRemaining: data.daysRemaining,
         amountDue: data.amountDue,
       },
+      headers: anonHeaders,
     });
 
     if (error) throw error;
-
     return { success: true, messageId: result?.id };
   } catch (err) {
     console.error('Error sending payment reminder:', err);
@@ -64,11 +55,6 @@ export async function sendPaymentReminder(data) {
   }
 }
 
-/**
- * Enviar respuesta a formulario de contacto
- * @param {Object} data
- * @returns {Promise<Object>}
- */
 export async function sendContactReply(data) {
   try {
     const { data: result, error } = await supabase.functions.invoke('send-contact-reply', {
@@ -76,12 +62,12 @@ export async function sendContactReply(data) {
         guestEmail: data.guestEmail,
         guestName: data.guestName,
         subject: data.subject || 'Re: Tu consulta en Illa Pancha Ribadeo',
-        replyText: data.replyText
+        replyText: data.replyText,
       },
+      headers: anonHeaders,
     });
 
     if (error) throw error;
-
     return { success: true, messageId: result?.id };
   } catch (err) {
     console.error('Error sending contact reply:', err);
@@ -89,11 +75,6 @@ export async function sendContactReply(data) {
   }
 }
 
-/**
- * Notificar al propietario/gestor de un evento importante
- * @param {{ type: 'booking'|'contact'|'cancellation', ...data }} data
- * @returns {Promise<Object>}
- */
 export async function sendOwnerNotification(data) {
   try {
     const { error } = await supabase.functions.invoke('send-owner-notification', {
@@ -102,21 +83,16 @@ export async function sendOwnerNotification(data) {
         panelUrl: `${window.location.origin}/gestion`,
         ...data,
       },
+      headers: anonHeaders,
     });
     if (error) console.warn('Owner notification failed (non-critical):', error);
     return { success: !error };
   } catch (err) {
-    // Silencioso: no debe bloquear el flujo principal
     console.warn('Owner notification error (non-critical):', err);
     return { success: false };
   }
 }
 
-/**
- * Enviar email de cancelación
- * @param {Object} data
- * @returns {Promise<Object>}
- */
 export async function sendCancellationEmail(data) {
   try {
     const { data: result, error } = await supabase.functions.invoke('send-cancellation-email', {
@@ -127,10 +103,10 @@ export async function sendCancellationEmail(data) {
         apartmentName: data.apartmentName,
         refundAmount: data.refundAmount,
       },
+      headers: anonHeaders,
     });
 
     if (error) throw error;
-
     return { success: true, messageId: result?.id };
   } catch (err) {
     console.error('Error sending cancellation email:', err);

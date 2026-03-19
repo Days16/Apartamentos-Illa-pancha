@@ -186,6 +186,10 @@ export default function Reservas() {
             guestName: currentReservation.guest,
             guestEmail: currentReservation.email,
             apartmentName: apt?.name || currentReservation.apt,
+            checkin: currentReservation.checkin,
+            checkout: currentReservation.checkout,
+            nights: currentReservation.nights,
+            total: currentReservation.total,
           });
         }
       } else {
@@ -231,6 +235,10 @@ export default function Reservas() {
             guestName: resToDelete.guest,
             guestEmail: resToDelete.email,
             apartmentName: apt?.name || resToDelete.apt,
+            checkin: resToDelete.checkin,
+            checkout: resToDelete.checkout,
+            nights: resToDelete.nights,
+            total: resToDelete.total,
           });
         }
         setReservations(prev => prev.filter(r => r.id !== id));

@@ -189,7 +189,7 @@ export default function Contact() {
             <Ico d={paths.mail} size={18} color="#7dd3fc" />
             <div>
               <div className="text-sm font-semibold text-navy">{T.booking.email}</div>
-              <div className="text-lg font-semibold text-teal">info@illapancha.com</div>
+              <div className="text-lg font-semibold text-teal">info@apartamentosillapancha.com</div>
               <div className="text-xs text-gray-500 mt-1">
                 {C.response}
               </div>
@@ -240,21 +240,26 @@ export default function Contact() {
             </div>
           </div>
 
-          <a
-            href="https://www.google.com/maps/place/Av.+de+Rosal%C3%ADa+de+Castro,+25,+27700+Ribadeo,+Lugo/@43.5397524,-7.0411052,199m/data=!3m1!1e3!4m6!3m5!1s0xd317e5724d77fed:0x5b60c517683c15a5!8m2!3d43.5399657!4d-7.0410569!16s%2Fg%2F11c19xgmd5?entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 bg-slate-100 rounded-xl h-48 flex items-center justify-center border border-slate-200 hover:border-teal hover:bg-slate-200 transition-all cursor-pointer block"
-          >
-            <div className="text-center">
-              <div className="flex justify-center mb-2">
-                <Ico d={paths.map} size={32} color="#1a5f6e" />
-              </div>
-              <div className="text-xs text-slate-500 font-medium">
-                Ribadeo, Galicia · Ver en Google Maps ↗
-              </div>
-            </div>
-          </a>
+          <div className="mt-8 rounded-xl h-48 overflow-hidden relative border border-slate-200">
+            <iframe
+              src="https://maps.google.com/maps?q=43.5399657,-7.0410569&z=16&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0, display: 'block' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Ubicación Illa Pancha Ribadeo"
+            />
+            <a
+              href="https://www.google.com/maps/place/Av.+de+Rosal%C3%ADa+de+Castro,+25,+27700+Ribadeo,+Lugo/@43.5397524,-7.0411052,199m/data=!3m1!1e3!4m6!3m5!1s0xd317e5724d77fed:0x5b60c517683c15a5!8m2!3d43.5399657!4d-7.0410569!16s%2Fg%2F11c19xgmd5?entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm text-navy text-xs font-semibold px-3 py-1.5 rounded-full shadow hover:bg-teal hover:text-white transition-colors"
+            >
+              Ver en Google Maps ↗
+            </a>
+          </div>
         </div>
       </div>
 

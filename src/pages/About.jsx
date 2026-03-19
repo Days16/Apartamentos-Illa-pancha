@@ -80,19 +80,29 @@ export default function About() {
 
         <div className="max-w-4xl mx-auto mt-20">
           <div className="aspect-[21/9] w-full bg-navy rounded-2xl overflow-hidden relative flex items-center justify-center">
-            <Ico d={paths.map} size={64} color="rgba(255,255,255,0.15)" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col justify-end">
-              <div className="text-xs font-bold tracking-[0.2em] text-teal-300 uppercase mb-2">
-                {A.location}
-              </div>
-              <div className="text-2xl font-serif font-bold text-white mb-2 shadow-sm">
-                Ribadeo, Lugo · Galicia
-              </div>
-              <div className="text-gray-200 leading-relaxed max-w-2xl text-shadow-sm">
-                {A.locationDetail}
-              </div>
+            <iframe
+              src="https://maps.google.com/maps?q=43.5399657,-7.0410569&z=16&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0, display: 'block' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Ubicación apartamentos Illa Pancha"
+            />
+            <div className="absolute bottom-0 left-0 right-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
+              <div className="text-xs font-bold tracking-[0.2em] text-teal-300 uppercase mb-2">{A.location}</div>
+              <div className="text-2xl font-serif font-bold text-white mb-2">Ribadeo, Lugo · Galicia</div>
+              <div className="text-gray-200 leading-relaxed max-w-2xl">{A.locationDetail}</div>
             </div>
+            <a
+              href="https://www.google.com/maps/place/Av.+de+Rosal%C3%ADa+de+Castro,+25,+27700+Ribadeo,+Lugo/@43.5397524,-7.0411052,199m/data=!3m1!1e3!4m6!3m5!1s0xd317e5724d77fed:0x5b60c517683c15a5!8m2!3d43.5399657!4d-7.0410569!16s%2Fg%2F11c19xgmd5?entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-navy text-xs font-semibold px-3 py-1.5 rounded-full shadow hover:bg-teal hover:text-white transition-colors"
+            >
+              Ver en Google Maps ↗
+            </a>
           </div>
         </div>
       </div>
@@ -116,8 +126,8 @@ export default function About() {
             </div>
             <div className="flex-1 relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in duration-1000 delay-300 group">
               <img
-                src="https://images.unsplash.com/photo-1598516244439-5095d3119156?q=80&w=1200"
-                alt="Ribadeo"
+                src="https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=1200"
+                alt="Ría de Ribadeo, Galicia"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
@@ -140,11 +150,23 @@ export default function About() {
             <p>{A.expDesc1}</p>
             <p>{A.expDesc2}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(A.poi || []).map((item, i) => (
-              <div key={i} className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-left">
-                <div className="text-3xl font-serif font-bold text-teal mb-3">{item.t}</div>
-                <div className="text-gray-700 font-medium text-lg">{item.d}</div>
+              <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden text-left group">
+                {item.photo && (
+                  <div className="h-44 overflow-hidden">
+                    <img
+                      src={item.photo}
+                      alt={item.d}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                <div className="p-5">
+                  <div className="text-2xl font-serif font-bold text-teal mb-1">{item.t}</div>
+                  <div className="text-gray-700 font-medium">{item.d}</div>
+                </div>
               </div>
             ))}
           </div>

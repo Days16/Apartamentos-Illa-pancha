@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { assets } from '../constants/assets';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
@@ -93,10 +94,14 @@ export default function Home() {
       <Navbar onOpenBooking={() => setBookingOpen(true)} />
 
       {/* HERO */}
-      <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-navy via-navy to-slate-900 py-20 px-4">
-        {/* Background elements */}
-        <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: 'url(data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="60" height="60"%3E%3Cg fill="none" stroke="white" stroke-width="1"%3E%3Cpath d="M0,30 L30,0 L60,30 L30,60 Z"/%3E%3C/g%3E%3C/svg%3E)' }} />
-        <div className="absolute inset-0 bg-black/40" />
+      <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20 px-4">
+        {/* Foto de fondo */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${assets.hero.background})` }}
+        />
+        {/* Overlay oscuro para legibilidad del texto */}
+        <div className="absolute inset-0 bg-black/55" />
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center max-w-4xl">
           <div className="text-sm font-semibold text-teal uppercase tracking-widest mb-4">Ribadeo, Galicia</div>
@@ -121,7 +126,7 @@ export default function Home() {
               <div className="text-xs font-semibold text-navy uppercase tracking-wider mb-2">{t('Llegada', 'Check-in')}</div>
               <DatePicker
                 selected={strToDate(checkin)}
-                onChange={date => setCheckin(dateToStr(date))}
+                onChange={date => date && setCheckin(dateToStr(new Date(date.getFullYear(), date.getMonth(), date.getDate())))}
                 minDate={new Date()}
                 maxDate={strToDate(checkout) ? new Date(strToDate(checkout).getTime() - 86400000) : null}
                 dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
@@ -133,7 +138,7 @@ export default function Home() {
               <div className="text-xs font-semibold text-navy uppercase tracking-wider mb-2">{t('Salida', 'Check-out')}</div>
               <DatePicker
                 selected={strToDate(checkout)}
-                onChange={date => setCheckout(dateToStr(date))}
+                onChange={date => date && setCheckout(dateToStr(new Date(date.getFullYear(), date.getMonth(), date.getDate())))}
                 minDate={strToDate(checkin) ? new Date(strToDate(checkin).getTime() + 86400000) : new Date()}
                 dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                 placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
@@ -226,17 +231,14 @@ export default function Home() {
                 onClick={() => navigate(`/apartamentos/${apt.slug}`)}
               >
                 <div
-                  className="relative w-full flex items-center justify-center bg-center bg-cover"
+                  className="flex-1 w-full flex items-center justify-center bg-center bg-cover"
                   style={{
                     ...(apt.coverPhoto ? { backgroundImage: `url(${apt.coverPhoto})` } : { background: apt.gradient }),
-                    height: i === 0 ? '100%' : 240,
-                    position: i === 0 ? 'absolute' : 'relative',
-                    inset: i === 0 ? 0 : 'auto',
+                    minHeight: 200,
                   }}
                 >
                   {!apt.coverPhoto && <Ico d={paths.photo} size={40} color="rgba(255,255,255,0.12)" />}
                 </div>
-                {i === 0 && <div style={{ paddingTop: '100%' }} />}
                 {searched && !apt.available ? (
                   <div className="absolute top-4 right-4 bg-gray-700 text-white px-3 py-1 rounded text-sm z-10 font-medium">
                     {t('No disponible', 'Not available')}

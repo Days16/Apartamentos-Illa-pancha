@@ -73,7 +73,7 @@ export default function GestionLayout() {
           <div className="w-8 h-8 rounded-full bg-[#82c8bd] text-white flex items-center justify-center font-bold text-sm">A</div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-white truncate">Administrador</div>
-            <div className="text-xs text-gray-500 truncate">{user?.email || 'info@illapancha.com'}</div>
+            <div className="text-xs text-gray-500 truncate">{user?.email || 'info@apartamentosillapancha.com'}</div>
           </div>
         </div>
       </div>

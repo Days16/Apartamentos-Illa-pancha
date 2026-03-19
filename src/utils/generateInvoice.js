@@ -9,7 +9,7 @@ export default async function generateInvoice(reservation) {
   const siteSettings = {
     cleaningFee: settings?.cleaning_fee ?? 0,
     site_address: 'Ribadeo, Lugo, Galicia',
-    site_email: settings?.site_email || 'info@illapancha.com',
+    site_email: settings?.site_email || 'info@apartamentosillapancha.com',
     site_phone: settings?.site_phone || '+34 982 XX XX XX',
     cancelDays: settings?.cancellation_free_days || 14,
     depositPct: settings?.payment_deposit_percentage || 50,
@@ -39,7 +39,7 @@ export default async function generateInvoice(reservation) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(194, 217, 232);
-  doc.text(siteSettings?.site_address || 'Ribadeo, Lugo, Galicia' + '  ·  ' + (siteSettings?.site_email || 'info@illapancha.com') + '  ·  ' + (siteSettings?.site_phone || '+34 982 XX XX XX'), margin, 24);
+  doc.text(siteSettings?.site_address || 'Ribadeo, Lugo, Galicia' + '  ·  ' + (siteSettings?.site_email || 'info@apartamentosillapancha.com') + '  ·  ' + (siteSettings?.site_phone || '+34 982 XX XX XX'), margin, 24);
 
   doc.setFontSize(11);
   doc.setTextColor(245, 245, 245);
@@ -200,7 +200,7 @@ export default async function generateInvoice(reservation) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(138, 138, 138);
-  doc.text('Illa Pancha Ribadeo S.L.  ·  Ribadeo, Lugo, Galicia, España  ·  info@illapancha.com', 105, 285, { align: 'center' });
+  doc.text('Illa Pancha Ribadeo S.L.  ·  Ribadeo, Lugo, Galicia, España  ·  info@apartamentosillapancha.com', 105, 285, { align: 'center' });
   doc.text('Este documento sirve como resguardo de reserva. No tiene validez como factura fiscal hasta la emisión definitiva.', 105, 290, { align: 'center' });
 
   doc.save('factura-' + reservation.id + '.pdf');

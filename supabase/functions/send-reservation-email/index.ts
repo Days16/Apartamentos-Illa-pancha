@@ -30,10 +30,10 @@ serve(async (req) => {
         const depositFormatted = typeof deposit === 'number' ? deposit.toFixed(2) : deposit;
         const totalFormatted = typeof total === 'number' ? total.toFixed(2) : total;
         const remaining = (parseFloat(total) - parseFloat(deposit)).toFixed(2);
-        const portalLink = portalUrl ? `${portalUrl}?id=${reservationId}` : `https://illapancha.com/mi-reserva?id=${reservationId}`;
+        const portalLink = portalUrl ? `${portalUrl}?id=${reservationId}` : `https://apartamentosillapancha.com/mi-reserva?id=${reservationId}`;
 
         const result = await resend.emails.send({
-            from: "Illa Pancha Ribadeo <reservas@apartamentosillapancha.com>",
+            from: "Illa Pancha Ribadeo <info@apartamentosillapancha.com>",
             to: guestEmail,
             subject: `✅ Reserva confirmada ${reservationId} — Illa Pancha Ribadeo`,
             html: `
@@ -49,12 +49,8 @@ serve(async (req) => {
         <!-- CABECERA -->
         <tr>
           <td style="background:linear-gradient(135deg,#1a5f6e 0%,#0f3d47 100%);padding:48px 40px;text-align:center;">
-            <div style="width:64px;height:64px;background:rgba(255,255,255,0.15);border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;">
-              <!-- Inline SVG logo (house) to avoid emoji rendering issues in emails -->
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="#ffffff" />
-                <path d="M9 22V12h6v10" fill="#e6f6f3" opacity="0.9" />
-              </svg>
+            <div style="width:80px;height:80px;background:#ffffff;border-radius:50%;margin:0 auto 20px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+              <img src="https://apartamentosillapancha.com/logo_lineas.png" alt="Illa Pancha" width="72" height="72" style="width:72px;height:72px;object-fit:contain;display:block;" />
             </div>
             <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:300;letter-spacing:1px;">Illa Pancha Ribadeo</h1>
             <p style="margin:8px 0 0;color:rgba(255,255,255,0.7);font-size:13px;letter-spacing:2px;text-transform:uppercase;">Apartamentos Turísticos · Ribadeo, Galicia</p>
@@ -149,7 +145,7 @@ serve(async (req) => {
         <tr>
           <td style="padding:28px 40px;text-align:center;">
             <p style="margin:0 0 6px;color:#94a3b8;font-size:12px;">¿Tienes alguna duda? Responde a este correo o contáctanos en</p>
-            <a href="mailto:info@illapancha.com" style="color:#1a5f6e;font-size:13px;font-weight:600;text-decoration:none;">info@illapancha.com</a>
+            <a href="mailto:info@apartamentosillapancha.com" style="color:#1a5f6e;font-size:13px;font-weight:600;text-decoration:none;">info@apartamentosillapancha.com</a>
             <p style="margin:20px 0 0;color:#cbd5e1;font-size:11px;">© Illa Pancha Ribadeo · Ribadeo, Lugo, Galicia</p>
           </td>
         </tr>

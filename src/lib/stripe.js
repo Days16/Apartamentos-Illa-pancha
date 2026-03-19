@@ -37,6 +37,9 @@ export async function createPaymentIntent(paymentData) {
         reservationId: paymentData.reservationId,
         description: paymentData.description,
       },
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      },
     });
 
     if (error) {

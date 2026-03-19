@@ -181,7 +181,9 @@ function BookingWidget({ apt, onBook, T }) {
   const checkoutLabel = checkout ? formatDateShort(checkout) : '';
 
   const handleDateClick = (date, type) => {
-    const dStr = dateToStr(date);
+    // Normalizar a medianoche local para evitar desfase de zona horaria con react-datepicker v9
+    const normalized = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const dStr = dateToStr(normalized);
     const block = apt.rawReservations?.find(r => dStr >= r.checkin && dStr < r.checkout && (r.id.startsWith('BLK-') || r.source === 'manual'));
 
     if (block) {
@@ -201,7 +203,7 @@ function BookingWidget({ apt, onBook, T }) {
   // Modo página de reserva: widget simplificado con solo botón
   if (globalSettings?.booking_mode === 'redirect') {
     return (
-      <div className="flex flex-col gap-5 p-6 border border-gray-200 rounded-lg sticky top-8">
+      <div className="flex flex-col gap-5 p-6 border border-gray-200 rounded-lg">
         <div>
           <div className="text-3xl font-serif font-bold text-teal">{formatPrice(apt.price)}</div>
           <div className="text-xs text-gray-500 mt-1">{T.detail.pricePerNight}</div>
@@ -221,7 +223,7 @@ function BookingWidget({ apt, onBook, T }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-6 border border-gray-200 rounded-lg sticky top-8">
+    <div className="flex flex-col gap-4 p-6 border border-gray-200 rounded-lg">
       <div className="text-3xl font-serif font-bold text-teal mb-1">{formatPrice(apt.price)}</div>
       <div className="text-xs text-gray-600 mb-6">{T.detail.pricePerNight}</div>
 
@@ -629,7 +631,7 @@ export default function ApartmentDetail() {
           </div>
 
           {/* COLUMNA DERECHA: WIDGET */}
-          <div>
+          <div className="self-start sticky top-8">
             <BookingWidget apt={apt} onBook={(dates) => {
               if (globalSettings?.booking_mode === 'redirect') {
                 navigate('/reservar');

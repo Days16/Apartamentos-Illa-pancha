@@ -55,7 +55,7 @@ export default function Calendario() {
         deposit: 0,
         status: 'confirmed',
         source: 'manual',
-        email: 'info@illapancha.com'
+        email: 'info@apartamentosillapancha.com'
       };
       const savedRes = await createReservation(resData);
       setReservations(prev => [...prev, savedRes]);
@@ -115,7 +115,7 @@ export default function Calendario() {
 
   const getStatusType = (res) => {
     if (!res) return null;
-    if (res.source === 'external' || res.source === 'booking' || res.source === 'airbnb' || res.source === 'iCal') return 'external';
+    if (res.source === 'booking' || res.source === 'airbnb' || res.source === 'other') return 'external';
     // Detección robusta de bloques: por status, por ID o por origen manual/bloqueado
     if (res.status === 'blocked' || res.id?.startsWith('BLK-') || res.guest?.includes('Bloqueado') || res.source === 'manual') return 'blocked';
     if (res.status === 'pending') return 'pending';

@@ -60,7 +60,7 @@ export default function Cookies() {
           <p>Puedes retirar tu consentimiento en cualquier momento haciendo clic en el enlace «Gestionar cookies» que encontrarás en el pie de página, o borrando las cookies de tu navegador.</p>
 
           <h2>5. Más información</h2>
-          <p>Para cualquier consulta sobre nuestra política de cookies, escríbenos a <strong>info@illapancha.com</strong>.</p>
+          <p>Para cualquier consulta sobre nuestra política de cookies, escríbenos a <strong>info@apartamentosillapancha.com</strong>.</p>
         </div>
       </div>
       <Footer />

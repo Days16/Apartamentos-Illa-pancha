@@ -25,7 +25,7 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
   const elements = useElements();
 
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState({ name: '', email: '', phone: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', phonePrefix: '+34' });
   const [checkinDate, setCheckinDate] = useState(initialCheckin ? strToDate(initialCheckin) : new Date(Date.now() + 86400000));
   const [checkoutDate, setCheckoutDate] = useState(initialCheckout ? strToDate(initialCheckout) : new Date(Date.now() + 86400000 * 3));
   const [selectedExtras, setSelectedExtras] = useState([]);
@@ -175,18 +175,19 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
         .from('reservations')
         .insert([{
           id: reservationId,
-          guest_name: form.name,
-          guest_email: form.email,
-          guest_phone: form.phone,
-          apartment_slug: apartment?.slug || 'cantabrico',
-          check_in: dateToStr(checkinDate),
-          check_out: dateToStr(checkoutDate),
+          guest: form.name,
+          email: form.email,
+          phone: form.phone ? `${form.phonePrefix} ${form.phone}` : '',
+          apt: apartment?.name || '',
+          apt_slug: apartment?.slug || '',
+          checkin: dateToStr(checkinDate),
+          checkout: dateToStr(checkoutDate),
           nights: nights,
-          total_price: total,
-          deposit_paid: deposit,
+          total: total,
+          deposit: deposit,
           extras: selectedExtras,
           status: 'confirmed',
-          stripe_payment_intent: paymentData.paymentIntentId,
+          source: 'web',
           created_at: new Date().toISOString(),
         }]);
 
@@ -373,12 +374,31 @@ export default function BookingModal({ onClose, apartment, initialCheckin, initi
                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
               />
               <label className="block text-xs font-semibold text-slate-900 mb-2 mt-4">{T.booking.phone}</label>
-              <input
-                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${step === 1 && !form.phone.trim() ? 'border-[#f44]' : 'border-gray-300'}`}
-                placeholder={T.booking.placeholderPhone}
-                value={form.phone}
-                onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
-              />
+              <div className={`flex border rounded overflow-hidden focus-within:border-[#82c8bd] focus-within:ring-2 focus-within:ring-[#82c8bd]/20 ${step === 1 && !form.phone.trim() ? 'border-[#f44]' : 'border-gray-300'}`}>
+                <select
+                  className="bg-gray-50 border-r border-gray-300 text-sm text-slate-700 px-2 py-2 focus:outline-none cursor-pointer"
+                  value={form.phonePrefix}
+                  onChange={e => setForm(p => ({ ...p, phonePrefix: e.target.value }))}
+                >
+                  <option value="+34">🇪🇸 +34</option>
+                  <option value="+351">🇵🇹 +351</option>
+                  <option value="+33">🇫🇷 +33</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+49">🇩🇪 +49</option>
+                  <option value="+39">🇮🇹 +39</option>
+                  <option value="+31">🇳🇱 +31</option>
+                  <option value="+32">🇧🇪 +32</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+55">🇧🇷 +55</option>
+                </select>
+                <input
+                  className="flex-1 px-3 py-2 text-sm text-slate-900 focus:outline-none bg-white"
+                  placeholder={T.booking.placeholderPhone}
+                  value={form.phone}
+                  type="tel"
+                  onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
+                />
+              </div>
               <div className="text-xs text-slate-600 leading-relaxed mb-4">
                 {T.booking.cancelFree.replace('{days}', cancelDays)}
               </div>
