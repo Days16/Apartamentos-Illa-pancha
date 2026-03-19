@@ -35,7 +35,6 @@ import Precios from './pages/admin/Precios';
 import ConfiguracionGeneral from './pages/admin/ConfiguracionGeneral';
 import IcalAdmin from './pages/admin/IcalAdmin';
 import Usuarios from './pages/admin/Usuarios';
-import WebTextos from './pages/admin/WebTextos';
 import ReglasReserva from './pages/admin/ReglasReserva';
 import Cancelacion from './pages/admin/Cancelacion';
 import Changelog from './pages/admin/Changelog';
@@ -137,7 +136,6 @@ export default function App() {
                         <Route path="configuracion" element={<ConfiguracionGeneral />} />
                         <Route path="ical" element={<IcalAdmin />} />
                         <Route path="usuarios" element={<Usuarios />} />
-                        <Route path="web" element={<WebTextos />} />
                         <Route path="ofertas" element={<OfertasAdmin />} />
                         <Route path="extras" element={<ExtrasAdmin />} />
                         <Route path="reglas" element={<ReglasReserva />} />

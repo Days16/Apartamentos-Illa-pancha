@@ -21,7 +21,7 @@ export default function PreviewBanner() {
 
     const handleExit = () => {
         sessionStorage.removeItem('maintenance_preview');
-        window.location.href = '/admin/web';
+        window.location.href = '/admin/configuracion';
     };
 
     return (

@@ -22,7 +22,19 @@
         "realOpinions": "Real<br /><em>opinions</em>",
         "verifiedReviews": "4.9 ★ · +220 verified reviews",
         "bookNowNoComm": "Book now no commission",
-        "freeCancelDays": "Free cancellation · {days} days before"
+        "freeCancelDays": "Free cancellation · {days} days before",
+        "heroTitle": "Book<br /><em>direct,</em><br />no commissions",
+        "heroDesc": "Eight apartments by the Eo estuary. Book with us and pay less than on any platform.",
+        "feature1Title": "No commissions",
+        "feature1Desc": "Direct booking. What you pay is what we receive, no middlemen or surprises.",
+        "feature2Title": "Secure payment",
+        "feature2Desc": "{pct}% now by card as deposit. The rest in cash upon arrival.",
+        "feature3Title": "Always updated",
+        "feature3Desc": "Our calendar syncs with Booking and Airbnb in real-time. Double bookings will never happen.",
+        "feature4Title": "Ribadeo, Galicia",
+        "feature4Desc": "5 minutes from the international bridge and the best beaches on the northern Galician coast.",
+        "bannerTitle": "Why book<br /><em>direct with us?</em>",
+        "bannerDesc": "Save between 15% and 20% compared to Booking.com or Airbnb. Same apartment, same service, no commissions."
     },
     "apartments": {
         "eyebrow": "Full collection",
@@ -227,6 +239,9 @@
         "ctaTitle": "Shall we encourage you <em>to come?</em>",
         "ctaDesc": "Check availability and book directly. No commissions, with personal treatment and the best price guaranteed.",
         "ctaContact": "Contact",
+        "experienceRibadeo": "Experiences in Ribadeo",
+        "expDesc1": "Beyond the apartments, Ribadeo offers a unique cultural and gastronomic agenda on the Cantabrian coast.",
+        "expDesc2": "Craft markets, music festivals, hiking through the Mariña lucense or surfing on the best beaches in the north.",
         "zone": "The area",
         "charmingView": "Charming sea view",
         "poi": [
@@ -314,5 +329,24 @@
         "dataDesc": "Read our data protection clause.",
         "lastUpdate": "Last update: January 2026",
         "docs": "Legal documents"
+    },
+    "reservar": {
+        "title": "Book — Illa Pancha",
+        "hero": "Make a reservation",
+        "sub": "Contact us directly or book through Booking.com",
+        "contactTitle": "Direct contact",
+        "contactDesc": "Write to us or call us. We reply within 24 hours.",
+        "nameLbl": "Name",
+        "emailLbl": "Email",
+        "phoneLbl": "Phone (optional)",
+        "msgLbl": "Message",
+        "msgPlaceholder": "What dates are you interested in? For how many guests?",
+        "send": "Send enquiry",
+        "sending": "Sending…",
+        "sentTitle": "Message sent",
+        "sentDesc": "Thank you, we will reply as soon as possible.",
+        "whatsappLabel": "WhatsApp",
+        "backContact": "See full contact page →",
+        "errorSend": "Error sending. Please try again."
     }
 }

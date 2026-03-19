@@ -256,32 +256,8 @@ export default function ConfiguracionGeneral() {
                                     </div>
                                     <span className="font-bold text-navy text-sm">Página de reserva</span>
                                 </div>
-                                <p className="text-xs text-gray-500 leading-relaxed pl-6">Redirige a <code className="bg-gray-100 px-1 rounded">/reservar</code> con formulario de contacto y enlace a Booking.com</p>
+                                <p className="text-xs text-gray-500 leading-relaxed pl-6">Redirige a <code className="bg-gray-100 px-1 rounded">/reservar</code> con formulario de contacto directo</p>
                             </button>
-                        </div>
-
-                        {/* URL de Booking.com — solo visible cuando está en modo redirect */}
-                        <div className={`transition-all ${settings.booking_mode === 'redirect' ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                                URL de tu propiedad en Booking.com
-                            </label>
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#003580' }}>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                                        <path d="M3.5 2A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h5a.5.5 0 00.5-.5V17h6v4.5a.5.5 0 00.5.5h5a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2h-17zm5 11a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm7 0a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>
-                                    </svg>
-                                </div>
-                                <input
-                                    type="url"
-                                    value={settings.booking_com_url}
-                                    onChange={e => handleChange('booking_com_url', e.target.value)}
-                                    placeholder="https://www.booking.com/hotel/es/tu-propiedad.es.html"
-                                    className="flex-1 border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-                                />
-                            </div>
-                            <p className="text-xs text-gray-400 mt-1.5">
-                                Copia la URL completa de tu alojamiento en Booking.com. Se mostrará en la página <code>/reservar</code>.
-                            </p>
                         </div>
 
                         {/* Preview */}
@@ -291,7 +267,7 @@ export default function ConfiguracionGeneral() {
                                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                                 </svg>
                                 <p className="text-xs text-amber-700 leading-relaxed">
-                                    Los botones "Reservar" de toda la web redirigirán a <strong>/reservar</strong> en lugar de abrir el modal. Esa página muestra el formulario de contacto y el enlace a Booking.com.
+                                    Los botones "Reservar" de toda la web redirigirán a <strong>/reservar</strong> con el formulario de contacto.
                                 </p>
                             </div>
                         )}

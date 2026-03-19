@@ -22,7 +22,19 @@
         "realOpinions": "Opiniones<br /><em>reales</em>",
         "verifiedReviews": "4.9 ★ · +220 opiniones verificadas",
         "bookNowNoComm": "Reservar ahora sin comisión",
-        "freeCancelDays": "Cancelación gratuita · {days} días antes"
+        "freeCancelDays": "Cancelación gratuita · {days} días antes",
+        "heroTitle": "Alquila<br /><em>directo,</em><br />sin comisiones",
+        "heroDesc": "Ocho apartamentos junto a la ría del Eo. Reserva con nosotros y paga menos que en cualquier plataforma.",
+        "feature1Title": "Sin comisiones",
+        "feature1Desc": "Reserva directa. Lo que pagas es lo que recibimos nosotros, sin intermediarios ni sorpresas.",
+        "feature2Title": "Pago seguro",
+        "feature2Desc": "{pct}% ahora con tarjeta como depósito. El resto en efectivo cuando llegues al apartamento.",
+        "feature3Title": "Siempre actualizado",
+        "feature3Desc": "Nuestro calendario se sincroniza con Booking y Airbnb en tiempo real. Nunca habrá doble reserva.",
+        "feature4Title": "Ribadeo, Galicia",
+        "feature4Desc": "A 5 minutos del puente internacional y de las mejores playas de la costa norte gallega.",
+        "bannerTitle": "¿Por qué reservar<br /><em>directo con nosotros?</em>",
+        "bannerDesc": "Ahorra entre un 15 y un 20% respecto a Booking.com o Airbnb. El mismo apartamento, el mismo servicio, sin comisiones de intermediarios."
     },
     "apartments": {
         "eyebrow": "Colección completa",
@@ -225,6 +237,9 @@
         "ctaTitle": "¿Te animamos a <em>venir?</em>",
         "ctaDesc": "Consulta la disponibilidad y reserva directamente. Sin comisiones, con trato personal y al mejor precio garantizado.",
         "ctaContact": "Contactar",
+        "experienceRibadeo": "Experiencias en Ribadeo",
+        "expDesc1": "Más allá de los apartamentos, Ribadeo ofrece una agenda cultural y gastronómica única en la cornisa cantábrica.",
+        "expDesc2": "Mercados artesanales, festivales de música, senderismo por la Mariña lucense o surf en las mejores playas del norte.",
         "zone": "La zona",
         "charmingView": "Vista al mar con encanto",
         "poi": [
@@ -312,5 +327,24 @@
         "dataDesc": "Lee nuestra cláusula de protección de datos.",
         "lastUpdate": "Última actualización: enero de 2026",
         "docs": "Documentos legales"
+    },
+    "reservar": {
+        "title": "Reservar — Illa Pancha",
+        "hero": "Haz tu reserva",
+        "sub": "Contáctanos directamente o reserva a través de Booking.com",
+        "contactTitle": "Contacto directo",
+        "contactDesc": "Escríbenos o llámanos. Te respondemos en menos de 24 horas.",
+        "nameLbl": "Nombre",
+        "emailLbl": "Email",
+        "phoneLbl": "Teléfono (opcional)",
+        "msgLbl": "Mensaje",
+        "msgPlaceholder": "¿En qué fechas te interesa? ¿Para cuántas personas?",
+        "send": "Enviar consulta",
+        "sending": "Enviando…",
+        "sentTitle": "Mensaje enviado",
+        "sentDesc": "Gracias, te responderemos lo antes posible.",
+        "whatsappLabel": "WhatsApp",
+        "backContact": "Ver página de contacto completa →",
+        "errorSend": "Error al enviar. Inténtalo de nuevo."
     }
 }

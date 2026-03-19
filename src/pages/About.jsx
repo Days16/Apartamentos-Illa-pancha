@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
-import { fetchWebsiteContent } from '../services/supabaseService';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { safeHtml } from '../utils/sanitize';
@@ -18,20 +17,6 @@ export default function About() {
   const A = T.about;
   const { settings } = useSettings();
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [texts, setTexts] = useState({});
-
-  useEffect(() => {
-    fetchWebsiteContent('about').then(data => {
-      const cmap = {};
-      data.forEach(item => cmap[item.section_key] = item);
-      setTexts(cmap);
-    });
-  }, []);
-
-  const getText = (key, defaultContent) => {
-    if (!texts[key]) return defaultContent;
-    return lang === 'ES' ? texts[key].content_es : texts[key].content_en;
-  };
 
   return (
     <>
@@ -45,9 +30,9 @@ export default function About() {
       <div className="py-20 md:py-28 px-4 bg-gradient-to-br from-navy to-navy-dark">
         <div className="max-w-4xl mx-auto text-center text-white">
           <div className="text-sm font-semibold text-teal uppercase tracking-widest mb-4">{A.history}</div>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6" dangerouslySetInnerHTML={safeHtml(getText('about_hero_title', A.heroTitle))} />
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6" dangerouslySetInnerHTML={safeHtml(A.heroTitle)} />
           <p className="text-lg text-gray-100">
-            {getText('about_hero_desc', A.heroDesc)}
+            {A.heroDesc}
           </p>
         </div>
       </div>
@@ -72,16 +57,10 @@ export default function About() {
       {/* HISTORIA */}
       <div className="py-20 px-4 bg-gray-50">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-4xl font-serif font-bold text-navy mb-8" dangerouslySetInnerHTML={safeHtml(getText('about_story_title', A.storyTitle))} />
-          <p className="text-gray-700 leading-relaxed mb-6 font-sans">
-            {getText('about_story_text_1', A.storyText1)}
-          </p>
-          <p className="text-gray-700 leading-relaxed mb-6 font-sans">
-            {getText('about_story_text_2', A.storyText2)}
-          </p>
-          <p className="text-gray-700 leading-relaxed font-sans">
-            {getText('about_story_text_3', A.storyText3)}
-          </p>
+          <h2 className="text-4xl font-serif font-bold text-navy mb-8" dangerouslySetInnerHTML={safeHtml(A.storyTitle)} />
+          <p className="text-gray-700 leading-relaxed mb-6 font-sans">{A.storyText1}</p>
+          <p className="text-gray-700 leading-relaxed mb-6 font-sans">{A.storyText2}</p>
+          <p className="text-gray-700 leading-relaxed font-sans">{A.storyText3}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 border-t border-gray-200 pt-12">
             <div className="text-center p-6 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -128,11 +107,11 @@ export default function About() {
                 <Ico d={paths.map} size={14} color="#1a5f6e" />
                 {lang === 'EN' ? 'The Region' : 'La Zona'}
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy leading-tight" dangerouslySetInnerHTML={safeHtml(getText('about_ribadeo_title', A.whyRibadeo))} />
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy leading-tight" dangerouslySetInnerHTML={safeHtml(A.whyRibadeo)} />
               <div className="w-20 h-1 bg-teal" />
               <div className="prose prose-lg text-gray-600 prose-p:leading-relaxed">
-                <p>{getText('about_ribadeo_desc_1', A.ribadeoDesc1)}</p>
-                <p>{getText('about_ribadeo_desc_2', A.ribadeoDesc2)}</p>
+                <p>{A.ribadeoDesc1}</p>
+                <p>{A.ribadeoDesc2}</p>
               </div>
             </div>
             <div className="flex-1 relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl animate-in fade-in duration-1000 delay-300 group">
@@ -155,11 +134,11 @@ export default function About() {
       {/* SECCIÓN: EXPERIENCIAS */}
       <div className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy mb-6" dangerouslySetInnerHTML={safeHtml(getText('about_exp_title', A.experienceRibadeo))} />
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy mb-6" dangerouslySetInnerHTML={safeHtml(A.experienceRibadeo)} />
           <div className="w-24 h-1 bg-teal mx-auto mb-10" />
           <div className="max-w-3xl mx-auto text-lg text-gray-600 space-y-6 mb-16">
-            <p>{getText('about_exp_desc_1', A.expDesc1)}</p>
-            <p>{getText('about_exp_desc_2', A.expDesc2)}</p>
+            <p>{A.expDesc1}</p>
+            <p>{A.expDesc2}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {(A.poi || []).map((item, i) => (

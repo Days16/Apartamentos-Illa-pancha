@@ -441,35 +441,6 @@ export async function updateSetting(key, value, type = 'string') {
   return data;
 }
 
-// ─── TEXTOS EDITABLES (CMS) ──────────────────────────────────────────────
-export async function fetchWebsiteContent(page = null) {
-  let query = supabase.from('website_content').select('*');
-  if (page) {
-    query = query.eq('page', page);
-  }
-
-  const { data, error } = await query;
-  if (error) {
-    console.error('Error fetching website_content:', error);
-    return [];
-  }
-  return data || [];
-}
-
-export async function updateWebsiteContent(section_key, updates) {
-  const { data, error } = await supabase
-    .from('website_content')
-    .upsert({ section_key, ...updates }, { onConflict: 'section_key' })
-    .select();
-
-  if (error) {
-    const errorMsg = `Error en updateWebsiteContent (${section_key}): [${error.code}] ${error.message}`;
-    console.error(errorMsg, error);
-    throw new Error(errorMsg);
-  }
-  return data;
-}
-
 // ─── MENSAJES DE CONTACTO ──────────────────────────────────────────────────
 export async function submitContactMessage(message) {
   const { data, error } = await supabase

@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
 import Ico, { paths } from '../components/Ico';
 import SEO from '../components/SEO';
-import { fetchApartments, fetchWebsiteContent, fetchApartmentPhotos } from '../services/supabaseService';
+import { fetchApartments, fetchApartmentPhotos } from '../services/supabaseService';
 import { getReservations, getReviews } from '../services/dataService';
 import { formatPrice, strToDate, dateToStr } from '../utils/format';
 import { safeHtml } from '../utils/sanitize';
@@ -42,22 +42,18 @@ export default function Home() {
 
   const [featuredApts, setFeaturedApts] = useState([]);
   const [reservations, setReservations] = useState([]);
-  const [texts, setTexts] = useState({});
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     Promise.all([
       fetchApartments(),
-      fetchWebsiteContent('home'),
       getReservations(),
       getReviews()
-    ]).then(async ([aptsData, homeTexts, resData, reviewsData]) => {
+    ]).then(async ([aptsData, resData, reviewsData]) => {
       setReservations(resData);
       setReviews(reviewsData.filter(r => r.active !== false).slice(0, 6));
 
       const apts = aptsData.slice(0, 6);
-
-      // Load one photo per apartment for the cover
       const aptsWithPhotos = await Promise.all(apts.map(async (apt) => {
         try {
           const photos = await fetchApartmentPhotos(apt.slug);
@@ -70,17 +66,8 @@ export default function Home() {
         }
       }));
       setFeaturedApts(aptsWithPhotos);
-
-      const cmap = {};
-      homeTexts.forEach(item => cmap[item.section_key] = item);
-      setTexts(cmap);
     });
   }, []);
-
-  const getText = (key, defaultEs, defaultEn) => {
-    if (!texts[key]) return t(defaultEs, defaultEn);
-    return t(texts[key].content_es, texts[key].content_en);
-  };
 
 
   const handleSearch = () => {
@@ -113,9 +100,9 @@ export default function Home() {
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center max-w-4xl">
           <div className="text-sm font-semibold text-teal uppercase tracking-widest mb-4">Ribadeo, Galicia</div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6 leading-tight" dangerouslySetInnerHTML={safeHtml(getText('home_hero_title', 'Alquila<br /><em>directo,</em><br />sin comisiones', 'Book<br /><em>direct,</em><br />no commissions'))} />
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6 leading-tight" dangerouslySetInnerHTML={safeHtml(T.home.heroTitle)} />
           <p className="text-lg md:text-xl text-gray-100 mb-12 leading-relaxed">
-            {getText('home_hero_desc', 'Ocho apartamentos junto a la ría del Eo. Reserva con nosotros y paga menos que en cualquier plataforma.', 'Eight apartments by the Eo estuary. Book with us and pay less than on any platform.')}
+            {T.home.heroDesc}
           </p>
           <div className="flex gap-4 flex-wrap justify-center mb-16">
             <button className="bg-navy text-white px-8 py-4 rounded hover:bg-slate-900 transition-all font-semibold text-lg" onClick={handleSearch}>
@@ -175,10 +162,10 @@ export default function Home() {
       {/* CARACTERÍSTICAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-20 px-4 max-w-7xl mx-auto">
         {[
-          { icon: paths.cash, t: getText('home_features_1_title', 'Sin comisiones', 'No commissions'), d: getText('home_features_1_desc', 'Reserva directa. Lo que pagas es lo que recibimos nosotros, sin intermediarios ni sorpresas.', 'Direct booking. What you pay is what we receive, no middlemen or surprises.') },
-          { icon: paths.lock, t: getText('home_features_2_title', 'Pago seguro', 'Secure payment'), d: getText('home_features_2_desc', `${depositPct}% ahora con tarjeta como depósito. El resto en efectivo cuando llegues al apartamento.`, `${depositPct}% now by card as deposit. The rest in cash upon arrival.`) },
-          { icon: paths.sync, t: getText('home_features_3_title', 'Siempre actualizado', 'Always updated'), d: getText('home_features_3_desc', 'Nuestro calendario se sincroniza con Booking y Airbnb en tiempo real. Nunca habrá doble reserva.', 'Our calendar syncs with Booking and Airbnb in real-time. Double bookings will never happen.') },
-          { icon: paths.map, t: getText('home_features_4_title', 'Ribadeo, Galicia', 'Ribadeo, Galicia'), d: getText('home_features_4_desc', 'A 5 minutos del puente internacional y de las mejores playas de la costa norte gallega.', '5 minutes from the international bridge and the best beaches on the northern Galician coast.') },
+          { icon: paths.cash, t: T.home.feature1Title, d: T.home.feature1Desc },
+          { icon: paths.lock, t: T.home.feature2Title, d: T.home.feature2Desc.replace('{pct}', depositPct) },
+          { icon: paths.sync, t: T.home.feature3Title, d: T.home.feature3Desc },
+          { icon: paths.map, t: T.home.feature4Title, d: T.home.feature4Desc },
         ].map((f, i) => (
           <div key={i} className="flex flex-col items-center text-center">
             <div className="mb-4 p-3 bg-blue-100 rounded-lg">
@@ -308,9 +295,9 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <h2 className="text-4xl font-serif font-bold text-white mb-6" dangerouslySetInnerHTML={safeHtml(getText('home_banner_title', '¿Por qué reservar<br /><em>directo con nosotros?</em>', 'Why book<br /><em>direct with us?</em>'))} />
+              <h2 className="text-4xl font-serif font-bold text-white mb-6" dangerouslySetInnerHTML={safeHtml(T.home.bannerTitle)} />
               <p className="text-gray-100 mb-6 leading-relaxed text-lg">
-                {getText('home_banner_desc', 'Ahorra entre un 15 y un 20% respecto a Booking.com o Airbnb. El mismo apartamento, el mismo servicio, sin comisiones de intermediarios.', 'Save between 15% and 20% compared to Booking.com or Airbnb. Same apartment, same service, no commissions.')}
+                {T.home.bannerDesc}
               </p>
             </div>
             <div className="flex flex-col items-center md:items-start gap-4">
