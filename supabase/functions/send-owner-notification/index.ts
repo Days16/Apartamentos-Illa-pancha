@@ -89,6 +89,26 @@ serve(async (req) => {
           </div>
         </div>
       `;
+    } else if (type === "review") {
+      const { guestName, stars, comment, apartmentName } = data;
+      subject = `⭐ Nueva reseña recibida — ${guestName}`;
+      html = `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a1a;">
+          <div style="background:#D4A843;padding:32px;border-radius:8px 8px 0 0;text-align:center;">
+            <h1 style="color:#fff;margin:0;font-size:22px;">⭐ Novedad: Nueva reseña recibida</h1>
+          </div>
+          <div style="background:#f9f9f9;padding:32px;">
+            <p style="margin:0 0 16px;"><strong>Huésped:</strong> ${guestName} (${apartmentName})</p>
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:16px;margin-bottom:24px;">
+              <p style="font-size:20px;color:#D4A843;margin-bottom:8px;">${'★'.repeat(stars)}${'☆'.repeat(5-stars)}</p>
+              <p style="margin:0;font-style:italic;line-height:1.6;">"${comment || 'Sin comentario'}"</p>
+            </div>
+            <a href="${panelUrl}" style="display:inline-block;background:#1a5f6e;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:14px;">
+              Ver y aprobar en el panel →
+            </a>
+          </div>
+        </div>
+      `;
     } else {
       subject = `Notificación — Illa Pancha`;
       html = `<p>Nuevo evento: <strong>${type}</strong></p><p><a href="${panelUrl}">Ver panel de gestión</a></p>`;

@@ -30,5 +30,9 @@ docs
 .antigravity
 .claude
 supabase/.temp
+supabase/migrations
 scripts/crear-reserva-prueba.js
 scripts/test-email.js
+illa-pancha-web-e549a08b5e61.json
+test-results
+playwright-report
