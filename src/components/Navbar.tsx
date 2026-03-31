@@ -4,7 +4,7 @@ import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { useTheme } from '../contexts/ThemeContext';
 import { useSettings } from '../contexts/SettingsContext';
-import { useCurrency } from '../contexts/CurrencyContext';
+import { useCurrency, CURRENCIES } from '../contexts/CurrencyContext';
 import type { Lang } from '../types';
 
 const LANGS: { code: Lang; label: string; flag: string }[] = [
@@ -19,12 +19,14 @@ export default function Navbar({ onOpenBooking }: { onOpenBooking?: () => void }
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [currencyOpen, setCurrencyOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+  const currencyRef = useRef<HTMLDivElement>(null);
   const { lang, setLang } = useLang();
   const T = useT(lang);
   const { dark, toggle } = useTheme();
   const { settings } = useSettings();
-  const { currency, toggleCurrency } = useCurrency();
+  const { currency, setCurrency } = useCurrency();
   const location = useLocation();
   const navigate = useNavigate();
   const navRef = useRef(null);
@@ -49,11 +51,14 @@ export default function Navbar({ onOpenBooking }: { onOpenBooking?: () => void }
       if (langOpen && langRef.current && !langRef.current.contains(e.target)) {
         setLangOpen(false);
       }
+      if (currencyOpen && currencyRef.current && !currencyRef.current.contains(e.target)) {
+        setCurrencyOpen(false);
+      }
     };
 
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, [mobileOpen, langOpen]);
+  }, [mobileOpen, langOpen, currencyOpen]);
 
   // Prevenir scroll cuando el menú está abierto
   useEffect(() => {
@@ -91,7 +96,7 @@ export default function Navbar({ onOpenBooking }: { onOpenBooking?: () => void }
       <Link to="/"><img src="/logo_lineas.png" alt="Illa Pancha" className="h-10 w-auto" /></Link>
 
       {/* Links - escritorio y menú móvil */}
-      <div className={`flex flex-col md:flex-row md:items-center md:gap-8 absolute md:relative top-16 md:top-0 left-0 md:left-auto right-0 md:right-auto w-full md:w-auto bg-white dark:bg-slate-900 dark:border-slate-700 md:bg-transparent md:dark:bg-transparent px-6 md:px-0 py-4 md:py-0 border-b md:border-0 transition-all duration-300 ${mobileOpen ? 'max-h-64 opacity-100' : 'md:max-h-full md:opacity-100 max-h-0 opacity-0 overflow-hidden md:overflow-visible'}`}>
+      <div className={`flex flex-col md:flex-row md:items-center md:gap-8 absolute top-16 md:top-1/2 md:-translate-y-1/2 left-0 md:left-1/2 md:-translate-x-1/2 right-0 md:right-auto w-full md:w-auto bg-white dark:bg-slate-900 dark:border-slate-700 md:bg-transparent md:dark:bg-transparent px-6 md:px-0 py-4 md:py-0 border-b md:border-0 transition-all duration-300 ${mobileOpen ? 'max-h-64 opacity-100' : 'md:max-h-full md:opacity-100 max-h-0 opacity-0 overflow-hidden md:overflow-visible'}`}>
         <Link to="/apartamentos" className={`py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium ${isActive('/apartamentos') ? 'text-teal border-b-2 border-teal' : ''}`}>
           {T.nav.apartments}
         </Link>
@@ -155,13 +160,32 @@ export default function Navbar({ onOpenBooking }: { onOpenBooking?: () => void }
           )}
         </div>
 
-        <button
-          onClick={toggleCurrency}
-          aria-label={`Cambiar a ${currency === 'EUR' ? 'GBP' : 'EUR'}`}
-          className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-teal transition-colors px-2 py-1 rounded border border-slate-200 dark:border-slate-600 hover:border-teal"
-        >
-          {currency === 'EUR' ? '€ EUR' : '£ GBP'}
-        </button>
+        <div className="relative" ref={currencyRef}>
+          <button
+            onClick={() => setCurrencyOpen(o => !o)}
+            className="flex items-center gap-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-teal transition-colors px-2 py-1 rounded border border-slate-200 dark:border-slate-600 hover:border-teal"
+            aria-label="Cambiar moneda"
+          >
+            <span>{CURRENCIES.find(c => c.code === currency)?.symbol}</span>
+            <span>{currency}</span>
+            <svg className={`w-2.5 h-2.5 transition-transform ${currencyOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          </button>
+          {currencyOpen && (
+            <div className="absolute top-full right-0 mt-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-lg overflow-hidden z-50 min-w-[150px]">
+              {CURRENCIES.map(c => (
+                <button
+                  key={c.code}
+                  onClick={() => { setCurrency(c.code); setCurrencyOpen(false); }}
+                  className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 ${currency === c.code ? 'font-semibold text-teal bg-teal/5' : 'text-slate-700 dark:text-slate-300'}`}
+                >
+                  <span className="w-5 text-center font-bold">{c.symbol}</span>
+                  <span>{c.label}</span>
+                  {currency === c.code && <span className="ml-auto text-teal text-xs">✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         <button
           onClick={toggle}

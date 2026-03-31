@@ -143,7 +143,7 @@ export default function About() {
       </div>
 
       {/* SECCIÓN: EXPERIENCIAS */}
-      <div className="py-24 bg-slate-50">
+      <div id="experiencias" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-navy mb-6" dangerouslySetInnerHTML={safeHtml(A.experienceRibadeo)} />
           <div className="w-24 h-1 bg-teal mx-auto mb-10" />

@@ -33,6 +33,10 @@ supabase/.temp
 supabase/migrations
 scripts/crear-reserva-prueba.js
 scripts/test-email.js
+scripts/test-monthly-report.js
+scripts/test-review-flow.js
+scripts/test-stripe-payment.js
 illa-pancha-web-e549a08b5e61.json
 test-results
 playwright-report
+CLAUDE.md
