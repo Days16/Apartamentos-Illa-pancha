@@ -1,10 +1,7 @@
-/* eslint-disable */
-// @ts-nocheck
 import { useState, useEffect, useMemo } from 'react';
 import { trackEvent, EVENTS } from '../utils/analytics';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
@@ -15,7 +12,8 @@ import { getApartments } from '../services/dataService';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { formatDateShort, strToDate, dateToStr } from '../utils/format';
+import { strToDate, dateToStr } from '../utils/format';
+import type { Apartment, Reservation } from '../types';
 
 export default function Apartments() {
   const navigate = useNavigate();
@@ -25,21 +23,21 @@ export default function Apartments() {
   const { convertPrice } = useCurrency();
   const A = T.apartments;
 
-  const [apartments, setApartments] = useState([]);
+  const [apartments, setApartments] = useState<Array<Apartment & { coverPhoto: string | null; dateAvailable?: boolean }>>([]);
   const [loadingApts, setLoadingApts] = useState(true);
-  const [loadError, setLoadError] = useState(null);
-  const [reservations, setReservations] = useState([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [filter, setFilter] = useState(searchParams.get('filter') || 'all');
   const [checkin, setCheckin] = useState(searchParams.get('checkin') || '');
   const [checkout, setCheckout] = useState(searchParams.get('checkout') || '');
   const [guests, setGuests] = useState(Number(searchParams.get('guests')) || 2);
   const [searched, setSearched] = useState(!!searchParams.get('checkin'));
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [selectedApt, setSelectedApt] = useState(null);
+  const [selectedApt, setSelectedApt] = useState<Apartment | null>(null);
   const [priceRange, setPriceRange] = useState(searchParams.get('price') || 'all');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'default');
-  const [amenityFilters, setAmenityFilters] = useState(
-    searchParams.get('amenities') ? searchParams.get('amenities').split(',') : []
+  const [amenityFilters, setAmenityFilters] = useState<string[]>(
+    searchParams.get('amenities')?.split(',') ?? []
   );
   const [showMoreFilters, setShowMoreFilters] = useState(false);
 
@@ -50,13 +48,11 @@ export default function Apartments() {
         setReservations(resData);
         const aptsWithPhotos = await Promise.all(
           data.map(async apt => {
+            // Usar cover_photo_url si ya está en la tabla (evita query extra)
+            if (apt.coverPhotoUrl) return { ...apt, coverPhoto: apt.coverPhotoUrl };
             try {
-              // Intentar obtener fotos reales de Supabase
               const photos = await fetchApartmentPhotos(apt.slug);
-              if (photos && photos.length > 0) {
-                return { ...apt, coverPhoto: photos[0].photo_url };
-              }
-              return { ...apt, coverPhoto: null };
+              return { ...apt, coverPhoto: photos?.[0]?.photo_url ?? null };
             } catch (err) {
               console.warn(`Photos fail for ${apt.slug}`, err);
               return { ...apt, coverPhoto: null };
@@ -75,7 +71,7 @@ export default function Apartments() {
 
   // Sincronizar filtros → URL (replace para no contaminar el historial)
   useEffect(() => {
-    const params = {};
+    const params: Record<string, string> = {};
     if (checkin) params.checkin = checkin;
     if (checkout) params.checkout = checkout;
     if (guests !== 2) params.guests = String(guests);
@@ -99,7 +95,7 @@ export default function Apartments() {
     trackEvent(EVENTS.SEARCH, { checkin, checkout, guests });
   };
 
-  const checkOverlap = apt => {
+  const checkOverlap = (apt: Apartment): boolean => {
     if (!searched || !checkin || !checkout) return false;
     return reservations.some(r => {
       if (r.status === 'cancelled') return false;
@@ -120,7 +116,7 @@ export default function Apartments() {
     { key: 'Barbacoa', label: lang === 'EN' ? 'BBQ' : 'Barbacoa' },
   ];
 
-  const toggleAmenity = key => {
+  const toggleAmenity = (key: string) => {
     setAmenityFilters(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]));
   };
 
@@ -129,7 +125,7 @@ export default function Apartments() {
       apartments
         .filter(apt => {
           if (!apt.active) return false;
-          const capacity = apt.cap || apt.capacity || 2;
+          const capacity = apt.cap || 2;
           const amenities = apt.amenities || [];
           // Filtro categoría
           if (filter === '2' && capacity > 2) return false;
@@ -188,7 +184,7 @@ export default function Apartments() {
     ]
   );
 
-  const getAvailStatus = apt => {
+  const getAvailStatus = (apt: Apartment & { dateAvailable?: boolean }): string => {
     if (!apt.active) return 'inactive';
     if (!searched || !checkin || !checkout) return 'unknown';
     return apt.dateAvailable ? 'available' : 'unavailable';
@@ -215,7 +211,7 @@ export default function Apartments() {
               </label>
               <DatePicker
                 selected={strToDate(checkin)}
-                onChange={d => setCheckin(dateToStr(d))}
+                onChange={(d: Date | null) => setCheckin(dateToStr(d))}
                 minDate={new Date()}
                 dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                 placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
@@ -228,7 +224,7 @@ export default function Apartments() {
               </label>
               <DatePicker
                 selected={strToDate(checkout)}
-                onChange={d => setCheckout(dateToStr(d))}
+                onChange={(d: Date | null) => setCheckout(dateToStr(d))}
                 minDate={strToDate(checkin) || new Date()}
                 dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                 placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
@@ -236,10 +232,11 @@ export default function Apartments() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-navy uppercase tracking-wider">
+              <label htmlFor="apts-guests" className="text-xs font-bold text-navy uppercase tracking-wider">
                 {T.booking.guests}
               </label>
               <select
+                id="apts-guests"
                 value={guests}
                 onChange={e => setGuests(+e.target.value)}
                 className="h-11 px-4 border border-gray-300 rounded focus:ring-2 focus:ring-teal/20 outline-none transition-all bg-white"
@@ -423,8 +420,7 @@ export default function Apartments() {
               ))
             : filtered.map(apt => {
                 const status = getAvailStatus(apt);
-                const tagline =
-                  lang === 'EN' ? apt.tagline_en || apt.taglineEn || apt.tagline : apt.tagline;
+                const tagline = lang === 'EN' ? apt.taglineEn || apt.tagline : apt.tagline;
                 const topAmenities = (apt.amenities || []).slice(0, 3);
                 return (
                   <div
@@ -503,7 +499,7 @@ export default function Apartments() {
                           <Ico d={paths.users} size={13} /> {apt.cap} {T.common.persons}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Ico d={paths.bed} size={13} /> {apt.bedrooms} {A.bedrooms}
+                          <Ico d={paths.bed} size={13} /> {apt.bedrooms} {A.beds}
                         </span>
                         {apt.baths && (
                           <span className="flex items-center gap-1">
@@ -554,7 +550,7 @@ export default function Apartments() {
       </div>
 
       <Footer />
-      {bookingOpen && <BookingModal apt={selectedApt} onClose={() => setBookingOpen(false)} />}
+      {bookingOpen && <BookingModal apartment={selectedApt ?? undefined} onClose={() => setBookingOpen(false)} />}
     </>
   );
 }

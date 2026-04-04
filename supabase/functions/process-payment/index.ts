@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.0.0?target=deno";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") as string, {
     apiVersion: "2022-11-15",
@@ -7,7 +8,7 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") as string, {
 });
 
 const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
@@ -28,20 +29,28 @@ async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
     return data.success === true;
 }
 
-// Rate limiting: 3 intentos por IP cada 10 minutos
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+// Rate limiting persistente en Supabase: 3 intentos por IP cada 10 minutos
 const RATE_LIMIT = 3;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 
-function isRateLimited(ip: string): boolean {
+async function isRateLimited(ip: string): Promise<boolean> {
+    const supabase = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
     const now = Date.now();
-    const entry = rateLimitMap.get(ip);
-    if (!entry || now > entry.resetAt) {
-        rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    const resetAt = new Date(now + RATE_WINDOW_MS).toISOString();
+    const { data } = await supabase
+        .from("rate_limits")
+        .select("count, reset_at")
+        .eq("ip", ip)
+        .single();
+    if (!data || now > new Date(data.reset_at).getTime()) {
+        await supabase.from("rate_limits").upsert({ ip, count: 1, reset_at: resetAt });
         return false;
     }
-    if (entry.count >= RATE_LIMIT) return true;
-    entry.count++;
+    if (data.count >= RATE_LIMIT) return true;
+    await supabase.from("rate_limits").update({ count: data.count + 1 }).eq("ip", ip);
     return false;
 }
 
@@ -51,7 +60,7 @@ serve(async (req) => {
     }
 
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
-    if (isRateLimited(ip)) {
+    if (await isRateLimited(ip)) {
         return new Response(
             JSON.stringify({ error: "Demasiados intentos. Espera unos minutos." }),
             { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 }

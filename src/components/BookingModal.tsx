@@ -1,10 +1,7 @@
-/* eslint-disable */
-// @ts-nocheck
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import Turnstile from './Turnstile';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import Ico, { paths } from './Ico';
 import { supabase } from '../lib/supabase';
 import { createPaymentIntent, confirmPayment } from '../lib/stripe';
@@ -18,6 +15,9 @@ import { useNavigate } from 'react-router-dom';
 import { formatPrice, strToDate, dateToStr } from '../utils/format';
 import { getReservations } from '../services/dataService';
 import { trackEvent, EVENTS } from '../utils/analytics';
+import type { Apartment, Extra } from '../types';
+
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export default function BookingModal({
   onClose,
@@ -26,15 +26,15 @@ export default function BookingModal({
   initialCheckout,
 }: {
   onClose: () => void;
-  apartment?: any;
-  initialCheckin?: any;
-  initialCheckout?: any;
+  apartment?: Apartment;
+  initialCheckin?: string;
+  initialCheckout?: string;
 }) {
   const navigate = useNavigate();
   const { lang, t } = useLang();
   const T = useT(lang);
   const { dark } = useTheme();
-  const apt = apartment || { name: 'Apt. Cantábrico', price: 140 };
+  const apt = (apartment ?? { name: 'Apt. Cantábrico', price: 140 }) as Apartment;
   const stripe = useStripe();
   const elements = useElements();
 
@@ -46,15 +46,38 @@ export default function BookingModal({
   const [checkoutDate, setCheckoutDate] = useState(
     initialCheckout ? strToDate(initialCheckout) : new Date(Date.now() + 86400000 * 3)
   );
-  const [selectedExtras, setSelectedExtras] = useState([]);
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [stripeError, setStripeError] = useState('');
   const [confirmedId, setConfirmedId] = useState('');
-  const [allExtras, setAllExtras] = useState([]);
-  const [occupiedDates, setOccupiedDates] = useState([]);
+  const [allExtras, setAllExtras] = useState<Extra[]>([]);
+  const [occupiedDates, setOccupiedDates] = useState<string[]>([]);
   const [globalSettings, setGlobalSettings] = useState<Record<string, unknown>>({});
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
+  const [showErrors, setShowErrors] = useState(false);
+
+  const DRAFT_KEY = `booking_draft_${apt.slug}`;
+
+  // Restaurar borrador guardado en sessionStorage tras error de pago
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(DRAFT_KEY);
+      if (saved) {
+        const draft = JSON.parse(saved) as {
+          form?: typeof form;
+          checkin?: string;
+          checkout?: string;
+          extras?: string[];
+        };
+        if (draft.form) setForm(draft.form);
+        if (draft.checkin) setCheckinDate(new Date(draft.checkin));
+        if (draft.checkout) setCheckoutDate(new Date(draft.checkout));
+        if (draft.extras) setSelectedExtras(draft.extras);
+      }
+    } catch { /* silent */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (step !== 2) setCaptchaToken('');
@@ -71,7 +94,7 @@ export default function BookingModal({
         const relevantRes = resData.filter(
           r => (r.aptSlug === apt.slug || r.apt === apt.slug) && r.status !== 'cancelled'
         );
-        const list = [];
+        const list: string[] = [];
         relevantRes.forEach(r => {
           const start = new Date(r.checkin + 'T00:00:00');
           const end = new Date(r.checkout + 'T00:00:00');
@@ -110,7 +133,7 @@ export default function BookingModal({
   })();
   const belowMinStay = nights > 0 && nights < effectiveMinStay;
 
-  const taxPct = globalSettings.tax_percentage !== undefined ? globalSettings.tax_percentage : 10;
+  const taxPct = typeof globalSettings.tax_percentage === 'number' ? globalSettings.tax_percentage : 10;
   const subtotal = apt.price * nights;
 
   let discountAmount = 0;
@@ -132,13 +155,13 @@ export default function BookingModal({
 
   // Preferencias globales > Apt > Default
   // Apt > Global > Default
-  const cancelDays = apt.cancellation_days ?? globalSettings.cancellation_days ?? 14;
-  const depositPct = apt.deposit_percentage ?? globalSettings.payment_deposit_percentage ?? 50;
+  const cancelDays = apt.cancellation_days ?? (typeof globalSettings.cancellation_days === 'number' ? globalSettings.cancellation_days : 14);
+  const depositPct = apt.deposit_percentage ?? (typeof globalSettings.payment_deposit_percentage === 'number' ? globalSettings.payment_deposit_percentage : 50);
 
   const deposit = Math.round(total * (depositPct / 100));
 
   // Formatear fechas para mostrar
-  const formatDate = date => {
+  const formatDate = (date: Date | null): string => {
     if (!date) return '';
     return new Intl.DateTimeFormat(lang === 'ES' ? 'es-ES' : 'en-US', {
       day: 'numeric',
@@ -162,7 +185,7 @@ export default function BookingModal({
   };
   const hasOverlap = checkHasOverlap();
 
-  const toggleExtra = id => {
+  const toggleExtra = (id: string) => {
     setSelectedExtras(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
   };
 
@@ -191,6 +214,28 @@ export default function BookingModal({
     setStripeError('');
 
     try {
+      // Verificación de disponibilidad en tiempo real antes del pago
+      const checkinStr = dateToStr(checkinDate!);
+      const checkoutStr = dateToStr(checkoutDate!);
+      const { data: overlap } = await supabase
+        .from('reservations')
+        .select('id')
+        .eq('apt_slug', apartment?.slug || '')
+        .neq('status', 'cancelled')
+        .lt('checkin', checkoutStr)
+        .gt('checkout', checkinStr)
+        .limit(1);
+
+      if (overlap && overlap.length > 0) {
+        setStripeError(
+          lang === 'ES'
+            ? 'Lo sentimos, esas fechas acaban de ser reservadas. Por favor elige otras.'
+            : 'Sorry, those dates were just booked. Please select different dates.'
+        );
+        setLoading(false);
+        return;
+      }
+
       // Crear ID de reserva (criptográficamente seguro)
       const reservationId =
         'IP-' + ((crypto.getRandomValues(new Uint32Array(1))[0] % 900000) + 100000);
@@ -286,25 +331,58 @@ export default function BookingModal({
       }
 
       setConfirmedId(reservationId);
+      sessionStorage.removeItem(DRAFT_KEY);
       trackEvent(EVENTS.BOOKING_COMPLETE, { apartment: apt.slug, nights: calculateNights() });
       setTimeout(() => {
         onClose();
         navigate(`/reserva-confirmada/${reservationId}`);
       }, 1500);
-    } catch (err) {
-      setStripeError(err.message || T.booking.errorPayment);
+    } catch (err: unknown) {
+      // Guardar borrador para que el usuario no pierda sus datos
+      try {
+        sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
+          form,
+          checkin: checkinDate?.toISOString(),
+          checkout: checkoutDate?.toISOString(),
+          extras: selectedExtras,
+        }));
+      } catch { /* silent */ }
+      setStripeError((err as Error).message || T.booking.errorPayment);
       console.error('Payment error:', err);
     } finally {
       setLoading(false);
     }
   };
 
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    first?.focus();
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
+    };
+    panel.addEventListener('keydown', handleTab);
+    return () => panel.removeEventListener('keydown', handleTab);
+  }, [step]);
+
   return (
     <div
       className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 rounded-lg overflow-hidden flex max-w-5xl w-full max-h-[90vh]">
+      <div ref={panelRef} className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 rounded-lg overflow-hidden flex max-w-5xl w-full max-h-[90vh]">
         {/* PANEL IZQUIERDO */}
         <div className="bg-gradient-to-br from-slate-900 to-slate-900 text-white flex-1 p-8 flex flex-col justify-between">
           <div className="flex flex-col gap-3 mb-12 pb-8 border-b border-white/20">
@@ -319,7 +397,7 @@ export default function BookingModal({
           </div>
 
           <div className="text-4xl font-serif font-bold text-white mb-4">
-            {T.booking[`title${step + 1}`]}
+            {[T.booking.title1, T.booking.title2, T.booking.title3, T.booking.title4][step]}
           </div>
           <div className="text-sm text-gray-300 mb-8">
             {step < 3
@@ -341,8 +419,8 @@ export default function BookingModal({
               {discountAmount > 0 && (
                 <div className="flex justify-between items-center text-sm py-2 border-b border-white/10 px-0 text-green-500 -mt-2 mb-2">
                   <span className="text-xs">
-                    {T.common.offerApplied}: {activeDiscount.discount_code || 'Promo'} (-
-                    {activeDiscount.discount_percentage}%)
+                    {T.common.offerApplied}: {activeDiscount?.code || 'Promo'} (-
+                    {activeDiscount?.discount_percentage}%)
                   </span>
                   <span className="font-semibold">-{formatPrice(discountAmount)}</span>
                 </div>
@@ -442,7 +520,7 @@ export default function BookingModal({
               </label>
               <input
                 id="booking-name"
-                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${step === 1 && !form.name.trim() ? 'border-[#f44]' : 'border-gray-300'}`}
+                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${showErrors && !form.name.trim() ? 'border-[#f44]' : 'border-gray-300'}`}
                 placeholder={T.booking.placeholderName}
                 value={form.name}
                 onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
@@ -455,7 +533,7 @@ export default function BookingModal({
               </label>
               <input
                 id="booking-email"
-                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${step === 1 && !form.email.includes('@') ? 'border-[#f44]' : 'border-gray-300'}`}
+                className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${showErrors && !isValidEmail(form.email) ? 'border-[#f44]' : 'border-gray-300'}`}
                 placeholder={T.booking.placeholderEmail}
                 value={form.email}
                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
@@ -467,7 +545,7 @@ export default function BookingModal({
                 {T.booking.phone}
               </label>
               <div
-                className={`flex border rounded overflow-hidden focus-within:border-[#82c8bd] focus-within:ring-2 focus-within:ring-[#82c8bd]/20 ${step === 1 && !form.phone.trim() ? 'border-[#f44]' : 'border-gray-300'}`}
+                className={`flex border rounded overflow-hidden focus-within:border-[#82c8bd] focus-within:ring-2 focus-within:ring-[#82c8bd]/20 ${showErrors && !form.phone.trim() ? 'border-[#f44]' : 'border-gray-300'}`}
               >
                 <select
                   id="booking-phone-prefix"
@@ -496,7 +574,7 @@ export default function BookingModal({
                 />
               </div>
               <div className="text-xs text-slate-600 leading-relaxed mb-4">
-                {T.booking.cancelFree.replace('{days}', cancelDays)}
+                {T.booking.cancelFree.replace('{days}', String(cancelDays))}
               </div>
 
               <label className="flex items-start gap-2 text-sm text-slate-800 mb-3 cursor-pointer">
@@ -544,14 +622,15 @@ export default function BookingModal({
                 )}
 
                 <button
-                  className={`bg-[#82c8bd] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#6bb5a9] transition-all flex-[2] disabled:opacity-50 disabled:cursor-not-allowed ${!form.name.trim() || !form.email.includes('@') || !form.phone.trim() || !acceptedTerms || hasOverlap || belowMinStay ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
+                  className={`bg-[#82c8bd] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#6bb5a9] transition-all flex-[2] disabled:opacity-50 disabled:cursor-not-allowed ${!form.name.trim() || !isValidEmail(form.email) || !form.phone.trim() || !acceptedTerms || hasOverlap || belowMinStay ? 'opacity-50 cursor-not-allowed' : 'opacity-100 cursor-pointer'}`}
                   onClick={() => {
+                    setShowErrors(true);
                     trackEvent(EVENTS.BOOKING_START, { apartment: apt.slug });
                     setStep(1);
                   }}
                   disabled={
                     !form.name.trim() ||
-                    !form.email.includes('@') ||
+                    !isValidEmail(form.email) ||
                     !form.phone.trim() ||
                     !acceptedTerms ||
                     hasOverlap ||

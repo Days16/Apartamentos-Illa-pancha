@@ -94,7 +94,10 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
       ref={navRef}
     >
       <Link to="/">
-        <img src="/logo_lineas.png" alt="Illa Pancha" className="h-10 w-auto" />
+        <picture>
+            <source srcSet="/logo_lineas.webp" type="image/webp" />
+            <img src="/logo_lineas.png" alt="Illa Pancha" className="h-10 w-auto" />
+          </picture>
       </Link>
 
       {/* Links - escritorio y menú móvil */}
@@ -103,18 +106,18 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
       >
         <Link
           to="/apartamentos"
-          className={`py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium ${isActive('/apartamentos') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/apartamentos') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.apartments}
         </Link>
         <Link
           to="/nosotros"
-          className={`py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium ${isActive('/nosotros') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/nosotros') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.ribadeo}
         </Link>
         <span
-          className="py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium cursor-pointer"
+          className="py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium cursor-pointer"
           onClick={() => {
             setMobileOpen(false);
             if (location.pathname === '/nosotros') {
@@ -133,7 +136,7 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
         </span>
         <Link
           to="/contacto"
-          className={`py-2 md:py-0 text-navy hover:text-teal transition-colors font-medium ${isActive('/contacto') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/contacto') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.contact}
         </Link>
@@ -286,11 +289,11 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
           aria-controls="mobile-menu"
         >
           <span
-            className={`w-6 h-0.5 bg-navy transition-all transform origin-center ${mobileOpen ? 'rotate-45 translate-y-2' : ''}`}
+            className={`w-6 h-0.5 bg-navy dark:bg-white transition-all transform origin-center ${mobileOpen ? 'rotate-45 translate-y-2' : ''}`}
           />
-          <span className={`w-6 h-0.5 bg-navy transition-all ${mobileOpen ? 'opacity-0' : ''}`} />
+          <span className={`w-6 h-0.5 bg-navy dark:bg-white transition-all ${mobileOpen ? 'opacity-0' : ''}`} />
           <span
-            className={`w-6 h-0.5 bg-navy transition-all transform origin-center ${mobileOpen ? '-rotate-45 -translate-y-2' : ''}`}
+            className={`w-6 h-0.5 bg-navy dark:bg-white transition-all transform origin-center ${mobileOpen ? '-rotate-45 -translate-y-2' : ''}`}
           />
         </button>
       </div>

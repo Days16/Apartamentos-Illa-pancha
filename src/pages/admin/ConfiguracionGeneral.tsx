@@ -19,7 +19,6 @@ export default function ConfiguracionGeneral() {
     maintenance_mode: false,
     booking_mode: 'modal',
     booking_com_url: '',
-    checkin_lock_code: '',
     checkin_access_info: '',
     checkin_house_rules: '',
     contact_phone: '',
@@ -41,7 +40,6 @@ export default function ConfiguracionGeneral() {
           maintenance_mode: data.maintenance_mode ?? false,
           booking_mode: data.booking_mode ?? 'modal',
           booking_com_url: data.booking_com_url ?? '',
-          checkin_lock_code: data.checkin_lock_code ?? '',
           checkin_access_info: data.checkin_access_info ?? '',
           checkin_house_rules: data.checkin_house_rules ?? '',
           contact_phone: data.contact_phone ?? '',
@@ -73,7 +71,6 @@ export default function ConfiguracionGeneral() {
         updateSetting('maintenance_mode', settings.maintenance_mode, 'boolean'),
         updateSetting('booking_mode', settings.booking_mode, 'string'),
         updateSetting('booking_com_url', settings.booking_com_url, 'string'),
-        updateSetting('checkin_lock_code', settings.checkin_lock_code, 'string'),
         updateSetting('checkin_access_info', settings.checkin_access_info, 'string'),
         updateSetting('checkin_house_rules', settings.checkin_house_rules, 'string'),
         updateSetting('contact_phone', settings.contact_phone, 'string'),
@@ -372,18 +369,6 @@ export default function ConfiguracionGeneral() {
             </div>
             <div className="p-6 space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">
-                    Código de cerradura
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.checkin_lock_code}
-                    onChange={e => handleChange('checkin_lock_code', e.target.value)}
-                    placeholder="Ej: 4281"
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg font-mono text-navy focus:outline-none focus:ring-2 focus:ring-teal/20"
-                  />
-                </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">
                     Dirección del alojamiento

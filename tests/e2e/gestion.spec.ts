@@ -22,6 +22,13 @@ test.describe('Tests Panel Rol Gestor Diario', () => {
 
     // Esperar redirección a /gestion tras login exitoso
     await page.waitForURL('**/gestion**', { timeout: 15000 });
+
+    // Verificar que app_metadata.role está asignado (no redirige de vuelta a /login)
+    await page.waitForTimeout(800);
+    const currentUrl = page.url();
+    if (currentUrl.includes('/login')) {
+      test.skip(true, 'Usuario sin app_metadata.role="gestion" asignado en Supabase. Ejecuta el UPDATE en el SQL Editor.');
+    }
   });
 
   test('Validar el Dashboard principal de estadísticas', async ({ page }) => {

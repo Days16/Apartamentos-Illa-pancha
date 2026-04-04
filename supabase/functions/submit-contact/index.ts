@@ -6,26 +6,29 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// ─── Rate limiting en memoria ────────────────────────────────────────────────
-// Nota: se resetea en cada cold start. Usa la tabla rate_limits en Supabase
-// si necesitas persistencia entre instancias.
+// ─── Rate limiting persistente en Supabase ───────────────────────────────────
 const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hora
 const RATE_LIMIT = 5; // max 5 mensajes por IP por hora
-const ipLog = new Map<string, { count: number; windowStart: number }>();
 
-function checkRateLimit(ip: string): boolean {
+async function checkRateLimit(ip: string): Promise<boolean> {
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const now = Date.now();
-  const entry = ipLog.get(ip);
-  if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
-    ipLog.set(ip, { count: 1, windowStart: now });
+  const resetAt = new Date(now + RATE_WINDOW_MS).toISOString();
+  const { data } = await supabase
+    .from("rate_limits")
+    .select("count, reset_at")
+    .eq("ip", ip)
+    .single();
+  if (!data || now > new Date(data.reset_at).getTime()) {
+    await supabase.from("rate_limits").upsert({ ip, count: 1, reset_at: resetAt });
     return true;
   }
-  if (entry.count >= RATE_LIMIT) return false;
-  entry.count += 1;
+  if (data.count >= RATE_LIMIT) return false;
+  await supabase.from("rate_limits").update({ count: data.count + 1 }).eq("ip", ip);
   return true;
 }
 
@@ -52,7 +55,7 @@ serve(async (req) => {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
   // Rate limit
-  if (!checkRateLimit(ip)) {
+  if (!(await checkRateLimit(ip))) {
     return new Response(
       JSON.stringify({ error: "Demasiadas solicitudes. Inténtalo más tarde." }),
       { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }

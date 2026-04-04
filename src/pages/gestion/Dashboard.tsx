@@ -1,7 +1,8 @@
 /* eslint-disable */
 // @ts-nocheck
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../../lib/supabase';
 import {
   fetchAllReservations,
   fetchApartments,
@@ -24,7 +25,7 @@ import {
 const srcBadge = {
   web: ['bg-[#1a5f6e] text-white', 'Web'],
   booking: ['bg-[#1a5f6e] text-white', 'Web'],
-  manual: ['bg-yellow-100 text-yellow-800', 'Manual'],
+  manual: ['bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400', 'Manual'],
 };
 
 export default function Dashboard() {
@@ -34,6 +35,10 @@ export default function Dashboard() {
   const [apartments, setApartments] = useState([]);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [recentPage, setRecentPage] = useState(0);
+  const [newBookingAlert, setNewBookingAlert] = useState(null);
+
+  const PAGE_SIZE = 5;
 
   useEffect(() => {
     Promise.all([fetchAllReservations(), fetchApartments(), fetchAllMessages('unread')]).then(
@@ -44,6 +49,19 @@ export default function Dashboard() {
         setLoading(false);
       }
     );
+  }, []);
+
+  // Notificaciones realtime de nuevas reservas
+  useEffect(() => {
+    const channel = supabase
+      .channel('dashboard-reservations')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reservations' }, (payload) => {
+        const r = payload.new;
+        setReservations(prev => [r, ...prev]);
+        setNewBookingAlert(`Nueva reserva: ${r.guest || r.guest_name} · ${r.apt || r.apt_slug}`);
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const confirmed = reservations.filter(r => r.status === 'confirmed');
@@ -201,6 +219,17 @@ export default function Dashboard() {
 
   return (
     <>
+      {newBookingAlert && (
+        <div className="mx-8 mt-6 flex items-center justify-between gap-4 bg-green-50 border border-green-200 text-green-800 px-5 py-3 rounded-lg text-sm font-medium shadow-sm">
+          <span>🔔 {newBookingAlert}</span>
+          <button
+            className="text-green-600 hover:text-green-900 text-lg leading-none"
+            onClick={() => setNewBookingAlert(null)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
       <div className="flex items-center justify-between pb-6 mb-8 px-8 pt-8 border-b-2 border-gray-200">
         <div>
           <div className="text-2xl font-bold text-gray-800">Dashboard</div>
@@ -290,10 +319,10 @@ export default function Dashboard() {
                         {formatGuestDisplay(r.guest_name || r.guest, r.source)}
                       </div>
                       <div className="text-[11px] text-slate-500 mt-0.5">
-                        {apartments.find(a => a.slug === (r.apartment_slug || r.apt))
+                        {apartments.find(a => a.slug === (r.apt_slug || r.apt))
                           ?.internal_name ||
-                          apartments.find(a => a.slug === (r.apartment_slug || r.apt))?.name ||
-                          r.apartment_slug ||
+                          apartments.find(a => a.slug === (r.apt_slug || r.apt))?.name ||
+                          r.apt_slug ||
                           r.apt}{' '}
                         · {r.nights} noches
                       </div>
@@ -302,7 +331,7 @@ export default function Dashboard() {
                       {r.check_in || r.checkin} → {r.check_out || r.checkout}
                     </div>
                     <span
-                      className={`px-2.5 py-1 rounded text-[11px] font-medium ${r.status === 'confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                      className={`px-2.5 py-1 rounded text-[11px] font-medium ${r.status === 'confirmed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400'}`}
                     >
                       {r.status === 'confirmed' ? 'Confirmada' : 'Pendiente'}
                     </span>
@@ -325,7 +354,7 @@ export default function Dashboard() {
               {apartments.length > 0 ? (
                 apartments.map(apt => {
                   const aptReservations = confirmed.filter(
-                    r => (r.apartment_slug || r.aptSlug) === apt.slug
+                    r => r.apt_slug === apt.slug
                   );
                   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
                   const monthStart = new Date(currentYear, currentMonth, 1);
@@ -435,7 +464,7 @@ export default function Dashboard() {
             ))}
           </div>
           {reservations.length > 0 ? (
-            reservations.slice(0, 5).map((r, i) => (
+            reservations.slice(recentPage * PAGE_SIZE, (recentPage + 1) * PAGE_SIZE).map((r, i) => (
               <div
                 key={i}
                 className="grid grid-cols-[80px_1.5fr_1fr_1fr_100px_100px_100px] px-6 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer items-center text-sm"
@@ -448,9 +477,9 @@ export default function Dashboard() {
                   {formatGuestDisplay(r.guest_name || r.guest, r.source)}
                 </div>
                 <div className="text-[13px] text-slate-700">
-                  {apartments.find(a => a.slug === (r.apartment_slug || r.apt))?.internal_name ||
-                    apartments.find(a => a.slug === (r.apartment_slug || r.apt))?.name ||
-                    r.apartment_slug ||
+                  {apartments.find(a => a.slug === (r.apt_slug || r.apt))?.internal_name ||
+                    apartments.find(a => a.slug === (r.apt_slug || r.apt))?.name ||
+                    r.apt_slug ||
                     r.apt}
                 </div>
                 <div className="text-xs text-slate-500">
@@ -468,7 +497,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <span
-                    className={`px-2 py-1 rounded text-[11px] font-medium whitespace-nowrap ${r.status === 'confirmed' ? 'bg-green-100 text-green-800' : r.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}
+                    className={`px-2 py-1 rounded text-[11px] font-medium whitespace-nowrap ${r.status === 'confirmed' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : r.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400'}`}
                   >
                     {r.status === 'confirmed'
                       ? 'Confirmada'
@@ -481,6 +510,29 @@ export default function Dashboard() {
             ))
           ) : (
             <div className="p-5 text-center text-slate-500 text-sm">No hay reservas.</div>
+          )}
+          {reservations.length > PAGE_SIZE && (
+            <div className="flex items-center justify-between px-6 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+              <span>
+                {recentPage * PAGE_SIZE + 1}–{Math.min((recentPage + 1) * PAGE_SIZE, reservations.length)} de {reservations.length}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  disabled={recentPage === 0}
+                  onClick={() => setRecentPage(p => p - 1)}
+                  className="px-3 py-1 border border-gray-300 rounded hover:bg-white disabled:opacity-40 transition-colors"
+                >
+                  ← Anterior
+                </button>
+                <button
+                  disabled={(recentPage + 1) * PAGE_SIZE >= reservations.length}
+                  onClick={() => setRecentPage(p => p + 1)}
+                  className="px-3 py-1 border border-gray-300 rounded hover:bg-white disabled:opacity-40 transition-colors"
+                >
+                  Siguiente →
+                </button>
+              </div>
+            </div>
           )}
         </div>
 

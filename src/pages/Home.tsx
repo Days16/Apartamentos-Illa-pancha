@@ -1,8 +1,7 @@
-/* eslint-disable */
-// @ts-nocheck
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { assets, siteUrl } from '../constants/assets';
+import type { Apartment, Reservation, DbApartment } from '../types';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BookingModal from '../components/BookingModal';
@@ -39,7 +38,6 @@ const STATIC_REVIEWS = [
 ];
 
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 
@@ -52,26 +50,26 @@ export default function Home() {
   const { settings } = useSettings();
   const T = useT(lang);
 
-  const cancelDays = settings?.cancellation_free_days || 14;
-  const depositPct = settings?.payment_deposit_percentage || 50;
+  const cancelDays = typeof settings?.cancellation_free_days === 'number' ? settings.cancellation_free_days : 14;
+  const depositPct = typeof settings?.payment_deposit_percentage === 'number' ? settings.payment_deposit_percentage : 50;
 
   const today = new Date();
   const defaultCheckin = new Date(today);
   defaultCheckin.setDate(today.getDate() + 7);
   const defaultCheckout = new Date(today);
   defaultCheckout.setDate(today.getDate() + 14);
-  const fmt = d => d.toISOString().split('T')[0];
+  const fmt = (d: Date): string => d.toISOString().split('T')[0];
 
   const [checkin, setCheckin] = useState(fmt(defaultCheckin));
   const [checkout, setCheckout] = useState(fmt(defaultCheckout));
   const [guests, setGuests] = useState(2);
   const [searched, setSearched] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [selectedApt, setSelectedApt] = useState(null);
+  const [selectedApt, setSelectedApt] = useState<Apartment | null>(null);
 
-  const [featuredApts, setFeaturedApts] = useState([]);
-  const [reservations, setReservations] = useState([]);
-  const [reviews, setReviews] = useState([]);
+  const [featuredApts, setFeaturedApts] = useState<Array<DbApartment & { coverPhoto: string | null }>>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [reviews, setReviews] = useState<Array<{ name: string; text: string; stars: number; date: string | null; origin: string | null }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -81,14 +79,15 @@ export default function Home() {
         setReviews(reviewsData.filter(r => r.active !== false).slice(0, 6));
 
         const apts = aptsData.slice(0, 6);
+        // Usar cover_photo_url si ya está en la tabla (evita N queries extra)
+        const aptsNeedingPhoto = apts.filter(a => !a.cover_photo_url);
         const aptsWithPhotos = await Promise.all(
           apts.map(async apt => {
+            if (apt.cover_photo_url) return { ...apt, coverPhoto: apt.cover_photo_url };
+            if (!aptsNeedingPhoto.includes(apt)) return { ...apt, coverPhoto: null };
             try {
               const photos = await fetchApartmentPhotos(apt.slug);
-              if (photos && photos.length > 0) {
-                return { ...apt, coverPhoto: photos[0].photo_url };
-              }
-              return { ...apt, coverPhoto: null };
+              return { ...apt, coverPhoto: photos?.[0]?.photo_url ?? null };
             } catch {
               return { ...apt, coverPhoto: null };
             }
@@ -101,16 +100,20 @@ export default function Home() {
   }, []);
 
   const handleSearch = () => {
+    if (checkin && checkout) {
+      navigate(`/apartamentos?checkin=${checkin}&checkout=${checkout}&guests=${guests}`);
+      return;
+    }
     setSearched(true);
     document.getElementById('apartments-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleBook = apt => {
+  const handleBook = (apt: DbApartment & { coverPhoto: string | null }) => {
     if (settings?.booking_mode === 'redirect') {
       navigate('/reservar');
       return;
     }
-    setSelectedApt(apt);
+    setSelectedApt(apt as unknown as Apartment);
     setBookingOpen(true);
   };
 
@@ -155,10 +158,14 @@ export default function Home() {
 
       {/* HERO */}
       <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20 px-4">
-        {/* Foto de fondo */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${assets.hero.background})` }}
+        {/* Foto de fondo — img para mejor LCP */}
+        <img
+          src={assets.hero.background}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover"
         />
         {/* Overlay oscuro para legibilidad del texto */}
         <div className="absolute inset-0 bg-black/55" />
@@ -199,16 +206,14 @@ export default function Home() {
               </div>
               <DatePicker
                 selected={strToDate(checkin)}
-                onChange={date =>
+                onChange={(date: Date | null) =>
                   date &&
                   setCheckin(
                     dateToStr(new Date(date.getFullYear(), date.getMonth(), date.getDate()))
                   )
                 }
                 minDate={new Date()}
-                maxDate={
-                  strToDate(checkout) ? new Date(strToDate(checkout).getTime() - 86400000) : null
-                }
+                maxDate={(() => { const co = strToDate(checkout); return co ? new Date(co.getTime() - 86400000) : undefined; })()}
                 dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                 placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
                 className="w-full h-[42px] px-3 py-2 border border-gray-300 rounded text-sm text-navy focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 transition-all"
@@ -220,17 +225,13 @@ export default function Home() {
               </div>
               <DatePicker
                 selected={strToDate(checkout)}
-                onChange={date =>
+                onChange={(date: Date | null) =>
                   date &&
                   setCheckout(
                     dateToStr(new Date(date.getFullYear(), date.getMonth(), date.getDate()))
                   )
                 }
-                minDate={
-                  strToDate(checkin)
-                    ? new Date(strToDate(checkin).getTime() + 86400000)
-                    : new Date()
-                }
+                minDate={(() => { const ci = strToDate(checkin); return ci ? new Date(ci.getTime() + 86400000) : new Date(); })()}
                 dateFormat={lang === 'ES' ? 'dd/MM/yyyy' : 'MM/dd/yyyy'}
                 placeholderText={lang === 'ES' ? 'dd/mm/aaaa' : 'mm/dd/yyyy'}
                 className="w-full h-[42px] px-3 py-2 border border-gray-300 rounded text-sm text-navy focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 transition-all"
@@ -243,6 +244,7 @@ export default function Home() {
               <select
                 value={guests}
                 onChange={e => setGuests(+e.target.value)}
+                aria-label={T.apartments.guests}
                 className="w-full h-[42px] px-3 py-2 border border-gray-300 rounded text-sm text-navy cursor-pointer focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 transition-all"
               >
                 {[1, 2, 3, 4, 5, 6].map(n => (
@@ -269,7 +271,7 @@ export default function Home() {
           {
             icon: paths.lock,
             t: T.home.feature2Title,
-            d: T.home.feature2Desc.replace('{pct}', depositPct),
+            d: T.home.feature2Desc.replace('{pct}', String(depositPct)),
           },
           { icon: paths.sync, t: T.home.feature3Title, d: T.home.feature3Desc },
           { icon: paths.map, t: T.home.feature4Title, d: T.home.feature4Desc },
@@ -302,7 +304,13 @@ export default function Home() {
             )}
             <button
               className="border-2 border-navy text-navy hover:bg-navy hover:text-white px-5 py-3 rounded transition-all"
-              onClick={() => navigate('/apartamentos')}
+              onClick={() =>
+                navigate(
+                  searched && checkin && checkout
+                    ? `/apartamentos?checkin=${checkin}&checkout=${checkout}&guests=${guests}`
+                    : '/apartamentos'
+                )
+              }
             >
               {T.home.viewAll}
             </button>
@@ -364,7 +372,7 @@ export default function Home() {
                       ) : (
                         <div
                           className="absolute inset-0 flex items-center justify-center"
-                          style={{ background: apt.gradient }}
+                          style={{ background: apt.color ? `linear-gradient(135deg, ${apt.color}cc, ${apt.color}88)` : 'linear-gradient(135deg, #1a5f6e, #2C4A5E)' }}
                         >
                           <Ico d={paths.photo} size={40} color="rgba(255,255,255,0.12)" />
                         </div>
@@ -451,7 +459,7 @@ export default function Home() {
                 {T.home.bookNowNoComm}
               </button>
               <div className="text-teal text-sm font-medium">
-                {T.home.freeCancelDays.replace('{days}', cancelDays)}
+                {T.home.freeCancelDays.replace('{days}', String(cancelDays))}
               </div>
             </div>
           </div>
@@ -462,7 +470,7 @@ export default function Home() {
 
       {bookingOpen && (
         <BookingModal
-          apartment={selectedApt}
+          apartment={selectedApt ?? undefined}
           initialCheckin={checkin}
           initialCheckout={checkout}
           onClose={() => {

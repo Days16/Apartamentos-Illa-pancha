@@ -100,7 +100,10 @@
     "payModel": "Payment model",
     "askApt": "Ask about this apartment",
     "notFound": "Apartment not found",
-    "seeAll": "View all apartments"
+    "seeAll": "View all apartments",
+    "unavailableDates": "Date unavailable",
+    "seeAllPhotos": "See all photos ({count})",
+    "openMaps": "View location on Google Maps"
   },
   "booking": {
     "steps": ["Details", "Extras", "Pay", "Confirmed"],
@@ -133,6 +136,8 @@
     "extrasDesc": "Select the additional services you want for your stay.",
     "noExtras": "No extras available at the moment.",
     "free": "Free",
+    "extrasSelected": "extras selected",
+    "extraSelected": "extra selected",
     "back": "← Back",
     "payConfirm": "Pay",
     "cardNote": "Your card details never touch our servers",
@@ -204,15 +209,15 @@
     "subtitle": "Everything you need to know before your stay in Ribadeo.",
     "empty": "No questions yet.",
     "seoTitle": "FAQ holiday apartments Ribadeo Galicia",
-    "seoDesc": "Check-in, parking, pets and cancellation for Illa Pancha holiday apartments in Ribadeo, Spain. Straight answers for guests who book direct with no middleman fees."
+    "seoDesc": "Check-in, parking, pets and cancellation at Illa Pancha, Ribadeo. Clear answers for guests booking direct holiday apartments in Galicia, no fees."
   },
   "seo": {
     "homeTitle": "Holiday apartments in Ribadeo Galicia",
-    "homeDesc": "Book direct Illa Pancha on the Eo estuary, Ribadeo: no OTA fees, sea views and family-run service. Great base for As Catedrais beach and the Mariña Green Coast.",
+    "homeDesc": "Book direct Illa Pancha, Ribadeo. No OTA fees, sea views and family service on the Eo estuary. Great base for As Catedrais and the Green Coast.",
     "aptsTitle": "All Ribadeo apartments Illa Pancha",
     "aptsDesc": "Browse Illa Pancha self-catering flats in Ribadeo: photos, capacity and live rates. Best prices booking direct on the Eo estuary in Galicia's Mariña lucense.",
     "aboutTitle": "Our family story in Ribadeo",
-    "aboutDesc": "Meet Illa Pancha: eight estuary-front apartments in Ribadeo run by a local family. Why book direct, skip platform fees, and what to explore in Galicia and Asturias.",
+    "aboutDesc": "Meet Illa Pancha: eight estuary-view apartments in Ribadeo by a local family. Book direct, skip platform fees and discover Galicia and Asturias.",
     "comoLlegarTitle": "How to reach Illa Pancha Ribadeo",
     "comoLlegarDesc": "Av. Rosalía de Castro 25, Ribadeo, Spain. Drive via A-8, ALSA buses from Lugo or Oviedo, or fly to Santiago and Asturias airports. Parking nearby.",
     "leaveReviewTitle": "Review your Illa Pancha stay",
@@ -233,6 +238,12 @@
   "about": {
     "title": "About Us",
     "history": "Our story",
+    "value1Title": "0% commissions",
+    "value1Desc": "Book with us and pay less than on Booking or Airbnb. The price you see is the real price, no surprises.",
+    "value2Title": "Direct contact",
+    "value2Desc": "We talk with you before, during and after your stay. No bots, no endless forms.",
+    "value3Title": "Local family",
+    "value3Desc": "We are from Ribadeo and know the area like no one else. We give you real recommendations on where to eat and what to see.",
     "heroTitle": "Ribadeo, Galicia.<br /><em>On the front line.</em>",
     "heroDesc": "We are a local family with eight apartments facing the Eo estuary. We decided to do without intermediaries to offer you a fair price and direct treatment.",
     "storyTitle": "A story of<br /><em>love for Ribadeo</em>",
@@ -381,5 +392,14 @@
     "whatsappLabel": "WhatsApp",
     "backContact": "See full contact page →",
     "errorSend": "Error sending. Please try again."
+  },
+  "cookies": {
+    "banner": "We use first-party and third-party cookies to improve your experience and analyze traffic.",
+    "essential": "Essential only",
+    "acceptAll": "Accept all",
+    "moreInfo": "More information"
+  },
+  "whatsapp": {
+    "message": "Hello, I would like information about the apartments in Ribadeo."
   }
 }

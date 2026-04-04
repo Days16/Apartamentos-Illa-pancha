@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import Ico, { paths } from '../../components/Ico';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const navItems = [
   { path: '/admin', label: 'Apartamentos', icon: paths.building, exact: true },
@@ -23,6 +24,7 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout, user } = useAuth();
+  const { dark, toggle } = useTheme();
   const [pendingReviews, setPendingReviews] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -158,6 +160,17 @@ export default function AdminLayout() {
             <div className="text-sm font-semibold text-white truncate">Propietario</div>
             <div className="text-xs text-gray-500 truncate">{user?.email || 'Admin total'}</div>
           </div>
+          <button
+            onClick={toggle}
+            aria-label={dark ? 'Modo claro' : 'Modo oscuro'}
+            className="text-gray-400 hover:text-white p-1 shrink-0"
+          >
+            {dark ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            )}
+          </button>
         </div>
       </div>
 
@@ -228,14 +241,27 @@ export default function AdminLayout() {
           </button>
           <span className="text-white font-serif font-bold text-lg">Illa Pancha</span>
           <span className="text-gray-400 text-xs ml-1">· Admin</span>
-          {pendingReviews > 0 && (
-            <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-              {pendingReviews} pend.
-            </span>
-          )}
+          <div className="ml-auto flex items-center gap-2">
+            {pendingReviews > 0 && (
+              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {pendingReviews} pend.
+              </span>
+            )}
+            <button
+              onClick={toggle}
+              aria-label={dark ? 'Modo claro' : 'Modo oscuro'}
+              className="text-gray-300 hover:text-white p-1"
+            >
+              {dark ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              )}
+            </button>
+          </div>
         </div>
 
-        <div className="flex-1 overflow-auto bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+        <div className="flex-1 overflow-auto bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 admin-content">
           <Outlet />
         </div>
       </div>

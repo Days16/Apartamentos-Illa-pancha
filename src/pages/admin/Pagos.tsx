@@ -1,8 +1,6 @@
-/* eslint-disable */
-// @ts-nocheck
 import { useState, useEffect } from 'react';
 import { fetchSettings, updateSetting } from '../../services/supabaseService';
-import { formatDateShort, formatPrice } from '../../utils/format';
+import { formatPrice } from '../../utils/format';
 import { supabase } from '../../lib/supabase';
 import { useToast } from '../../contexts/ToastContext';
 
@@ -16,10 +14,10 @@ export default function Pagos() {
   useEffect(() => {
     async function load() {
       const settings = await fetchSettings();
-      if (settings.payment_deposit_percentage !== undefined) {
+      if (typeof settings.payment_deposit_percentage === 'number') {
         setDepositPct(settings.payment_deposit_percentage);
       }
-      if (settings.tax_percentage !== undefined) {
+      if (typeof settings.tax_percentage === 'number') {
         setTaxPct(settings.tax_percentage);
       }
       setLoading(false);
@@ -45,9 +43,10 @@ export default function Pagos() {
       toast.success('Configuración de pagos guardada correctamente');
     } catch (err) {
       console.error('Error FULL saving payment settings:', err);
-      const isRLS = err.code === '42501' || err.message?.includes('policy');
+      const e = err as { code?: string; message?: string };
+      const isRLS = e.code === '42501' || e.message?.includes('policy');
       toast.error(
-        `Error al guardar: ${err.message}${isRLS ? ' (Revisa permisos RLS en Supabase)' : ''}`
+        `Error al guardar: ${e.message}${isRLS ? ' (Revisa permisos RLS en Supabase)' : ''}`
       );
     } finally {
       setSaving(false);

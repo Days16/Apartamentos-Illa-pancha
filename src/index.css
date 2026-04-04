@@ -1,9 +1,10 @@
 /* ============================================================
-   1. IMPORTS — Tailwind layers
+   1. IMPORTS — Tailwind layers + terceros
    ============================================================ */
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import 'react-datepicker/dist/react-datepicker.css';
 
 /* ============================================================
    2. BASE — Reset y elementos HTML globales
@@ -342,10 +343,6 @@
   }
 }
 
-/* 768px — mobile (placeholder para overrides de componentes) */
-@media (max-width: 768px) {
-}
-
 /* ============================================================
    8. PRINT — Calendario de gestión
    ============================================================ */
@@ -367,3 +364,106 @@
     box-shadow: none !important;
   }
 }
+
+/* ============================================================
+   9. DARK MODE — Panel admin / gestión (admin-content)
+   ============================================================ */
+
+/* Tarjetas y superficies blancas */
+.dark .admin-content .bg-white {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+}
+.dark .admin-content .bg-slate-50,
+.dark .admin-content .bg-gray-50 {
+  background-color: rgb(15 23 42 / 0.6) !important;
+}
+.dark .admin-content .bg-slate-100,
+.dark .admin-content .bg-gray-100 {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+/* Textos */
+.dark .admin-content .text-slate-900,
+.dark .admin-content .text-gray-900 {
+  color: rgb(241 245 249) !important; /* slate-100 */
+}
+.dark .admin-content .text-slate-800,
+.dark .admin-content .text-gray-800 {
+  color: rgb(226 232 240) !important; /* slate-200 */
+}
+.dark .admin-content .text-slate-700,
+.dark .admin-content .text-gray-700 {
+  color: rgb(203 213 225) !important; /* slate-300 */
+}
+.dark .admin-content .text-slate-600,
+.dark .admin-content .text-gray-600 {
+  color: rgb(148 163 184) !important; /* slate-400 */
+}
+.dark .admin-content .text-slate-500,
+.dark .admin-content .text-gray-500 {
+  color: rgb(100 116 139) !important; /* slate-500 */
+}
+
+/* Bordes */
+.dark .admin-content .border-slate-200,
+.dark .admin-content .border-gray-200 {
+  border-color: rgb(51 65 85) !important; /* slate-700 */
+}
+.dark .admin-content .border-slate-300,
+.dark .admin-content .border-gray-300 {
+  border-color: rgb(71 85 105) !important; /* slate-600 */
+}
+.dark .admin-content .divide-slate-200 > *,
+.dark .admin-content .divide-gray-200 > * {
+  border-color: rgb(51 65 85) !important;
+}
+
+/* Inputs, textareas, selects */
+.dark .admin-content input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark .admin-content textarea,
+.dark .admin-content select {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+  color: rgb(226 232 240) !important; /* slate-200 */
+  border-color: rgb(71 85 105) !important; /* slate-600 */
+}
+.dark .admin-content input::placeholder,
+.dark .admin-content textarea::placeholder {
+  color: rgb(100 116 139) !important; /* slate-500 */
+}
+
+/* Hover en filas de tabla y listas */
+.dark .admin-content .hover\:bg-gray-50:hover,
+.dark .admin-content .hover\:bg-slate-50:hover {
+  background-color: rgb(51 65 85 / 0.5) !important;
+}
+.dark .admin-content .hover\:bg-gray-100:hover,
+.dark .admin-content .hover\:bg-slate-100:hover {
+  background-color: rgb(51 65 85) !important;
+}
+
+/* Cajas de color (info, éxito, aviso, error) dentro de admin */
+.dark .admin-content .bg-blue-50   { background-color: rgb(30 58 138 / 0.2) !important; }
+.dark .admin-content .bg-blue-100  { background-color: rgb(30 58 138 / 0.3) !important; }
+.dark .admin-content .bg-green-50  { background-color: rgb(20 83 45 / 0.2) !important; }
+.dark .admin-content .bg-green-100 { background-color: rgb(20 83 45 / 0.3) !important; }
+.dark .admin-content .bg-yellow-50  { background-color: rgb(113 63 18 / 0.2) !important; }
+.dark .admin-content .bg-yellow-100 { background-color: rgb(113 63 18 / 0.3) !important; }
+.dark .admin-content .bg-red-50   { background-color: rgb(127 29 29 / 0.2) !important; }
+.dark .admin-content .bg-red-100  { background-color: rgb(127 29 29 / 0.3) !important; }
+.dark .admin-content .bg-amber-50  { background-color: rgb(120 53 15 / 0.2) !important; }
+.dark .admin-content .bg-amber-100 { background-color: rgb(120 53 15 / 0.3) !important; }
+
+/* Textos de colores de estado */
+.dark .admin-content .text-blue-800,
+.dark .admin-content .text-blue-700  { color: rgb(147 197 253) !important; }
+.dark .admin-content .text-green-800,
+.dark .admin-content .text-green-700 { color: rgb(134 239 172) !important; }
+.dark .admin-content .text-yellow-800,
+.dark .admin-content .text-yellow-700 { color: rgb(253 224 71) !important; }
+.dark .admin-content .text-red-800,
+.dark .admin-content .text-red-700   { color: rgb(252 165 165) !important; }
+.dark .admin-content .text-amber-800,
+.dark .admin-content .text-amber-700 { color: rgb(252 211 77) !important; }
+
+/* Texto navy dentro de admin */
+.dark .admin-content .text-navy { color: rgb(226 232 240) !important; }

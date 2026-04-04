@@ -100,7 +100,10 @@
     "payModel": "Modelo de pago",
     "askApt": "Preguntar por este apartamento",
     "notFound": "Apartamento no encontrado",
-    "seeAll": "Ver todos los apartamentos"
+    "seeAll": "Ver todos los apartamentos",
+    "unavailableDates": "Fecha no disponible",
+    "seeAllPhotos": "Ver todas las fotos ({count})",
+    "openMaps": "Ver ubicación en Google Maps"
   },
   "booking": {
     "steps": ["Datos", "Extras", "Pagar", "Confirmado"],
@@ -133,6 +136,8 @@
     "extrasDesc": "Selecciona los servicios adicionales que quieres incluir en tu estancia.",
     "noExtras": "No hay extras disponibles en este momento.",
     "free": "Gratis",
+    "extrasSelected": "extras seleccionados",
+    "extraSelected": "extra seleccionado",
     "back": "← Atrás",
     "payConfirm": "Pagar",
     "cardNote": "Tus datos de tarjeta nunca tocan nuestros servidores",
@@ -204,19 +209,19 @@
     "subtitle": "Todo lo que necesitas saber antes de tu estancia en Ribadeo.",
     "empty": "Próximamente.",
     "seoTitle": "Preguntas frecuentes alojamiento Ribadeo",
-    "seoDesc": "Resolvemos dudas sobre check-in, parking, mascotas y cancelación en Illa Pancha. Apartamentos turísticos en Ribadeo, Galicia. Info clara para tu reserva directa sin comisiones."
+    "seoDesc": "Dudas sobre check-in, parking, mascotas y cancelación en Illa Pancha, Ribadeo. Toda la info para tu reserva directa sin comisiones en Galicia."
   },
   "seo": {
     "homeTitle": "Apartamentos turísticos en Ribadeo",
-    "homeDesc": "Reserva directa sin comisiones frente a la ría del Eo en Ribadeo, Galicia. Ideal para As Catedrais y la Mariña lucense. Apartamentos equipados, vistas y trato familiar Illa Pancha.",
+    "homeDesc": "Reserva directa sin comisiones en Illa Pancha, Ribadeo. Frente a la ría del Eo, ideal para As Catedrais y la Mariña lucense. Vistas y trato familiar.",
     "aptsTitle": "Todos los apartamentos en Ribadeo",
-    "aptsDesc": "Catálogo Illa Pancha: apartamentos turísticos en Ribadeo con fotos, capacidad y precios en tiempo real. Mejor tarifa reservando directo frente a la ría del Eo en la Mariña lucense.",
+    "aptsDesc": "Catálogo Illa Pancha: apartamentos en Ribadeo con fotos, capacidad y precios en tiempo real. Mejor tarifa reservando directo frente a la ría del Eo.",
     "aboutTitle": "Familia ribadense frente a la ría",
-    "aboutDesc": "Historia de Illa Pancha: ocho apartamentos en Ribadeo gestionados por una familia local. Por qué reservar directo sin comisiones frente a la ría del Eo y qué ver en Galicia.",
+    "aboutDesc": "Illa Pancha: ocho apartamentos en Ribadeo gestionados por una familia local. Reserva directo sin comisiones frente a la ría del Eo, Galicia.",
     "comoLlegarTitle": "Cómo llegar a Illa Pancha en Ribadeo",
-    "comoLlegarDesc": "Dirección en Av. Rosalía de Castro, 25, Ribadeo. Llegada en coche por la A-8, bus ALSA desde Lugo u Oviedo, o aeropuertos de Santiago y Asturias. Aparcamiento cercano.",
+    "comoLlegarDesc": "Av. Rosalía de Castro 25, Ribadeo. Acceso en coche por la A-8, bus ALSA desde Lugo u Oviedo, o aeropuertos de Santiago y Asturias. Parking cercano.",
     "leaveReviewTitle": "Valorar tu estancia Illa Pancha",
-    "leaveReviewDesc": "Deja una reseña tras tu estancia en nuestros apartamentos de Ribadeo. Opiniones verificadas que ayudan a otros huéspedes. Formulario rápido y seguro tras tu reserva."
+    "leaveReviewDesc": "Deja tu opinión sobre Illa Pancha en Ribadeo. Reseñas verificadas que ayudan a otros huéspedes. Formulario rápido y seguro tras tu reserva directa."
   },
   "common": {
     "offerApplied": "Oferta aplicada",
@@ -233,6 +238,12 @@
   "about": {
     "title": "Nosotros",
     "history": "Nuestra historia",
+    "value1Title": "0% comisiones",
+    "value1Desc": "Reserva con nosotros y paga menos que en Booking o Airbnb. El precio que ves es el precio real, sin sorpresas.",
+    "value2Title": "Trato directo",
+    "value2Desc": "Hablamos contigo antes, durante y después de tu estancia. Sin bots, sin formularios interminables.",
+    "value3Title": "Familia local",
+    "value3Desc": "Somos de Ribadeo y conocemos la zona como nadie. Te damos recomendaciones reales sobre dónde comer y qué ver.",
     "heroTitle": "Ribadeo, Galicia.<br /><em>En primera línea.</em>",
     "heroDesc": "Somos una familia ribadense con ocho apartamentos frente a la ría del Eo. Decidimos prescindir de intermediarios para ofrecerte un precio justo y un trato directo.",
     "storyTitle": "Una historia de<br /><em>amor por Ribadeo</em>",
@@ -294,7 +305,7 @@
   },
   "contact": {
     "title": "Contacto",
-    "desc": "Escríbenos por formulario, teléfono o WhatsApp. Resolvemos dudas sobre disponibilidad, precios y apartamentos en Ribadeo antes de tu reserva directa en Illa Pancha sin comisiones.",
+    "desc": "Escríbenos por formulario, teléfono o WhatsApp. Resolvemos dudas sobre disponibilidad y precios en Illa Pancha, Ribadeo. Reserva directa sin comisiones.",
     "heroEyebrow": "Estamos aquí",
     "heroTitle": "Escríbenos,<br /><em>respondemos rápido</em>",
     "heroDesc": "Cualquier duda sobre disponibilidad, precios, accesibilidad o servicios. Respondemos en menos de 24 horas, normalmente en pocas horas.",
@@ -381,5 +392,14 @@
     "whatsappLabel": "WhatsApp",
     "backContact": "Ver página de contacto completa →",
     "errorSend": "Error al enviar. Inténtalo de nuevo."
+  },
+  "cookies": {
+    "banner": "Usamos cookies propias y de terceros para mejorar tu experiencia y analizar el tráfico.",
+    "essential": "Solo esenciales",
+    "acceptAll": "Aceptar todas",
+    "moreInfo": "Más información"
+  },
+  "whatsapp": {
+    "message": "Hola, me gustaría información sobre los apartamentos en Ribadeo."
   }
 }

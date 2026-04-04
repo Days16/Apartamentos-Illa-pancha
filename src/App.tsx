@@ -6,22 +6,24 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import './index.css';
 import Maintenance from './pages/Maintenance';
 
-// Páginas públicas — importación estática (carga inmediata)
+// Páginas principales — importación estática (LCP crítico)
 import Home from './pages/Home';
 import Apartments from './pages/Apartments';
 import ApartmentDetail from './pages/ApartmentDetail';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Privacy from './pages/Privacy';
-import Cookies from './pages/Cookies';
-import Terminos from './pages/Terminos';
-import ProteccionDatos from './pages/ProteccionDatos';
-import ReservaConfirmada from './pages/ReservaConfirmada';
-import PortalReserva from './pages/PortalReserva';
-import Reservar from './pages/Reservar';
-import Faq from './pages/Faq';
-import ComoLlegar from './pages/ComoLlegar';
-import LeaveReview from './pages/LeaveReview';
+
+// Páginas secundarias — lazy (no son landing de tráfico principal)
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Cookies = lazy(() => import('./pages/Cookies'));
+const Terminos = lazy(() => import('./pages/Terminos'));
+const ProteccionDatos = lazy(() => import('./pages/ProteccionDatos'));
+const ReservaConfirmada = lazy(() => import('./pages/ReservaConfirmada'));
+const PortalReserva = lazy(() => import('./pages/PortalReserva'));
+const Reservar = lazy(() => import('./pages/Reservar'));
+const Faq = lazy(() => import('./pages/Faq'));
+const ComoLlegar = lazy(() => import('./pages/ComoLlegar'));
+const LeaveReview = lazy(() => import('./pages/LeaveReview'));
 
 // Auth — lazy (raramente visitadas)
 const Login = lazy(() => import('./pages/Login'));
@@ -149,15 +151,17 @@ export default function App() {
                             <Route path="/forgot-password" element={<ForgotPassword />} />
 
                             {/* ─── PANEL GESTIÓN (PROTEGIDO) ────────────────────── */}
-                            <Route element={<ProtectedRoute />}>
+                            <Route element={<ProtectedRoute requiredRole="gestion" />}>
                               <Route path="/gestion" element={<GestionLayout />}>
                                 <Route index element={<Dashboard />} />
                                 <Route path="reservas" element={<Reservas />} />
                                 <Route path="calendario" element={<Calendario />} />
                                 <Route path="mensajes" element={<Mensajes />} />
                               </Route>
+                            </Route>
 
-                              {/* ─── PANEL ADMIN (PROTEGIDO) ──────────────────────── */}
+                            {/* ─── PANEL ADMIN (PROTEGIDO) ──────────────────────── */}
+                            <Route element={<ProtectedRoute requiredRole="admin" />}>
                               <Route path="/admin" element={<AdminLayout />}>
                                 <Route index element={<ApartamentosAdmin />} />
                                 <Route path="precios" element={<Precios />} />

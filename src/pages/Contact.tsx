@@ -66,10 +66,34 @@ export default function Contact() {
   const { settings } = useSettings();
   const sitePhone = settings?.site_phone || '';
   const waPhone = sitePhone.replace(/\D/g, '');
+  const siteUrl = (import.meta.env.VITE_SITE_URL || 'https://www.apartamentosillapancha.com').replace(/\/$/, '');
+
+  const localBusinessJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LodgingBusiness',
+    name: 'Illa Pancha',
+    url: siteUrl,
+    telephone: settings?.contact_phone || '+34 614 52 30 77',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: settings?.property_address || 'Av. Rosalía de Castro 25',
+      addressLocality: 'Ribadeo',
+      addressRegion: 'Galicia',
+      postalCode: '27700',
+      addressCountry: 'ES',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 43.5354,
+      longitude: -7.0415,
+    },
+    openingHours: 'Mo-Su 09:00-21:00',
+    priceRange: '€€',
+  };
 
   return (
     <>
-      <SEO title={C.title} description={C.desc} />
+      <SEO title={C.title} description={C.desc} jsonLd={localBusinessJsonLd} />
       <Navbar onOpenBooking={() => setBookingOpen(true)} />
 
       {/* HERO */}

@@ -1,5 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -9,33 +7,47 @@ import { getReservationById, getApartmentBySlug } from '../services/dataService'
 import { formatPrice, formatReservationReference } from '../utils/format';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
+import type { Reservation, Apartment } from '../types';
+
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 1500;
 
 export default function ReservaConfirmada() {
   const { id } = useParams();
   const { lang } = useLang();
   const T = useT(lang);
   const navigate = useNavigate();
-  const [res, setRes] = useState(null);
-  const [apt, setApt] = useState(null);
+  const [res, setRes] = useState<Reservation | null>(null);
+  const [apt, setApt] = useState<Apartment | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function load() {
-      if (!id) return;
+    if (!id) { setLoading(false); return; }
+    let retries = 0;
+    let timer: ReturnType<typeof setTimeout>;
+
+    async function tryLoad() {
       try {
-        const r = await getReservationById(id);
+        const r = await getReservationById(id!);
         if (r) {
           setRes(r);
           const a = await getApartmentBySlug(r.aptSlug);
           setApt(a);
+          setLoading(false);
+          return;
         }
-      } catch (err) {
-        // console.error silent
-      } finally {
+      } catch { /* silent */ }
+
+      retries++;
+      if (retries < MAX_RETRIES) {
+        timer = setTimeout(tryLoad, RETRY_DELAY);
+      } else {
         setLoading(false);
       }
     }
-    load();
+
+    tryLoad();
+    return () => clearTimeout(timer);
   }, [id]);
 
   const handleDownloadPDF = async () => {

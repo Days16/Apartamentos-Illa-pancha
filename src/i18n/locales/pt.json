@@ -100,7 +100,10 @@
     "payModel": "Modelo de pagamento",
     "askApt": "Perguntar sobre este apartamento",
     "notFound": "Apartamento não encontrado",
-    "seeAll": "Ver todos os apartamentos"
+    "seeAll": "Ver todos os apartamentos",
+    "unavailableDates": "Data indisponível",
+    "seeAllPhotos": "Ver todas as fotos ({count})",
+    "openMaps": "Ver localização no Google Maps"
   },
   "booking": {
     "steps": ["Dados", "Extras", "Pagar", "Confirmado"],
@@ -133,6 +136,8 @@
     "extrasDesc": "Selecione os serviços adicionais que deseja incluir na sua estadia.",
     "noExtras": "Não há extras disponíveis de momento.",
     "free": "Grátis",
+    "extrasSelected": "extras selecionados",
+    "extraSelected": "extra selecionado",
     "back": "← Voltar",
     "payConfirm": "Pagar",
     "cardNote": "Os seus dados de cartão nunca passam pelos nossos servidores",
@@ -233,6 +238,12 @@
   "about": {
     "title": "Sobre nós",
     "history": "A nossa história",
+    "value1Title": "0% comissões",
+    "value1Desc": "Reserve connosco e pague menos do que no Booking ou Airbnb. O preço que vê é o preço real, sem surpresas.",
+    "value2Title": "Contacto direto",
+    "value2Desc": "Falamos consigo antes, durante e após a sua estadia. Sem bots, sem formulários intermináveis.",
+    "value3Title": "Família local",
+    "value3Desc": "Somos de Ribadeo e conhecemos a zona como ninguém. Damos-lhe recomendações reais sobre onde comer e o que ver.",
     "heroTitle": "Ribadeo, Galiza.<br /><em>Na primeira fila.</em>",
     "heroDesc": "Somos uma família de Ribadeo com oito apartamentos em frente à ria do Eo. Decidimos prescindir de intermediários para lhe oferecer um preço justo.",
     "storyTitle": "Uma história de<br /><em>amor por Ribadeo</em>",
@@ -381,5 +392,14 @@
     "whatsappLabel": "WhatsApp",
     "backContact": "Ver página de contacto completa →",
     "errorSend": "Erro ao enviar. Tente novamente."
+  },
+  "cookies": {
+    "banner": "Utilizamos cookies próprios e de terceiros para melhorar a sua experiência e analisar o tráfego.",
+    "essential": "Apenas essenciais",
+    "acceptAll": "Aceitar todos",
+    "moreInfo": "Mais informações"
+  },
+  "whatsapp": {
+    "message": "Olá, gostaria de informações sobre os apartamentos em Ribadeo."
   }
 }

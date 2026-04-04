@@ -15,6 +15,7 @@ import { fetchSettings } from '../services/supabaseService';
 import { formatPrice, formatReservationReference } from '../utils/format';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
+import Turnstile from '../components/Turnstile';
 
 export default function PortalReserva() {
   const { lang } = useLang();
@@ -22,6 +23,7 @@ export default function PortalReserva() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ code: '', email: '' });
+  const [captchaToken, setCaptchaToken] = useState('');
   const [reservation, setReservation] = useState(null);
   const [apt, setApt] = useState(null);
   const [error, setError] = useState('');
@@ -36,7 +38,7 @@ export default function PortalReserva() {
 
   const handleSearch = async e => {
     e.preventDefault();
-    if (!form.code || !form.email) return;
+    if (!form.code || !form.email || !captchaToken) return;
 
     setLoading(true);
     setError('');
@@ -50,6 +52,7 @@ export default function PortalReserva() {
         setApt(a);
       } else {
         setError('Reserva no encontrada o datos incorrectos.');
+        setCaptchaToken('');
       }
     } catch (err) {
       setError('Error al consultar la reserva.');
@@ -193,7 +196,7 @@ export default function PortalReserva() {
                   required
                 />
               </div>
-
+              <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
               {error && (
                 <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg border border-red-100 font-medium">
                   {error}
@@ -202,7 +205,7 @@ export default function PortalReserva() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !captchaToken}
                 className="w-full bg-teal text-white py-4 rounded-xl font-bold hover:bg-teal-600 transition-all flex items-center justify-center shadow-lg hover:shadow-teal/20 disabled:opacity-50"
               >
                 {loading ? 'Buscando...' : 'Consultar Reserva'}
@@ -293,23 +296,19 @@ export default function PortalReserva() {
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white border border-amber-100 rounded-lg p-4">
-                      <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">Código de cerradura</p>
-                      <p className="text-lg font-mono font-bold text-navy">{settings?.checkin_lock_code || '—'}</p>
-                    </div>
+                  <div className="grid grid-cols-1 gap-3">
                     <div className="bg-white border border-amber-100 rounded-lg p-4">
                       <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">Dirección del alojamiento</p>
                       <p className="text-sm text-gray-700">{settings?.property_address || 'Calle Illa Pancha 1, 27700 Ribadeo'}</p>
                     </div>
-                  </div>
-                  <div className="mt-4 text-sm text-gray-700">
-                    <p className="font-bold">Instrucciones de acceso</p>
-                    <p>{settings?.checkin_access_info || 'La caja de llaves está junto a la puerta principal. Introduce el código en el teclado numérico.'}</p>
-                  </div>
-                  <div className="mt-3 text-sm text-gray-700">
-                    <p className="font-bold">Normas de la finca</p>
-                    <p>{settings?.checkin_house_rules || 'No se permiten mascotas. Horario de silencio de 23:00 a 08:00. Check-out antes de las 12:00.'}</p>
+                    <div className="bg-white border border-amber-100 rounded-lg p-4">
+                      <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">Instrucciones de acceso</p>
+                      <p className="text-sm text-gray-700">{settings?.checkin_access_info || 'La caja de llaves está junto a la puerta principal. Introduce el código en el teclado numérico.'}</p>
+                    </div>
+                    <div className="bg-white border border-amber-100 rounded-lg p-4">
+                      <p className="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">Normas de la finca</p>
+                      <p className="text-sm text-gray-700">{settings?.checkin_house_rules || 'No se permiten mascotas. Horario de silencio de 23:00 a 08:00. Check-out antes de las 12:00.'}</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -332,24 +331,6 @@ export default function PortalReserva() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    {/* Código de acceso */}
-                    <div className="bg-amber-50 border border-amber-100 rounded-xl p-5">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Ico d={paths.lock} size={16} color="#d97706" />
-                        <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">
-                          Código de Acceso
-                        </span>
-                      </div>
-                      <div className="font-mono text-3xl font-bold text-navy tracking-widest">
-                        {settings?.checkin_lock_code || '—'}
-                      </div>
-                      {settings?.checkin_access_info && (
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-                          {settings.checkin_access_info}
-                        </p>
-                      )}
-                    </div>
-
                     {/* Normas de la finca */}
                     <div className="bg-teal/5 border border-teal/20 rounded-xl p-5">
                       <div className="flex items-center gap-2 mb-3">

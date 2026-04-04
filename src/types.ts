@@ -29,6 +29,7 @@ export interface DbApartment {
   nearby: string[];
   occupied_days: string[];
   internal_name: string | null;
+  cover_photo_url: string | null;
   created_at: string;
 }
 
@@ -179,6 +180,7 @@ export interface Apartment {
   occupiedDays: string[];
   /** Fechas ISO derivadas de reservas activas, generadas en ApartmentDetail */
   internalName: string | null;
+  coverPhotoUrl: string | null;
   occupiedDatesList?: string[];
   /** Reservas crudas del apartamento, usadas en BookingWidget */
   rawReservations?: Reservation[];

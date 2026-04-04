@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { fetchSettings } from '../services/supabaseService';
+import { useLang } from '../contexts/LangContext';
+import { useT } from '../i18n/translations';
 
 export default function WhatsAppButton() {
+  const { lang } = useLang();
+  const T = useT(lang);
   const [phone, setPhone] = useState<string | null>(null);
   const { pathname } = useLocation();
 
@@ -15,9 +19,7 @@ export default function WhatsAppButton() {
   if (!phone) return null;
   if (pathname.startsWith('/admin') || pathname.startsWith('/gestion')) return null;
 
-  const message = encodeURIComponent(
-    'Hola, me gustaría información sobre los apartamentos en Ribadeo.'
-  );
+  const message = encodeURIComponent(T.whatsapp.message);
   const url = `https://wa.me/${phone}?text=${message}`;
 
   return (

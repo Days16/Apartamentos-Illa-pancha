@@ -75,7 +75,7 @@ export async function createPaymentIntent(paymentData: PaymentData) {
       paymentIntentId: data.paymentIntentId,
     };
   } catch (err) {
-    console.error('createPaymentIntent error:', err.message || err);
+    console.error('createPaymentIntent error:', (err as Error).message || err);
     throw err;
   }
 }
@@ -92,7 +92,7 @@ export async function confirmPayment(
     confirmCardPayment: (
       secret: string,
       opts: unknown
-    ) => Promise<{ error?: { message: string }; paymentIntent?: unknown }>;
+    ) => Promise<{ error?: { message?: string }; paymentIntent?: unknown }>;
   },
   elements: { getElement: (type: string) => unknown },
   clientSecret: string

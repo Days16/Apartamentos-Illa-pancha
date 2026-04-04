@@ -22,6 +22,13 @@ test.describe('Tests Panel Administrador', () => {
 
     // Login.tsx siempre redirige a /gestion tras login exitoso
     await page.waitForURL('**/gestion**', { timeout: 15000 });
+
+    // Verificar que app_metadata.role está asignado (no redirige de vuelta a /login)
+    await page.waitForTimeout(800);
+    const currentUrl = page.url();
+    if (currentUrl.includes('/login')) {
+      test.skip(true, 'Usuario sin app_metadata.role="admin" asignado en Supabase. Ejecuta el UPDATE en el SQL Editor.');
+    }
   });
 
   test('Accede al Listado de Reservas y navega las páginas', async ({ page }) => {

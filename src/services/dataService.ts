@@ -226,6 +226,7 @@ function normalizeApartment(d: any): Apartment {
     deposit_percentage: d.deposit_percentage ?? 50,
     maps_url: d.maps_url || null,
     internalName: d.internal_name || d.internalName || d.name,
+    coverPhotoUrl: d.cover_photo_url || d.coverPhotoUrl || null,
   };
 }
 

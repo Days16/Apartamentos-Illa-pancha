@@ -46,35 +46,46 @@ function trimOrNull(s: string): string | null {
 
 type DeeplUiLang = 'EN' | 'FR' | 'DE' | 'PT';
 
-async function applyAutoTranslations(f: FaqForm): Promise<FaqForm> {
+/** Devuelve true si el texto traducido parece ser el mismo que el original (traducción fallida silenciosa). */
+function isSameAsSource(translated: string, source: string): boolean {
+  return translated.trim().toLowerCase() === source.trim().toLowerCase();
+}
+
+/** Campo necesita traducción: está vacío O contiene el mismo texto que el español (devolución incorrecta de MyMemory). */
+function needsTranslation(field: string, source: string): boolean {
+  const t = field.trim();
+  return !t || isSameAsSource(t, source);
+}
+
+async function applyAutoTranslations(f: FaqForm, force = false): Promise<FaqForm> {
   let next = { ...f };
   const q = f.question.trim();
   const a = f.answer.trim();
 
   const qNeed: DeeplUiLang[] = [];
-  if (!f.question_en.trim()) qNeed.push('EN');
-  if (!f.question_fr.trim()) qNeed.push('FR');
-  if (!f.question_de.trim()) qNeed.push('DE');
-  if (!f.question_pt.trim()) qNeed.push('PT');
+  if (force || needsTranslation(f.question_en, q)) qNeed.push('EN');
+  if (force || needsTranslation(f.question_fr, q)) qNeed.push('FR');
+  if (force || needsTranslation(f.question_de, q)) qNeed.push('DE');
+  if (force || needsTranslation(f.question_pt, q)) qNeed.push('PT');
   if (qNeed.length && q) {
     const tr = await autoTranslateFromBase(q, 'ES', qNeed);
-    if (tr.EN) next.question_en = tr.EN;
-    if (tr.FR) next.question_fr = tr.FR;
-    if (tr.DE) next.question_de = tr.DE;
-    if (tr.PT) next.question_pt = tr.PT;
+    if (tr.EN && !isSameAsSource(tr.EN, q)) next.question_en = tr.EN;
+    if (tr.FR && !isSameAsSource(tr.FR, q)) next.question_fr = tr.FR;
+    if (tr.DE && !isSameAsSource(tr.DE, q)) next.question_de = tr.DE;
+    if (tr.PT && !isSameAsSource(tr.PT, q)) next.question_pt = tr.PT;
   }
 
   const aNeed: DeeplUiLang[] = [];
-  if (!f.answer_en.trim()) aNeed.push('EN');
-  if (!f.answer_fr.trim()) aNeed.push('FR');
-  if (!f.answer_de.trim()) aNeed.push('DE');
-  if (!f.answer_pt.trim()) aNeed.push('PT');
+  if (force || needsTranslation(f.answer_en, a)) aNeed.push('EN');
+  if (force || needsTranslation(f.answer_fr, a)) aNeed.push('FR');
+  if (force || needsTranslation(f.answer_de, a)) aNeed.push('DE');
+  if (force || needsTranslation(f.answer_pt, a)) aNeed.push('PT');
   if (aNeed.length && a) {
     const tr = await autoTranslateFromBase(a, 'ES', aNeed);
-    if (tr.EN) next.answer_en = tr.EN;
-    if (tr.FR) next.answer_fr = tr.FR;
-    if (tr.DE) next.answer_de = tr.DE;
-    if (tr.PT) next.answer_pt = tr.PT;
+    if (tr.EN && !isSameAsSource(tr.EN, a)) next.answer_en = tr.EN;
+    if (tr.FR && !isSameAsSource(tr.FR, a)) next.answer_fr = tr.FR;
+    if (tr.DE && !isSameAsSource(tr.DE, a)) next.answer_de = tr.DE;
+    if (tr.PT && !isSameAsSource(tr.PT, a)) next.answer_pt = tr.PT;
   }
 
   return next;
@@ -88,6 +99,7 @@ export default function FaqAdmin() {
   const [form, setForm] = useState<FaqForm>(EMPTY);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [translationsDirty, setTranslationsDirty] = useState(false);
 
   useEffect(() => {
     load();
@@ -110,6 +122,7 @@ export default function FaqAdmin() {
     setForm({ ...EMPTY, display_order: faqs.length });
     setEditing('new');
     setError(null);
+    setTranslationsDirty(false);
   };
 
   const startEdit = (faq: DbFaq) => {
@@ -129,6 +142,7 @@ export default function FaqAdmin() {
     });
     setEditing(faq.id);
     setError(null);
+    setTranslationsDirty(false);
   };
 
   const handleFillTranslations = async () => {
@@ -139,9 +153,9 @@ export default function FaqAdmin() {
     setSaving(true);
     setError(null);
     try {
-      const filled = await applyAutoTranslations(form);
+      const filled = await applyAutoTranslations(form, true);
       setForm(filled);
-      toast.success('Campos vacíos traducidos (revisa antes de guardar).');
+      toast.success('Traducciones actualizadas desde español (revisa antes de guardar).');
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       setError('DeepL: ' + msg);
@@ -158,24 +172,28 @@ export default function FaqAdmin() {
     }
     setSaving(true);
     setError(null);
-    try {
-      let filled = { ...form };
-      const needsQ =
-        !form.question_en.trim() ||
-        !form.question_fr.trim() ||
-        !form.question_de.trim() ||
-        !form.question_pt.trim();
-      const needsA =
-        !form.answer_en.trim() ||
-        !form.answer_fr.trim() ||
-        !form.answer_de.trim() ||
-        !form.answer_pt.trim();
-      if (needsQ || needsA) {
-        toast.info('Traduciendo idiomas vacíos desde español…');
+    let filled = { ...form };
+    const needsQ =
+      !form.question_en.trim() ||
+      !form.question_fr.trim() ||
+      !form.question_de.trim() ||
+      !form.question_pt.trim();
+    const needsA =
+      !form.answer_en.trim() ||
+      !form.answer_fr.trim() ||
+      !form.answer_de.trim() ||
+      !form.answer_pt.trim();
+    if (needsQ || needsA) {
+      toast.info('Traduciendo idiomas vacíos desde español…');
+      try {
         filled = await applyAutoTranslations(form);
         setForm(filled);
+      } catch (trErr) {
+        const trMsg = trErr instanceof Error ? trErr.message : String(trErr);
+        toast.error('Traducción automática fallida: ' + trMsg + '. Guardando sin traducciones.');
       }
-
+    }
+    try {
       const payload = {
         question: filled.question.trim(),
         question_en: trimOrNull(filled.question_en),
@@ -197,6 +215,7 @@ export default function FaqAdmin() {
         await updateFaq(editing!, payload);
       }
       setEditing(null);
+      setTranslationsDirty(false);
       toast.success('FAQ guardada correctamente');
       await load();
     } catch (err) {
@@ -224,8 +243,21 @@ export default function FaqAdmin() {
   };
 
   const f =
-    (field: keyof FaqForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      setForm(p => ({ ...p, [field]: e.target.value }));
+    (field: keyof FaqForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const value = e.target.value;
+      if (field === 'question' || field === 'answer') {
+        setForm(p => ({
+          ...p,
+          [field]: value,
+          ...(field === 'question'
+            ? { question_en: '', question_fr: '', question_de: '', question_pt: '' }
+            : { answer_en: '', answer_fr: '', answer_de: '', answer_pt: '' }),
+        }));
+        setTranslationsDirty(true);
+      } else {
+        setForm(p => ({ ...p, [field]: value }));
+      }
+    };
 
   const inputCls =
     'w-full border border-slate-200 rounded-lg px-3.5 py-2.5 text-[15px] leading-snug text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-[#1a5f6e]/30 focus:border-[#1a5f6e]';
@@ -407,6 +439,17 @@ export default function FaqAdmin() {
             </section>
           </div>
 
+          {translationsDirty && (
+            <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 flex items-start gap-2">
+              <span className="shrink-0 mt-0.5">⚠️</span>
+              <span>
+                Has modificado el español. Las traducciones se han limpiado y se regenerarán
+                automáticamente al <strong>Guardar</strong>, o puedes generarlas ahora con el botón
+                de abajo.
+              </span>
+            </div>
+          )}
+
           <div className="flex flex-wrap gap-3 mt-6 pt-5 border-t border-slate-200">
             <button
               type="button"
@@ -422,7 +465,7 @@ export default function FaqAdmin() {
               disabled={saving}
               className="border border-[#1a5f6e]/40 text-[#1a5f6e] bg-white px-5 py-2.5 rounded-lg font-medium text-sm disabled:opacity-50 hover:bg-[#1a5f6e]/5"
             >
-              Traducir campos vacíos
+              {translationsDirty ? 'Traducir desde español' : 'Traducir campos vacíos'}
             </button>
             <button
               type="button"

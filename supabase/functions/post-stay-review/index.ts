@@ -18,7 +18,7 @@ const SITE_URL = Deno.env.get("SITE_URL") || "https://apartamentosillapancha.com
 const resend = new Resend(RESEND_API_KEY);
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 

@@ -1,5 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -42,12 +40,12 @@ export default function About() {
       {/* VALORES */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-20 px-4 max-w-6xl mx-auto">
         {[
-          { icon: paths.cash, title: A.stats.commissions, desc: A.ctaDesc },
-          { icon: paths.check, title: A.title, desc: A.ctaDesc },
-          { icon: paths.leaf, title: A.title, desc: A.ctaDesc },
+          { icon: paths.cash,  title: A.value1Title, desc: A.value1Desc },
+          { icon: paths.check, title: A.value2Title, desc: A.value2Desc },
+          { icon: paths.leaf,  title: A.value3Title, desc: A.value3Desc },
         ].map((v, i) => (
           <div key={i} className="flex flex-col items-center text-center">
-            <div className="mb-4 p-4 bg-blue-100 rounded-lg">
+            <div className="mb-4 p-4 bg-teal/10 dark:bg-teal/5 rounded-lg">
               <Ico d={v.icon} size={32} color="#1a5f6e" />
             </div>
             <h3 className="text-xl font-serif font-bold text-navy mb-3">{v.title}</h3>
@@ -57,7 +55,7 @@ export default function About() {
       </div>
 
       {/* HISTORIA */}
-      <div className="py-20 px-4 bg-gray-50">
+      <div className="py-20 px-4 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-3xl mx-auto">
           <h2
             className="text-4xl font-serif font-bold text-navy mb-8"
@@ -67,20 +65,20 @@ export default function About() {
           <p className="text-gray-700 leading-relaxed mb-6 font-sans">{A.storyText2}</p>
           <p className="text-gray-700 leading-relaxed font-sans">{A.storyText3}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 border-t border-gray-200 pt-12">
-            <div className="text-center p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 border-t border-gray-200 dark:border-gray-700 pt-12">
+            <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="text-4xl font-serif font-bold text-teal mb-2">8</div>
               <div className="text-sm font-semibold text-gray-500 uppercase tracking-widest">
                 {A.stats.apts}
               </div>
             </div>
-            <div className="text-center p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="text-4xl font-serif font-bold text-teal mb-2">+220</div>
               <div className="text-sm font-semibold text-gray-500 uppercase tracking-widest">
                 {A.stats.reviews}
               </div>
             </div>
-            <div className="text-center p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="text-4xl font-serif font-bold text-teal mb-2">0%</div>
               <div className="text-sm font-semibold text-gray-500 uppercase tracking-widest">
                 {A.stats.commissions}
@@ -158,7 +156,7 @@ export default function About() {
       </div>
 
       {/* SECCIÓN: EXPERIENCIAS */}
-      <div id="experiencias" className="py-24 bg-slate-50">
+      <div id="experiencias" className="py-24 bg-slate-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2
             className="text-4xl md:text-5xl font-serif font-bold text-navy mb-6"

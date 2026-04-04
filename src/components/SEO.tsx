@@ -1,10 +1,27 @@
 import { useEffect } from 'react';
 import { assets } from '../constants/assets';
+import { useLang } from '../contexts/LangContext';
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL || 'https://www.apartamentosillapancha.com').replace(
   /\/$/,
   ''
 );
+
+const LOCALE_MAP: Record<string, string> = {
+  ES: 'es_ES',
+  EN: 'en_GB',
+  FR: 'fr_FR',
+  DE: 'de_DE',
+  PT: 'pt_PT',
+};
+
+const HREFLANG_MAP: Record<string, string> = {
+  ES: 'es',
+  EN: 'en',
+  FR: 'fr',
+  DE: 'de',
+  PT: 'pt',
+};
 
 /** Imagen OG: `VITE_OG_IMAGE_URL` (URL absoluta 1200×630) o foto hero hasta que subas og propia. */
 function defaultOgImage(): string {
@@ -34,6 +51,24 @@ function setCanonical(href: string) {
   el.setAttribute('href', href);
 }
 
+function setHreflangLinks(canonicalUrl: string) {
+  document.querySelectorAll('link[hreflang]').forEach(el => el.remove());
+  const langs = Object.values(HREFLANG_MAP);
+  langs.forEach(hreflang => {
+    const el = document.createElement('link');
+    el.setAttribute('rel', 'alternate');
+    el.setAttribute('hreflang', hreflang);
+    el.setAttribute('href', canonicalUrl);
+    document.head.appendChild(el);
+  });
+  // x-default apunta siempre a ES (versión principal)
+  const xDefault = document.createElement('link');
+  xDefault.setAttribute('rel', 'alternate');
+  xDefault.setAttribute('hreflang', 'x-default');
+  xDefault.setAttribute('href', canonicalUrl);
+  document.head.appendChild(xDefault);
+}
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -50,10 +85,13 @@ export default function SEO({
   description,
   ogImage,
   ogType = 'website',
-  ogLocale = 'es_ES',
+  ogLocale,
   jsonLd,
   noIndex = false,
 }: SEOProps) {
+  const { lang } = useLang();
+  const resolvedLocale = ogLocale ?? LOCALE_MAP[lang] ?? 'es_ES';
+
   const fullTitle = title
     ? `${title} | Illa Pancha`
     : 'Illa Pancha | Apartamentos Turísticos en Ribadeo';
@@ -71,10 +109,12 @@ export default function SEO({
 
     setCanonical(canonicalUrl);
 
+    if (!noIndex) setHreflangLinks(canonicalUrl);
+
     setMeta('meta[property="og:title"]', 'content', fullTitle);
     setMeta('meta[property="og:type"]', 'content', ogType);
     setMeta('meta[property="og:url"]', 'content', canonicalUrl);
-    setMeta('meta[property="og:locale"]', 'content', ogLocale);
+    setMeta('meta[property="og:locale"]', 'content', resolvedLocale);
     setMeta('meta[property="og:image"]', 'content', image);
     setMeta('meta[property="og:site_name"]', 'content', 'Illa Pancha');
     if (description) setMeta('meta[property="og:description"]', 'content', description);
@@ -101,8 +141,9 @@ export default function SEO({
     return () => {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
+      document.querySelectorAll('link[hreflang]').forEach(el => el.remove());
     };
-  }, [fullTitle, description, image, ogType, ogLocale, jsonLd, noIndex]);
+  }, [fullTitle, description, image, ogType, resolvedLocale, jsonLd, noIndex]);
 
   return null;
 }

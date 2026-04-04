@@ -1,5 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -23,6 +21,24 @@ import { siteUrl, assets } from '../constants/assets';
 
 import { trackEvent, EVENTS } from '../utils/analytics';
 import DOMPurify from 'dompurify';
+import type { DbApartment, DbApartmentPhoto, DbMinStayRule, Reservation, DbReview } from '../types';
+
+type AptState = DbApartment & {
+  cap: number;
+  minStay: number;
+  nameEn: string | null;
+  taglineEn: string | null;
+  descriptionEn: string | null;
+  extraNight: number;
+  internalName: string | null;
+  coverPhotoUrl: string | null;
+  reviewCount: number;
+  gradient: string;
+  occupiedDays: string[];
+  occupiedDatesList: string[];
+  rawReservations: Reservation[];
+  minStayRules: DbMinStayRule[];
+};
 
 function renderDesc(text: string): string {
   if (!text) return '';
@@ -46,17 +62,27 @@ const amenityIcons = {
   Barbacoa: paths.bbq,
 };
 
-const amenityTranslations = {
-  'Cocina equipada': 'Fully equipped kitchen',
-  Cafetera: 'Coffee maker',
-  Tostadora: 'Toaster',
-  Microondas: 'Microwave',
-  Lavadora: 'Washing machine',
-  'Secador de pelo': 'Hair dryer',
-  Plancha: 'Iron',
-  'Ropa de cama y toallas': 'Bed linen and towels',
-  'Cuna (bajo petición)': 'Crib (on request)',
-  Trona: 'High chair',
+const amenityTranslations: Record<string, Partial<Record<string, string>>> = {
+  'Cocina equipada':      { EN: 'Fully equipped kitchen',   FR: 'Cuisine équipée',           DE: 'Voll ausgestattete Küche',    PT: 'Cozinha equipada' },
+  'Cafetera':             { EN: 'Coffee maker',              FR: 'Cafetière',                 DE: 'Kaffeemaschine',              PT: 'Cafeteira' },
+  'Tostadora':            { EN: 'Toaster',                   FR: 'Grille-pain',               DE: 'Toaster',                     PT: 'Torradeira' },
+  'Microondas':           { EN: 'Microwave',                 FR: 'Micro-ondes',               DE: 'Mikrowelle',                  PT: 'Micro-ondas' },
+  'Lavadora':             { EN: 'Washing machine',           FR: 'Machine à laver',           DE: 'Waschmaschine',               PT: 'Máquina de lavar' },
+  'Secador de pelo':      { EN: 'Hair dryer',                FR: 'Sèche-cheveux',             DE: 'Haartrockner',                PT: 'Secador de cabelo' },
+  'Plancha':              { EN: 'Iron',                      FR: 'Fer à repasser',            DE: 'Bügeleisen',                  PT: 'Ferro de engomar' },
+  'Ropa de cama y toallas': { EN: 'Bed linen and towels',   FR: 'Linge de lit et serviettes', DE: 'Bettwäsche und Handtücher',  PT: 'Roupa de cama e toalhas' },
+  'Cuna (bajo petición)': { EN: 'Crib (on request)',         FR: 'Berceau (sur demande)',     DE: 'Kinderbett (auf Anfrage)',    PT: 'Berço (sob pedido)' },
+  'Trona':                { EN: 'High chair',                FR: 'Chaise haute',              DE: 'Hochstuhl',                   PT: 'Cadeira alta' },
+  'WiFi':                 { EN: 'WiFi',                      FR: 'WiFi',                      DE: 'WLAN',                        PT: 'WiFi' },
+  'Parking':              { EN: 'Parking',                   FR: 'Parking',                   DE: 'Parkplatz',                   PT: 'Estacionamento' },
+  'TV Smart':             { EN: 'Smart TV',                  FR: 'TV connectée',              DE: 'Smart TV',                    PT: 'TV inteligente' },
+  'A/C':                  { EN: 'Air conditioning',          FR: 'Climatisation',             DE: 'Klimaanlage',                 PT: 'Ar condicionado' },
+  'Calefacción':          { EN: 'Heating',                   FR: 'Chauffage',                 DE: 'Heizung',                     PT: 'Aquecimento' },
+  'Terraza':              { EN: 'Terrace',                   FR: 'Terrasse',                  DE: 'Terrasse',                    PT: 'Terraço' },
+  'Vistas al mar':        { EN: 'Sea views',                 FR: 'Vue sur la mer',            DE: 'Meerblick',                   PT: 'Vista para o mar' },
+  'Vistas a la ría':      { EN: 'Estuary views',             FR: 'Vue sur la ria',            DE: 'Ría-Blick',                   PT: 'Vista para a ria' },
+  'Cuna disponible':      { EN: 'Crib available',            FR: 'Berceau disponible',        DE: 'Kinderbett verfügbar',        PT: 'Berço disponível' },
+  'Barbacoa':             { EN: 'Barbecue',                  FR: 'Barbecue',                  DE: 'Grill',                       PT: 'Churrasco' },
 };
 
 export default function ApartmentDetail() {
@@ -66,17 +92,17 @@ export default function ApartmentDetail() {
   const { settings: globalSettings } = useSettings();
   const T = useT(lang);
 
-  const [apt, setApt] = useState(null);
+  const [apt, setApt] = useState<AptState | null>(null);
   const [loading, setLoading] = useState(true);
-  const [photos, setPhotos] = useState([]);
-  const [aptReviews, setAptReviews] = useState([]);
+  const [photos, setPhotos] = useState<DbApartmentPhoto[]>([]);
+  const [aptReviews, setAptReviews] = useState<DbReview[]>([]);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingDates, setBookingDates] = useState({ checkin: '', checkout: '' });
-  const [nightsRule, setNightsRule] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
-  const touchStartX = useRef(0);
-  const activeThumbRef = useRef(null);
+  const [carouselIdx, setCarouselIdx] = useState(0);
+  const touchStartX = useRef<number>(0);
+  const activeThumbRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -95,7 +121,7 @@ export default function ApartmentDetail() {
           );
           const aptRules = rules.filter(r => r.apartment_slug === slug);
 
-          const occupiedList = [];
+          const occupiedList: string[] = [];
           aptRes.forEach(r => {
             // Generar array de fechas segun el rango (LOCAL)
             const start = new Date(r.checkin + 'T00:00:00'); // Ensure date is parsed as local midnight
@@ -112,7 +138,11 @@ export default function ApartmentDetail() {
             baths: data.baths || 1,
             minStay: data.min_stay || 2,
             nameEn: data.name_en,
+            taglineEn: data.tagline_en,
             descriptionEn: data.description_en,
+            extraNight: data.extra_night,
+            internalName: data.internal_name,
+            coverPhotoUrl: data.cover_photo_url,
             reviewCount: data.review_count || 0,
             gradient: 'linear-gradient(135deg, #1a5f6e 0%, #2C4A5E 100%)',
             rules: data.rules || [],
@@ -153,7 +183,7 @@ export default function ApartmentDetail() {
 
   useEffect(() => {
     if (!lightboxOpen) return;
-    const handleKey = e => {
+    const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setLightboxOpen(false);
       if (e.key === 'ArrowRight') setLightboxIdx(i => Math.min(photos.length - 1, i + 1));
       if (e.key === 'ArrowLeft') setLightboxIdx(i => Math.max(0, i - 1));
@@ -197,8 +227,8 @@ export default function ApartmentDetail() {
     apt.gradient.replace('0%', '20%').replace('100%', '80%'),
   ];
 
-  const aptName = lang === 'EN' ? apt.nameEn || apt.name : apt.name;
-  const aptDesc = lang === 'EN' ? apt.descriptionEn || apt.description : apt.description;
+  const aptName = lang !== 'ES' ? apt.nameEn || apt.name : apt.name;
+  const aptDesc = lang !== 'ES' ? apt.descriptionEn || apt.description : apt.description;
   const aptDescPlain = aptDesc
     ? aptDesc.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\n/g, ' ')
     : '';
@@ -206,55 +236,82 @@ export default function ApartmentDetail() {
     aptDescPlain || `${aptName} · apartamento turístico en Ribadeo, Galicia. Reserva directa Illa Pancha.`,
   );
 
-  const depositPct = globalSettings.payment_deposit_percentage ?? (apt.deposit_percentage || 50);
-  const cancelDays = apt.cancellation_days ?? globalSettings.cancellation_free_days ?? 14;
+  const depositPct = apt.deposit_percentage ?? (typeof globalSettings.payment_deposit_percentage === 'number' ? globalSettings.payment_deposit_percentage : 50);
+  const cancelDays = apt.cancellation_days ?? (typeof globalSettings.cancellation_free_days === 'number' ? globalSettings.cancellation_free_days : 14);
 
   return (
     <>
       <SEO
         title={`${aptName} · Ribadeo`}
         description={aptMetaDesc}
-        ogImage={apt.coverPhoto || undefined}
+        ogImage={photos[0]?.photo_url || undefined}
         ogType="website"
         jsonLd={
           apt.slug
             ? {
                 '@context': 'https://schema.org',
-                '@type': 'Apartment',
-                name: aptName,
-                description: truncateMetaDescription(aptDescPlain, 300),
-                url: `${siteUrl}/apartamentos/${apt.slug}`,
-                image: apt.coverPhoto || assets.hero.background,
-                numberOfRooms: apt.rooms || 1,
-                occupancy: {
-                  '@type': 'QuantitativeValue',
-                  maxValue: apt.capacity || 4,
-                },
-                address: {
-                  '@type': 'PostalAddress',
-                  addressLocality: 'Ribadeo',
-                  addressRegion: 'Galicia',
-                  postalCode: '27700',
-                  addressCountry: 'ES',
-                },
-                containedInPlace: {
-                  '@type': 'LodgingBusiness',
-                  name: 'Illa Pancha',
-                  url: siteUrl,
-                },
-                offers: apt.price
-                  ? {
-                      '@type': 'Offer',
-                      price: apt.price,
-                      priceCurrency: 'EUR',
-                      priceSpecification: {
-                        '@type': 'UnitPriceSpecification',
-                        price: apt.price,
-                        priceCurrency: 'EUR',
-                        unitCode: 'DAY',
+                '@graph': [
+                  {
+                    '@type': 'Apartment',
+                    name: aptName,
+                    description: truncateMetaDescription(aptDescPlain, 300),
+                    url: `${siteUrl}/apartamentos/${apt.slug}`,
+                    image: photos[0]?.photo_url || assets.hero.background,
+                    numberOfRooms: apt.bedrooms || 1,
+                    occupancy: {
+                      '@type': 'QuantitativeValue',
+                      maxValue: apt.capacity || 4,
+                    },
+                    address: {
+                      '@type': 'PostalAddress',
+                      addressLocality: 'Ribadeo',
+                      addressRegion: 'Galicia',
+                      postalCode: '27700',
+                      addressCountry: 'ES',
+                    },
+                    containedInPlace: {
+                      '@type': 'LodgingBusiness',
+                      name: 'Illa Pancha',
+                      url: siteUrl,
+                    },
+                    offers: apt.price
+                      ? {
+                          '@type': 'Offer',
+                          price: apt.price,
+                          priceCurrency: 'EUR',
+                          priceSpecification: {
+                            '@type': 'UnitPriceSpecification',
+                            price: apt.price,
+                            priceCurrency: 'EUR',
+                            unitCode: 'DAY',
+                          },
+                        }
+                      : undefined,
+                  },
+                  {
+                    '@type': 'BreadcrumbList',
+                    itemListElement: [
+                      {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: 'Inicio',
+                        item: siteUrl,
                       },
-                    }
-                  : undefined,
+                      {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: 'Apartamentos',
+                        item: `${siteUrl}/apartamentos`,
+                      },
+                      {
+                        '@type': 'ListItem',
+                        position: 3,
+                        name: aptName,
+                        item: `${siteUrl}/apartamentos/${apt.slug}`,
+                      },
+                    ],
+                  },
+                ],
               }
             : undefined
         }
@@ -266,15 +323,45 @@ export default function ApartmentDetail() {
       />
 
       <div className="w-full">
-        {/* GALERÍA */}
-        <div className="relative grid grid-cols-4 gap-4 mb-8 max-w-7xl mx-auto px-4 py-8">
+        {/* GALERÍA MÓVIL — solo visible en pantallas pequeñas */}
+        {photos.length > 0 && (
+          <div className="md:hidden relative w-full aspect-[4/3] bg-gray-100">
+            <img
+              src={photos[carouselIdx]?.photo_url}
+              alt={photos[carouselIdx]?.caption || `${aptName} ${carouselIdx + 1}`}
+              className="w-full h-full object-cover"
+              onClick={() => { setLightboxIdx(carouselIdx); setLightboxOpen(true); }}
+            />
+            {carouselIdx > 0 && (
+              <button
+                aria-label="Foto anterior"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl"
+                onClick={() => setCarouselIdx(i => i - 1)}
+              >‹</button>
+            )}
+            {carouselIdx < photos.length - 1 && (
+              <button
+                aria-label="Foto siguiente"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl"
+                onClick={() => setCarouselIdx(i => i + 1)}
+              >›</button>
+            )}
+            <div className="absolute bottom-2 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+              {carouselIdx + 1} / {photos.length}
+            </div>
+          </div>
+        )}
+
+        {/* GALERÍA ESCRITORIO */}
+        <div className="relative hidden md:grid grid-cols-4 gap-4 mb-8 max-w-7xl mx-auto px-4 py-8">
           <div className="col-span-2 row-span-2">
             <div
+              role="button"
+              tabIndex={0}
+              aria-label={photos[0]?.caption || `${aptName} — foto 1`}
               className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
-              onClick={() => {
-                setLightboxIdx(0);
-                setLightboxOpen(true);
-              }}
+              onClick={() => { setLightboxIdx(0); setLightboxOpen(true); }}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightboxIdx(0); setLightboxOpen(true); } }}
             >
               {photos[0] ? (
                 <img
@@ -294,11 +381,12 @@ export default function ApartmentDetail() {
           {[1, 2, 3].map(i => (
             <div
               key={i}
+              role="button"
+              tabIndex={0}
+              aria-label={photos[i]?.caption || `${aptName} — foto ${i + 1}`}
               className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
-              onClick={() => {
-                setLightboxIdx(i);
-                setLightboxOpen(true);
-              }}
+              onClick={() => { setLightboxIdx(i); setLightboxOpen(true); }}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLightboxIdx(i); setLightboxOpen(true); } }}
             >
               {photos[i] ? (
                 <img
@@ -324,9 +412,7 @@ export default function ApartmentDetail() {
               }}
             >
               <Ico d={paths.photo} size={14} color="#0f172a" />
-              {lang === 'EN'
-                ? `See all photos (${photos.length})`
-                : `Ver todas las fotos (${photos.length})`}
+              {T.detail.seeAllPhotos.replace('{count}', String(photos.length))}
             </button>
           )}
         </div>
@@ -377,7 +463,7 @@ export default function ApartmentDetail() {
             </div>
             <p
               className="text-gray-700 leading-relaxed mb-8"
-              dangerouslySetInnerHTML={{ __html: renderDesc(aptDesc) }}
+              dangerouslySetInnerHTML={{ __html: renderDesc(aptDesc || '') }}
             />
 
             <div className="text-2xl font-serif font-bold text-navy mb-4 mt-8">
@@ -386,8 +472,8 @@ export default function ApartmentDetail() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {apt.amenities.map(am => (
                 <div key={am} className="flex items-center gap-3 text-sm text-gray-700">
-                  <Ico d={amenityIcons[am] || paths.check} size={16} color="#1a5f6e" />
-                  {lang === 'EN' ? amenityTranslations[am] || am : am}
+                  <Ico d={(amenityIcons as Record<string, string>)[am] || paths.check} size={16} color="#1a5f6e" />
+                  {lang !== 'ES' ? amenityTranslations[am]?.[lang] || amenityTranslations[am]?.EN || am : am}
                 </div>
               ))}
             </div>
@@ -439,7 +525,7 @@ export default function ApartmentDetail() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-navy">
-                      Ver ubicación en Google Maps
+                      {T.detail.openMaps}
                     </div>
                     <div className="text-xs text-gray-500">
                       Av. Rosalía de Castro 25, 27700 Ribadeo, Lugo
@@ -549,6 +635,7 @@ export default function ApartmentDetail() {
               {lightboxIdx + 1} / {photos.length}
             </div>
             <button
+              aria-label="Cerrar galería"
               className="text-white/70 hover:text-white text-2xl font-light w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
               onClick={() => setLightboxOpen(false)}
             >
@@ -563,6 +650,7 @@ export default function ApartmentDetail() {
           >
             {lightboxIdx > 0 && (
               <button
+                aria-label="Foto anterior"
                 className="absolute left-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl font-light z-10 w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
                 onClick={() => setLightboxIdx(i => i - 1)}
               >
@@ -577,6 +665,7 @@ export default function ApartmentDetail() {
             />
             {lightboxIdx < photos.length - 1 && (
               <button
+                aria-label="Foto siguiente"
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl font-light z-10 w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
                 onClick={() => setLightboxIdx(i => i + 1)}
               >
@@ -606,6 +695,8 @@ export default function ApartmentDetail() {
                 key={i}
                 ref={i === lightboxIdx ? activeThumbRef : null}
                 onClick={() => setLightboxIdx(i)}
+                aria-label={p.caption || `Foto ${i + 1} de ${photos.length}`}
+                aria-current={i === lightboxIdx ? 'true' : undefined}
                 className={`flex-shrink-0 w-14 h-14 rounded overflow-hidden border-2 transition-all ${
                   i === lightboxIdx
                     ? 'border-white opacity-100 scale-105'

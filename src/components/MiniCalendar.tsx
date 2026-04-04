@@ -65,7 +65,7 @@ export default function MiniCalendar({ occupiedDays, T }: { occupiedDays: string
           return (
             <div
               key={i}
-              className={`flex items-center justify-center p-1 text-xs rounded ${!day ? 'bg-transparent' : past ? 'bg-gray-100 text-gray-400' : occ ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}
+              className={`flex items-center justify-center p-1 text-xs rounded ${!day ? 'bg-transparent' : past ? 'bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-slate-500' : occ ? 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400' : 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'}`}
               title={day && !past ? (occ ? T.common.occupied : T.common.available) : ''}
             >
               {day}
@@ -74,16 +74,16 @@ export default function MiniCalendar({ occupiedDays, T }: { occupiedDays: string
         })}
       </div>
       <div className="mt-3 flex gap-4 flex-wrap">
-        <div className="flex items-center gap-1.5 text-xs text-gray-600">
-          <div className="w-2.5 h-2.5 bg-blue-100 border border-blue-400 rounded" />
+        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-400">
+          <div className="w-2.5 h-2.5 bg-blue-100 dark:bg-blue-900/40 border border-blue-400 rounded" />
           {T.detail.available}
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-gray-600">
-          <div className="w-2.5 h-2.5 bg-red-100 border border-red-600 rounded" />
+        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-400">
+          <div className="w-2.5 h-2.5 bg-red-100 dark:bg-red-900/40 border border-red-600 dark:border-red-500 rounded" />
           {T.detail.occupied}
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-gray-600">
-          <div className="w-2.5 h-2.5 bg-gray-100 border border-gray-300 rounded" />
+        <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-slate-400">
+          <div className="w-2.5 h-2.5 bg-gray-100 dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded" />
           {T.common.past}
         </div>
       </div>
