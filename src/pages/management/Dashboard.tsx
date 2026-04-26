@@ -44,6 +44,7 @@ const SRC_LABEL: Record<string, string> = {
   web: 'Web',
   booking: 'Booking',
   manual: 'Manual',
+  direct: 'Manual',
 };
 
 export default function Dashboard() {

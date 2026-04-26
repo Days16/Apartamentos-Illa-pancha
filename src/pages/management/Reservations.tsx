@@ -54,6 +54,7 @@ const SRC_LABEL: Record<string, string> = {
   booking: 'Booking',
   airbnb: 'Airbnb',
   manual: 'Manual',
+  direct: 'Manual',
 };
 
 export default function Reservas() {

@@ -23,7 +23,7 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
     price: 0,
     deposit: 0,
     status: 'confirmed',
-    source: 'direct',
+    source: 'manual',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -57,20 +57,21 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
         return;
       }
 
-      const formatDate = date =>
-        new Intl.DateTimeFormat('es-ES', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-        }).format(date);
+      const formatDate = date => {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      };
       const resId = 'IP-' + Math.floor(Math.random() * 900000 + 100000);
       const diffTime = Math.abs(form.checkout - form.checkin);
       const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const selectedApt = apartments.find(a => a.slug === form.aptSlug);
 
       const data = await createReservation({
         id: resId,
         guest: form.name,
-        apt: apartments.find(a => a.slug === form.aptSlug)?.name || form.aptSlug,
+        apt: selectedApt?.internalName || selectedApt?.name || form.aptSlug,
         email: form.email || '',
         phone: form.phone,
         aptSlug: form.aptSlug,
@@ -84,6 +85,7 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
       });
 
       onSuccess(data);
+      onClose();
     } catch (err) {
       setError(err.message || 'Error al crear la reserva.');
     } finally {
@@ -163,7 +165,7 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
             >
               {apartments.map(a => (
                 <option key={a.slug} value={a.slug}>
-                  {a.name}
+                  {a.internalName || a.name}
                 </option>
               ))}
             </select>
@@ -257,7 +259,7 @@ export default function ManualBookingModal({ onClose, onSuccess }) {
                 value={form.source}
                 onChange={e => setForm(f => ({ ...f, source: e.target.value }))}
               >
-                <option value="direct">Manual (Teléfono/Email)</option>
+                <option value="manual">Manual (Teléfono/Email)</option>
                 <option value="booking">Booking.com</option>
               </select>
             </div>

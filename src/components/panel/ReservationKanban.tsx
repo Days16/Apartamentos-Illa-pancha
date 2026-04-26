@@ -9,7 +9,7 @@ const COLUMNS = [
   { id: 'cancelled', label: 'Canceladas', color: '#dc2626', bg: 'rgba(220,38,38,.08)' },
 ];
 
-const SRC_LABEL = { web: 'Web', booking: 'Booking', airbnb: 'Airbnb', manual: 'Manual' };
+const SRC_LABEL = { web: 'Web', booking: 'Booking', airbnb: 'Airbnb', manual: 'Manual', direct: 'Manual' };
 const STATUS_VARIANT = { confirmed: 'success', pending: 'warning', cancelled: 'error' };
 
 interface Props {
