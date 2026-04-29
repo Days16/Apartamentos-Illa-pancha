@@ -248,28 +248,16 @@ export default function ManagementLayout() {
 
         {/* Occupancy widget today */}
         {occupancyWidget && (
-          <div
-            className="mx-2 mb-3 rounded-lg p-3"
-            style={{
-              background: 'rgba(255,255,255,.05)',
-              border: '1px solid rgba(255,255,255,.08)',
-            }}
-          >
+          <div className="mx-2 mb-3 rounded-lg p-3 panel-sidebar-widget">
             <div className="flex items-center justify-between mb-2">
-              <span
-                className="text-[10px] uppercase tracking-widest font-semibold"
-                style={{ color: '#64748b' }}
-              >
+              <span className="text-[10px] uppercase tracking-widest font-semibold panel-sidebar-widget-title">
                 Ocupación hoy
               </span>
-              <span className="text-xs font-bold text-white">
+              <span className="text-xs font-bold panel-sidebar-widget-value">
                 {occupancyWidget.today}/{occupancyWidget.total}
               </span>
             </div>
-            <div
-              className="h-1 rounded-full overflow-hidden mb-2"
-              style={{ background: 'rgba(255,255,255,.1)' }}
-            >
+            <div className="h-1 rounded-full overflow-hidden mb-2 panel-sidebar-widget-track">
               <div
                 className="h-full rounded-full"
                 style={{
@@ -282,13 +270,13 @@ export default function ManagementLayout() {
               />
             </div>
             {occupancyWidget.checkinsToday.length > 0 && (
-              <div className="text-[10px] mt-1" style={{ color: '#94a3b8' }}>
+              <div className="text-[10px] mt-1 panel-sidebar-widget-note">
                 🟢 Entradas: {occupancyWidget.checkinsToday.join(', ')}
                 {occupancyWidget.checkinsToday.length < occupancyWidget.checkinsToday.length && '…'}
               </div>
             )}
             {occupancyWidget.checkoutsToday.length > 0 && (
-              <div className="text-[10px] mt-0.5" style={{ color: '#94a3b8' }}>
+              <div className="text-[10px] mt-0.5 panel-sidebar-widget-note">
                 🔴 Salidas: {occupancyWidget.checkoutsToday.join(', ')}
               </div>
             )}
@@ -331,8 +319,7 @@ export default function ManagementLayout() {
   function SidebarFooter() {
     return (
       <div
-        className="flex-shrink-0 p-4 border-t border-white/10"
-        style={{ background: 'rgba(0,0,0,.2)' }}
+        className="flex-shrink-0 p-4 border-t border-white/10 admin-sidebar-footer"
       >
         <div className="flex items-center gap-3">
           <div
@@ -343,7 +330,7 @@ export default function ManagementLayout() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold text-white leading-tight truncate">Gestor</div>
-            <div className="text-xs truncate mt-0.5" style={{ color: '#64748b' }}>
+            <div className="text-xs truncate mt-0.5 text-slate-500">
               {user?.email ?? ''}
             </div>
           </div>
@@ -360,15 +347,9 @@ export default function ManagementLayout() {
   }
 
   return (
-    <div
-      className="flex h-screen overflow-hidden font-sans"
-      style={{ background: 'var(--panel-bg)' }}
-    >
+    <div className="flex h-screen overflow-hidden font-sans panel-bg-color">
       {/* ── Sidebar desktop ──────────────────────────────── */}
-      <aside
-        className="hidden md:flex flex-col flex-shrink-0"
-        style={{ width: 'var(--panel-sidebar-width)', background: 'var(--panel-sidebar-bg)' }}
-      >
+      <aside className="hidden md:flex flex-col flex-shrink-0 admin-sidebar">
         {/* Header */}
         <div className="flex-shrink-0 px-5 pt-5 pb-4 border-b border-white/10">
           <Link to="/" target="_blank" rel="noopener noreferrer" className="block no-underline">
@@ -380,10 +361,7 @@ export default function ManagementLayout() {
             </div>
           </Link>
           <div className="mt-3">
-            <span
-              className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full"
-              style={{ background: 'rgba(212,168,67,.18)', color: '#D4A843' }}
-            >
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full admin-panel-badge">
               <span
                 className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0"
                 style={{ background: '#D4A843' }}
@@ -400,8 +378,7 @@ export default function ManagementLayout() {
       {/* ── Overlay móvil ───────────────────────────────── */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ background: 'rgba(0,0,0,.55)', backdropFilter: 'blur(4px)' }}
+          className="fixed inset-0 z-40 md:hidden admin-mobile-overlay"
           onClick={() => setSidebarOpen(false)}
           aria-hidden
         />
@@ -409,10 +386,8 @@ export default function ManagementLayout() {
 
       {/* ── Mobile sidebar (drawer) ──────────────────────── */}
       <aside
-        className="fixed inset-y-0 left-0 flex flex-col z-50 md:hidden transition-transform duration-300 ease-in-out"
+        className="fixed inset-y-0 left-0 flex flex-col z-50 md:hidden transition-transform duration-300 ease-in-out admin-mobile-drawer"
         style={{
-          width: '280px',
-          background: 'var(--panel-sidebar-bg)',
           transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
         }}
         aria-label="Menú de gestión"
@@ -420,10 +395,7 @@ export default function ManagementLayout() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 flex-shrink-0">
           <div>
             <div className="font-serif font-bold text-white text-lg tracking-wide">Illa Pancha</div>
-            <span
-              className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full mt-1"
-              style={{ background: 'rgba(212,168,67,.18)', color: '#D4A843' }}
-            >
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full mt-1 admin-panel-badge">
               Panel Gestión
             </span>
           </div>
@@ -444,13 +416,7 @@ export default function ManagementLayout() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Topbar */}
         <header
-          className="flex-shrink-0 flex items-center gap-3 px-4 border-b transition-shadow duration-200"
-          style={{
-            height: 'var(--panel-topbar-h)',
-            background: 'var(--panel-surface)',
-            borderColor: 'var(--panel-border)',
-            boxShadow: topbarShadow ? '0 2px 8px rgba(0,0,0,.08)' : 'none',
-          }}
+          className={`flex-shrink-0 flex items-center gap-3 px-4 border-b transition-shadow duration-200 admin-topbar${topbarShadow ? ' shadow-[0_2px_8px_rgba(0,0,0,.08)]' : ''}`}
         >
           {/* Hamburger — mobile only */}
           <button
@@ -495,13 +461,7 @@ export default function ManagementLayout() {
           {/* Search button */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors"
-            style={{
-              background: 'var(--panel-surface-2)',
-              color: 'var(--panel-text-muted)',
-              border: '1px solid var(--panel-border)',
-              minHeight: '34px',
-            }}
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors admin-search-btn"
             aria-label="Buscar (Ctrl+K)"
           >
             <svg
@@ -521,10 +481,7 @@ export default function ManagementLayout() {
             <span>Buscar…</span>
             <kbd
               className="ml-1 text-[10px] font-mono px-1 py-0.5 rounded"
-              style={{
-                background: 'var(--panel-surface)',
-                border: '1px solid var(--panel-border)',
-              }}
+              style={{ background: 'var(--panel-surface)', border: '1px solid var(--panel-border)' }}
             >
               ⌃K
             </kbd>
@@ -550,7 +507,7 @@ export default function ManagementLayout() {
           <div className="relative" ref={avatarMenuRef}>
             <button
               onClick={() => setAvatarMenuOpen(v => !v)}
-              className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-slate-700"
+              className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-colors panel-user-menu-item"
               style={{ minHeight: '44px' }}
               aria-label="Menú de usuario"
               aria-expanded={avatarMenuOpen}
@@ -594,7 +551,7 @@ export default function ManagementLayout() {
                     toggle();
                     setAvatarMenuOpen(false);
                   }}
-                  className="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-left transition-colors hover:bg-gray-50 dark:hover:bg-slate-700"
+                  className="panel-user-menu-item flex items-center gap-2.5 w-full px-4 py-2 text-sm text-left transition-colors"
                   style={{ color: 'var(--panel-text)' }}
                   role="menuitem"
                 >
@@ -604,7 +561,7 @@ export default function ManagementLayout() {
 
                 <Link
                   to="/admin"
-                  className="flex items-center gap-2.5 w-full px-4 py-2 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 no-underline"
+                  className="panel-user-menu-item flex items-center gap-2.5 w-full px-4 py-2 text-sm transition-colors no-underline"
                   style={{ color: 'var(--panel-text)' }}
                   onClick={() => setAvatarMenuOpen(false)}
                   role="menuitem"
@@ -617,7 +574,7 @@ export default function ManagementLayout() {
                   to="/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 w-full px-4 py-2 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 no-underline"
+                  className="panel-user-menu-item flex items-center gap-2.5 w-full px-4 py-2 text-sm transition-colors no-underline"
                   style={{ color: 'var(--panel-text)' }}
                   onClick={() => setAvatarMenuOpen(false)}
                   role="menuitem"
@@ -633,7 +590,7 @@ export default function ManagementLayout() {
                       setAvatarMenuOpen(false);
                     }}
                     disabled={pushLoading}
-                    className="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-left transition-colors hover:bg-gray-50 dark:hover:bg-slate-700"
+                    className="panel-user-menu-item flex items-center gap-2.5 w-full px-4 py-2 text-sm text-left transition-colors"
                     style={{ color: 'var(--panel-text)' }}
                     role="menuitem"
                   >

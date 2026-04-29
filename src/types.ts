@@ -50,6 +50,7 @@ export interface DbReservation {
   phone: string | null;
   extras: string[];
   extras_total: number;
+  review_token?: string;
   created_at: string;
 }
 
@@ -205,6 +206,7 @@ export interface Reservation {
   phone: string | null;
   extras: string[];
   extrasTotal: number;
+  reviewToken?: string;
   created_at?: string;
 }
 

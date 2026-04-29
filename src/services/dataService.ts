@@ -92,6 +92,7 @@ export async function createReservation(
       email: reservation.email || '',
       phone: reservation.phone || '',
       extras: reservation.extras || [],
+      review_token: reservation.reviewToken || crypto.randomUUID(),
     })
     .select()
     .single();
@@ -250,5 +251,6 @@ export function normalizeReservation(d: any): Reservation {
     phone: d.phone ?? '',
     extras: d.extras || [],
     extrasTotal: d.extras_total ?? 0,
+    reviewToken: d.review_token || d.reviewToken || undefined,
   };
 }

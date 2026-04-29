@@ -447,7 +447,9 @@ export default function BookingWidget({
           )}
           {dynamicRuleAdjustment !== 0 && (
             <div className="flex justify-between items-center text-sm text-gray-700">
-              <span>Ajuste reglas dinámicas</span>
+              <span>
+                {dynamicRuleAdjustment < 0 ? T.common.discount : 'Ajuste reglas dinámicas'}
+              </span>
               <strong>
                 {dynamicRuleAdjustment > 0 ? '+' : ''}
                 {convertPrice(dynamicRuleAdjustment)}

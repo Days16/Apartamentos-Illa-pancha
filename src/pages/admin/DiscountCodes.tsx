@@ -38,7 +38,7 @@ export default function DiscountCodes() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ ...EMPTY });
   const [saving, setSaving] = useState(false);
-  const [confirmDel, setConfirmDel] = useState(null);
+  const [confirmDel, setConfirmDel] = useState<string | null>(null);
 
   useEffect(() => {
     loadCodes();
@@ -115,13 +115,34 @@ export default function DiscountCodes() {
   }
 
   async function handleDelete(id) {
-    const { error } = await supabase.from('discount_codes').delete().eq('id', id);
-    if (error) toast.error(error.message);
-    else {
-      toast.success('Código eliminado');
-      setConfirmDel(null);
-      loadCodes();
+    if (!id) {
+      toast.error('No se ha seleccionado ningún código para eliminar.');
+      return;
     }
+
+    const deleteId = id;
+    const { data, error } = await supabase
+      .from('discount_codes')
+      .delete()
+      .match({ id: deleteId })
+      .select('id,code');
+
+    if (error) {
+      console.error('Error eliminando código de descuento', { id: deleteId, error });
+      toast.error(error.message || 'Error al eliminar el código');
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      console.warn('No se eliminó ningún registro de discount_codes', { id: deleteId, data });
+      toast.error('No se ha encontrado el código o no tienes permisos.');
+      setConfirmDel(null);
+      return;
+    }
+
+    toast.success('Código eliminado');
+    setConfirmDel(null);
+    loadCodes();
   }
 
   const columns: Column<any>[] = [
@@ -183,6 +204,7 @@ export default function DiscountCodes() {
       render: (_, row) => (
         <div className="flex gap-1 justify-end">
           <button
+            type="button"
             className="panel-btn panel-btn-ghost panel-btn-sm"
             onClick={e => {
               e.stopPropagation();
@@ -192,8 +214,10 @@ export default function DiscountCodes() {
             Editar
           </button>
           <button
+            type="button"
             className="panel-btn panel-btn-ghost panel-btn-sm text-red-600"
             onClick={e => {
+              e.preventDefault();
               e.stopPropagation();
               setConfirmDel(row.id);
             }}

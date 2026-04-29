@@ -1723,6 +1723,28 @@
   border-color: var(--panel-border);
   background: var(--panel-surface-2);
 }
+.panel-user-menu-item {
+  color: var(--panel-text);
+}
+.panel-user-menu-item:hover {
+  background: var(--panel-surface-2);
+}
+.panel-sidebar-widget {
+  background: color-mix(in srgb, var(--panel-surface) 24%, transparent);
+  border: 1px solid color-mix(in srgb, var(--panel-border) 75%, transparent);
+}
+.panel-sidebar-widget-title {
+  color: var(--panel-text-subtle);
+}
+.panel-sidebar-widget-value {
+  color: var(--panel-text);
+}
+.panel-sidebar-widget-track {
+  background: color-mix(in srgb, var(--panel-text-subtle) 24%, transparent);
+}
+.panel-sidebar-widget-note {
+  color: var(--panel-text-muted);
+}
 
 /* ── 10.18 Panel animations ── */
 @keyframes panel-fade-in {

@@ -329,6 +329,7 @@ export default function BookingModal({
           extras: selectedExtras,
           status: 'confirmed',
           source: 'web',
+          review_token: crypto.randomUUID(),
           created_at: new Date().toISOString(),
         },
       ]);
@@ -499,7 +500,9 @@ export default function BookingModal({
               )}
               {dynamicRuleAdjustment !== 0 && (
                 <div className="flex justify-between items-center text-sm py-2 border-b border-white/10 px-0">
-                  <span className="text-white/55">Ajuste reglas dinámicas</span>
+                  <span className="text-white/55">
+                    {dynamicRuleAdjustment < 0 ? T.common.discount : 'Ajuste reglas dinámicas'}
+                  </span>
                   <span>
                     {dynamicRuleAdjustment > 0 ? '+' : ''}
                     {formatPrice(dynamicRuleAdjustment)}

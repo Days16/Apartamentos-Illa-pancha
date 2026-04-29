@@ -265,6 +265,7 @@ export async function createReservation(reservation: Partial<DbReservation>) {
   const { data, error } = await supabase.from('reservations').insert([
     {
       ...reservation,
+      review_token: reservation.review_token || crypto.randomUUID(),
       created_at: new Date().toISOString(),
     },
   ]);

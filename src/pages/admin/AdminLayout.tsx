@@ -459,7 +459,7 @@ export default function AdminLayout() {
                     toggle();
                     setAvatarMenuOpen(false);
                   }}
-                  className="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-left transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 panel-text-main"
+                  className="panel-user-menu-item flex items-center gap-2.5 w-full px-4 py-2 text-sm text-left transition-colors"
                   role="menuitem"
                 >
                   {dark ? <SunIcon /> : <MoonIcon />}
@@ -470,7 +470,7 @@ export default function AdminLayout() {
                   to="/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 w-full px-4 py-2 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-slate-700 no-underline panel-text-main"
+                  className="panel-user-menu-item flex items-center gap-2.5 w-full px-4 py-2 text-sm transition-colors no-underline"
                   onClick={() => setAvatarMenuOpen(false)}
                   role="menuitem"
                 >

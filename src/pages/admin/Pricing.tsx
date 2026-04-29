@@ -130,6 +130,14 @@ export default function Precios() {
       setFormError('El valor mínimo es obligatorio.');
       return;
     }
+    if (
+      form.condition_max !== '' &&
+      form.condition_max !== null &&
+      Number(form.condition_min) > Number(form.condition_max)
+    ) {
+      setFormError('El valor mínimo no puede ser mayor que el máximo.');
+      return;
+    }
 
     setSaving(true);
     setFormError(null);

@@ -108,11 +108,20 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-  const { guestEmail, guestName, apartmentName, reviewToken, manual, discount } = await req.json();
+  const { guestEmail, guestName, apartmentName, reviewToken, reservationId, manual, discount } = await req.json();
+
+  let token = reviewToken;
+  const invalidToken = token === '00000000-0000-0000-0000-000000000000' || token === 'null' || token === 'undefined';
+  if (!token || invalidToken) {
+    token = crypto.randomUUID();
+    if (manual && reservationId) {
+      await supabase.from('reservations').update({ review_token: token }).eq('id', reservationId);
+    }
+  }
 
   if (manual) {
     // Invocación manual para una reserva específica
-    const siteReviewUrl = `${SITE_URL}/dejar-resena?token=${reviewToken}`;
+    const siteReviewUrl = `${SITE_URL}/dejar-resena?token=${token}`;
 
     try {
       const { data, error } = await resend.emails.send({
@@ -147,7 +156,12 @@ serve(async (req) => {
   let sent = 0;
   for (const res of (reservations || [])) {
     if (!res.email) continue;
-    const siteReviewUrl = `${SITE_URL}/dejar-resena?token=${res.review_token}`;
+    let reviewToken = res.review_token;
+    if (!reviewToken) {
+      reviewToken = crypto.randomUUID();
+      await supabase.from('reservations').update({ review_token: reviewToken }).eq('id', res.id);
+    }
+    const siteReviewUrl = `${SITE_URL}/dejar-resena?token=${reviewToken}`;
     
     try {
       await resend.emails.send({

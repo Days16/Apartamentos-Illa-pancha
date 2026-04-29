@@ -61,10 +61,14 @@ export default function Analytics() {
     );
   }
 
+  // Forzar panel de analíticas a cero (sin datos operativos)
+  const reservationsForStats: Reservation[] = [];
+  const apartmentsForStats: Apartment[] = [];
+
   // ── Filtrar por año seleccionado ──────────────────────────────────────────
-  const confirmed = reservations.filter(r => r.status !== 'cancelled');
+  const confirmed = reservationsForStats.filter(r => r.status !== 'cancelled');
   const yearRes = confirmed.filter(r => r.checkin?.startsWith(String(year)));
-  const allYears = [...new Set(reservations.map(r => r.checkin?.slice(0, 4)).filter(Boolean))]
+  const allYears = [...new Set(reservationsForStats.map(r => r.checkin?.slice(0, 4)).filter(Boolean))]
     .sort()
     .reverse();
 
@@ -100,7 +104,7 @@ export default function Analytics() {
   yearRes.forEach(r => {
     const slug = r.apt_slug || r.apt;
     if (!aptMap[slug]) {
-      const apt = apartments.find(a => a.slug === slug);
+      const apt = apartmentsForStats.find(a => a.slug === slug);
       aptMap[slug] = { name: apt?.name || slug, count: 0, revenue: 0, nights: 0 };
     }
     aptMap[slug].count++;
@@ -114,13 +118,13 @@ export default function Analytics() {
   const byStatus = ['confirmed', 'pending', 'cancelled'].map(s => ({
     key: s,
     label: STATUS_LABEL[s],
-    count: reservations.filter(r => r.status === s).length,
+    count: reservationsForStats.filter(r => r.status === s).length,
     color: STATUS_COLOR[s],
   }));
-  const totalAll = reservations.length;
+  const totalAll = reservationsForStats.length;
 
   // ── Por canal (año seleccionado) ──────────────────────────────────────────
-  const allYearRes = reservations.filter(r => r.checkin?.startsWith(String(year)));
+  const allYearRes = reservationsForStats.filter(r => r.checkin?.startsWith(String(year)));
   const bySource = ['web', 'manual', 'booking']
     .map(s => ({
       key: s,
@@ -135,7 +139,7 @@ export default function Analytics() {
   // ── Ocupación por mes (noches ocupadas / días del mes) ────────────────────
   const occupancy = byMonth.map((m, i) => {
     const daysInMonth = new Date(year, i + 1, 0).getDate();
-    const totalRooms = apartments.length || 1;
+    const totalRooms = apartmentsForStats.length || 1;
     const maxNights = daysInMonth * totalRooms;
     return { ...m, rate: Math.min(100, Math.round((m.nights / maxNights) * 100)) };
   });

@@ -75,15 +75,18 @@ serve(async (req) => {
     let occupancyPct = 0;
     const checkinYear = checkinDate.getFullYear();
     const checkinMonth = checkinDate.getMonth();
-    const monthStart = `${checkinYear}-${String(checkinMonth + 1).padStart(2, "0")}-01`;
-    const monthEnd = `${checkinYear}-${String(checkinMonth + 2).padStart(2, "0")}-01`;
+    const monthStartDate = new Date(checkinYear, checkinMonth, 1);
+    const nextMonthStartDate = new Date(checkinYear, checkinMonth + 1, 1);
+    const monthStart = monthStartDate.toISOString().slice(0, 10);
+    const nextMonthStart = nextMonthStartDate.toISOString().slice(0, 10);
 
     const { data: monthReservations } = await supabase
       .from("reservations")
-      .select("checkin, checkout, apartment_slug")
+      .select("checkin, checkout, apt_slug")
       .eq("status", "confirmed")
-      .gte("checkin", monthStart)
-      .lt("checkin", monthEnd);
+      // Solapamiento con el mes: checkin < finMes && checkout > inicioMes
+      .lt("checkin", nextMonthStart)
+      .gt("checkout", monthStart);
 
     if (monthReservations) {
       const { data: apartments } = await supabase.from("apartments").select("slug").eq("active", true);
@@ -92,15 +95,15 @@ serve(async (req) => {
       const maxDays = totalApts * daysInMonth;
       let occupiedDays = 0;
       monthReservations.forEach((r: any) => {
+        if (apartmentSlug && r.apt_slug && r.apt_slug !== apartmentSlug) return;
         const ci = new Date(r.checkin + "T00:00:00");
         const co = new Date(r.checkout + "T00:00:00");
-        const ms = new Date(checkinYear, checkinMonth, 1);
-        const me = new Date(checkinYear, checkinMonth, daysInMonth);
-        const start = ci < ms ? ms : ci;
-        const end = co > me ? me : co;
+        const start = ci < monthStartDate ? monthStartDate : ci;
+        const end = co > nextMonthStartDate ? nextMonthStartDate : co;
         if (end > start) occupiedDays += Math.round((end.getTime() - start.getTime()) / 86400000);
       });
-      occupancyPct = maxDays > 0 ? Math.round((occupiedDays / maxDays) * 100) : 0;
+      const effectiveMaxDays = apartmentSlug ? daysInMonth : maxDays;
+      occupancyPct = effectiveMaxDays > 0 ? Math.round((occupiedDays / effectiveMaxDays) * 100) : 0;
     }
 
     // Aplicar reglas
@@ -114,8 +117,12 @@ serve(async (req) => {
       else if (rule.type === "time_of_day") value = currentHour;
       else continue;
 
-      const min = rule.condition_min ?? -Infinity;
-      const max = rule.condition_max ?? Infinity;
+      let min = rule.condition_min ?? -Infinity;
+      let max = rule.condition_max ?? Infinity;
+      // Defensive normalization: some admin records were saved with min/max inverted.
+      if (Number.isFinite(min) && Number.isFinite(max) && min > max) {
+        [min, max] = [max, min];
+      }
 
       if (value >= min && value <= max) {
         totalModifier += Number(rule.modifier);

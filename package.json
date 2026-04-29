@@ -18,10 +18,11 @@
     "test:unit": "vitest run"
   },
   "dependencies": {
+    "@microsoft/clarity": "^1.0.2",
     "@stripe/react-stripe-js": "^5.6.0",
     "@stripe/stripe-js": "^8.7.0",
     "@supabase/supabase-js": "^2.99.3",
-    "dompurify": "^3.3.1",
+    "dompurify": "^3.4.1",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "jspdf": "^4.2.0",
@@ -31,12 +32,13 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.13.0",
     "recharts": "^3.8.0",
-    "resend": "^6.9.2"
+    "resend": "^6.12.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.58.2",
+    "@types/dompurify": "^3.0.5",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
@@ -52,7 +54,6 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "pdfjs-dist": "^3.11.174",
     "postcss": "^8.5.6",
     "prettier": "^3.8.1",
     "supabase": "^2.76.15",

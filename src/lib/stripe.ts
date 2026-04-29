@@ -1,11 +1,28 @@
 import { loadStripe } from '@stripe/stripe-js';
 import { supabase } from './supabase';
 
-// Configura esta variable en tu archivo .env
-const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_placeholder';
+// Compatibilidad: se prioriza la variable estándar del proyecto.
+const stripePublicKey =
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_STRIPE_PUBLIC_KEY ||
+  'pk_test_placeholder';
+const isLiveStripeKey = stripePublicKey.startsWith('pk_live_');
+
+function isHttpsOrLocalhost() {
+  if (typeof window === 'undefined') return true;
+  const { protocol, hostname } = window.location;
+  return protocol === 'https:' || hostname === 'localhost' || hostname === '127.0.0.1';
+}
+
+if (typeof window !== 'undefined' && isLiveStripeKey && !isHttpsOrLocalhost()) {
+  // En producción con clave live, forzamos HTTPS para cumplir requisitos de Stripe.js.
+  const httpsUrl = `https://${window.location.host}${window.location.pathname}${window.location.search}${window.location.hash}`;
+  window.location.replace(httpsUrl);
+}
 
 // Singleton de Stripe (se reutiliza en toda la app)
-export const stripePromise = loadStripe(stripePublicKey);
+export const stripePromise =
+  isLiveStripeKey && !isHttpsOrLocalhost() ? Promise.resolve(null) : loadStripe(stripePublicKey);
 
 /**
  * Procesar pago con Stripe
