@@ -106,6 +106,13 @@ export interface DbSeasonPrice {
   type: string | null;
 }
 
+export interface DbSeasonType {
+  id: string;
+  label: string;
+  color: string;
+  created_at: string;
+}
+
 export interface DbMinStayRule {
   id: string;
   apartment_slug: string;

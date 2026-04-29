@@ -27,7 +27,7 @@ const DEFAULT_AMENITIES = [
   'Barbacoa',
 ];
 
-const seasonTypes = [
+const DEFAULT_SEASON_TYPES = [
   { id: 'low', label: 'Baja', color: '#4CAF50' },
   { id: 'high', label: 'Alta', color: '#FF6B6B' },
   { id: 'christmas', label: 'Navidad', color: '#FFD700' },
@@ -52,10 +52,17 @@ export default function ApartamentosAdmin() {
   const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [editing, setEditing] = useState(null);
   const [formData, setFormData] = useState({});
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [seasonPrices, setSeasonPrices] = useState([]);
+  const [seasonTypes, setSeasonTypes] = useState(DEFAULT_SEASON_TYPES);
+  const [seasonTypeForm, setSeasonTypeForm] = useState({
+    id: '',
+    label: '',
+    color: '#4CAF50',
+  });
   const [photos, setPhotos] = useState([]);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -72,10 +79,17 @@ export default function ApartamentosAdmin() {
   const [newAmenity, setNewAmenity] = useState('');
   const [confirmDeleteApt, setConfirmDeleteApt] = useState(null);
 
-  // Load apartments
+  // Load apartments and season types
   useEffect(() => {
     loadApartments();
+    loadSeasonTypes();
   }, []);
+
+  useEffect(() => {
+    if (seasonTypes.length > 0 && !seasonTypes.some(st => st.id === newSeasonData.type)) {
+      setNewSeasonData(prev => ({ ...prev, type: seasonTypes[0].id }));
+    }
+  }, [seasonTypes]);
 
   const parseInternalOrder = apt => {
     const raw = (apt.internal_name || apt.name || '').toString().trim();
@@ -144,6 +158,113 @@ export default function ApartamentosAdmin() {
       setPhotos(data || []);
     } catch (err) {
       console.error('Error loading photos:', err);
+    }
+  };
+
+  const loadSeasonTypes = async () => {
+    try {
+      const { data, error } = await supabase.from('season_types').select('*').order('label');
+      if (error) {
+        console.warn('No season types table found or error loading types:', error.message);
+        return;
+      }
+      setSeasonTypes(data || []);
+    } catch (err) {
+      console.warn('Error loading season types:', err);
+    }
+  };
+
+  const normalizeSeasonTypeId = label =>
+    label
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+  const saveSeasonType = async () => {
+    const label = seasonTypeForm.label.trim();
+    if (!label) {
+      setError('Introduce un nombre para el tipo de temporada');
+      return;
+    }
+
+    const id = seasonTypeForm.id || normalizeSeasonTypeId(label);
+    if (!id) {
+      setError('El nombre no genera un identificador válido');
+      return;
+    }
+
+    try {
+      if (seasonTypeForm.id) {
+        const { error } = await supabase
+          .from('season_types')
+          .update({ label, color: seasonTypeForm.color })
+          .eq('id', id);
+
+        if (error) throw error;
+        setSeasonTypes(seasonTypes.map(st => (st.id === id ? { ...st, label, color: seasonTypeForm.color } : st)));
+        setSuccess('✓ Tipo de temporada actualizado');
+      } else {
+        if (seasonTypes.some(st => st.id === id)) {
+          setError('Ya existe un tipo de temporada con ese identificador');
+          return;
+        }
+
+        const { error } = await supabase
+          .from('season_types')
+          .insert([{ id, label, color: seasonTypeForm.color }]);
+
+        if (error) throw error;
+        setSeasonTypes([...seasonTypes, { id, label, color: seasonTypeForm.color }]);
+        setSuccess('✓ Tipo de temporada creado');
+      }
+
+      setSeasonTypeForm({ id: '', label: '', color: '#4CAF50' });
+      setTimeout(() => setSuccess(null), 2000);
+    } catch (err) {
+      console.error('Error saving season type:', err);
+      setError('Error al guardar tipo de temporada: ' + err.message);
+    }
+  };
+
+  const editSeasonType = type => {
+    setSeasonTypeForm({ id: type.id, label: type.label, color: type.color });
+  };
+
+  const cancelSeasonTypeEdit = () => {
+    setSeasonTypeForm({ id: '', label: '', color: '#4CAF50' });
+  };
+
+  const deleteSeasonType = async typeId => {
+    try {
+      const { data: usages, error: countError } = await supabase
+        .from('season_prices')
+        .select('id', { count: 'exact' })
+        .eq('type', typeId)
+        .limit(1);
+
+      if (countError) throw countError;
+      if (usages && usages.length > 0) {
+        setError('No se puede eliminar este tipo mientras exista alguna temporada que lo use');
+        return;
+      }
+
+      const { error } = await supabase.from('season_types').delete().eq('id', typeId);
+      if (error) throw error;
+
+      setSeasonTypes(seasonTypes.filter(st => st.id !== typeId));
+      if (newSeasonData.type === typeId) {
+        setNewSeasonData(prev => ({
+          ...prev,
+          type: seasonTypes.find(st => st.id !== typeId)?.id || '',
+        }));
+      }
+      setSuccess('✓ Tipo de temporada eliminado');
+      setTimeout(() => setSuccess(null), 2000);
+    } catch (err) {
+      console.error('Error deleting season type:', err);
+      setError('Error al eliminar tipo de temporada: ' + err.message);
     }
   };
 
@@ -1106,6 +1227,87 @@ export default function ApartamentosAdmin() {
                   <div className="apt-admin-panel-title">Precios de Temporada</div>
 
                   <div className="apt-admin-season-form">
+                    <div className="apt-admin-sublabel mb-3">Tipos de Temporada</div>
+                    <div className="apt-admin-season-grid">
+                      <input
+                        type="text"
+                        placeholder="Nombre del tipo"
+                        value={seasonTypeForm.label}
+                        onChange={e => setSeasonTypeForm({ ...seasonTypeForm, label: e.target.value })}
+                        className="panel-input"
+                      />
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={seasonTypeForm.color}
+                          onChange={e => setSeasonTypeForm({ ...seasonTypeForm, color: e.target.value })}
+                          className="panel-input h-10 w-16 p-0"
+                          aria-label="Color del tipo de temporada"
+                        />
+                        <span className="text-sm panel-text-muted">Color</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={saveSeasonType}
+                          className="panel-btn panel-btn-gold panel-btn-sm"
+                        >
+                          {seasonTypeForm.id ? 'Guardar tipo' : '+ Añadir tipo'}
+                        </button>
+                        {seasonTypeForm.id && (
+                          <button
+                            onClick={cancelSeasonTypeEdit}
+                            className="panel-btn panel-btn-ghost panel-btn-sm"
+                          >
+                            Cancelar
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {seasonTypes.length === 0 ? (
+                      <div className="text-center py-10 text-sm panel-text-muted">
+                        No hay tipos de temporada definidos. Crea el primero para poder añadir temporadas.
+                      </div>
+                    ) : (
+                      <div className="apt-admin-season-table">
+                        <div className="apt-admin-season-header">
+                          <div>Tipo</div>
+                          <div>Color</div>
+                          <div>Acción</div>
+                        </div>
+                        {seasonTypes.map(type => (
+                          <div key={type.id} className="apt-admin-season-row">
+                            <div className="flex items-center gap-1.5">
+                              <div
+                                className="apt-admin-season-dot"
+                                style={{ background: type.color }}
+                              />
+                              <span className="text-sm">{type.label}</span>
+                            </div>
+                            <div className="text-sm font-semibold panel-text-accent">
+                              {type.color}
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => editSeasonType(type)}
+                                className="panel-btn panel-btn-ghost panel-btn-sm"
+                              >
+                                Editar
+                              </button>
+                              <button
+                                onClick={() => deleteSeasonType(type.id)}
+                                className="panel-btn panel-btn-danger panel-btn-sm"
+                              >
+                                Eliminar
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="apt-admin-season-form mt-6">
                     <div className="apt-admin-sublabel mb-3">Nueva Temporada</div>
                     <div className="apt-admin-season-grid">
                       <select
@@ -1113,6 +1315,7 @@ export default function ApartamentosAdmin() {
                         onChange={e => setNewSeasonData({ ...newSeasonData, type: e.target.value })}
                         className="panel-input"
                         aria-label="Tipo de temporada"
+                        disabled={seasonTypes.length === 0}
                       >
                         {seasonTypes.map(st => (
                           <option key={st.id} value={st.id}>
@@ -1147,7 +1350,11 @@ export default function ApartamentosAdmin() {
                         className="panel-input"
                       />
                     </div>
-                    <button onClick={saveSeason} className="panel-btn panel-btn-gold panel-btn-sm">
+                    <button
+                      onClick={saveSeason}
+                      className="panel-btn panel-btn-gold panel-btn-sm"
+                      disabled={seasonTypes.length === 0}
+                    >
                       + Agregar Temporada
                     </button>
                   </div>
@@ -1174,7 +1381,7 @@ export default function ApartamentosAdmin() {
                                 className="apt-admin-season-dot"
                                 style={{ background: seasonType?.color }}
                               />
-                              <span className="text-sm">{seasonType?.label}</span>
+                              <span className="text-sm">{seasonType?.label || season.type}</span>
                             </div>
                             <div className="text-sm font-semibold panel-text-accent">
                               {season.price} €

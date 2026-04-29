@@ -3,6 +3,7 @@ import type {
   DbApartment,
   DbApartmentPhoto,
   DbSeasonPrice,
+  DbSeasonType,
   DbMinStayRule,
   DbExtra,
   DbReservation,
@@ -191,6 +192,37 @@ export async function updateSeasonPrice(id: string, updates: Partial<DbSeasonPri
 
 export async function deleteSeasonPrice(id: string) {
   const { data, error } = await supabase.from('season_prices').delete().eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchSeasonTypes(): Promise<DbSeasonType[]> {
+  const { data, error } = await supabase.from('season_types').select('*').order('label');
+
+  if (error) {
+    console.warn('Error fetching season types:', error.message);
+    return [];
+  }
+  return data || [];
+}
+
+export async function addSeasonType(seasonType: DbSeasonType) {
+  const { data, error } = await supabase.from('season_types').insert([seasonType]);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateSeasonType(id: string, updates: Partial<DbSeasonType>) {
+  const { data, error } = await supabase.from('season_types').update(updates).eq('id', id);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteSeasonType(id: string) {
+  const { data, error } = await supabase.from('season_types').delete().eq('id', id);
 
   if (error) throw error;
   return data;
