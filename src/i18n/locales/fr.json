@@ -27,16 +27,12 @@
     "verifiedReviews": "4.9 ★ · +220 avis vérifiés",
     "bookNowNoComm": "Réserver sans commission",
     "freeCancelDays": "Annulation gratuite · {days} jours avant",
-    "heroTitle": "Louez<br /><em>directement,</em><br />sans commissions",
+    "heroTitle": "Apartamentos Illa Pancha<br /><em>Goûtez la saveur du nord</em>",
     "heroDesc": "Huit appartements au bord de la ria du Eo. Réservez avec nous et payez moins que sur n'importe quelle plateforme.",
-    "feature1Title": "Sans commissions",
-    "feature1Desc": "Réservation directe. Ce que vous payez est ce que nous recevons, sans intermédiaires ni surprises.",
     "feature2Title": "Paiement sécurisé",
-    "feature2Desc": "{pct}% maintenant par carte comme dépôt. Le reste en espèces à votre arrivée.",
-    "feature3Title": "Toujours à jour",
-    "feature3Desc": "Notre calendrier se synchronise avec Booking en temps réel. Il n'y aura jamais de double réservation.",
+    "feature2Desc": "{pct}% maintenant par carte comme acompte. Le reste à votre arrivée à l'appartement.",
     "feature4Title": "Ribadeo, Galice",
-    "feature4Desc": "À 5 minutes du pont international et des meilleures plages de la côte nord galicienne.",
+    "feature4Desc": "À 10 minutes de la Playa de las Catedrales et de paysages côtiers spectaculaires, plages uniques et villages de pêcheurs. Venez nous rencontrer.",
     "bannerTitle": "Pourquoi réserver<br /><em>directement avec nous?</em>",
     "bannerDesc": "Économisez entre 15 et 20% par rapport à Booking.com. Le même appartement, le même service, sans commissions d'intermédiaires.",
     "faqHeading": "Questions fréquentes",
@@ -225,7 +221,9 @@
     "comoLlegarTitle": "Venir à Illa Pancha à Ribadeo",
     "comoLlegarDesc": "Adresse Av. Rosalía de Castro 25, Ribadeo. Accès en voiture par l'A-8, bus ALSA depuis Lugo ou Oviedo, aéroports de Santiago et Asturies. Parking à proximité.",
     "leaveReviewTitle": "Avis sur votre séjour Illa Pancha",
-    "leaveReviewDesc": "Donnez votre avis après un séjour dans nos appartements à Ribadeo. Avis vérifiés pour aider les voyageurs. Formulaire rapide après votre réservation."
+    "leaveReviewDesc": "Donnez votre avis après un séjour dans nos appartements à Ribadeo. Avis vérifiés pour aider les voyageurs. Formulaire rapide après votre réservation.",
+    "experiencesTitle": "Que voir à Ribadeo et alentours",
+    "experiencesDesc": "Guide de la Mariña Lucense et de l'ouest des Asturies : As Catedrais, Mondoñedo, Castropol, Cudillero et bien plus. Préparez votre escapade depuis Illa Pancha."
   },
   "common": {
     "offerApplied": "Offre appliquée",
@@ -269,9 +267,10 @@
     "ctaTitle": "Vous venez nous voir ?",
     "ctaDesc": "Consultez la disponibilité et réservez directement. Sans commissions, avec un service personnalisé.",
     "ctaContact": "Contacter",
-    "experienceRibadeo": "Expériences à Ribadeo",
-    "expDesc1": "Au-delà des appartements, Ribadeo offre un agenda culturel et gastronomique unique.",
+    "experienceRibadeo": "À voir près d'Illa Pancha",
+    "expDesc1": "Depuis Ribadeo, la Mariña Lucense et l'ouest des Asturies sont à portée de main. Voici quelques incontournables.",
     "expDesc2": "Marchés artisanaux, festivals de musique, randonnées ou surf sur les meilleures plages du nord.",
+    "expSeeAll": "Voir tout le guide de la région",
     "zone": "La région",
     "charmingView": "Vue sur la mer avec charme",
     "poi": [
@@ -304,6 +303,119 @@
         "t": "1h",
         "d": "Lugo (remparts romains)",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=600"
+      }
+    ]
+  },
+  "experiences": {
+    "heroEyebrow": "À voir et à faire",
+    "heroTitle": "Ribadeo et ses <em>alentours</em>",
+    "heroDesc": "Un guide honnête pour découvrir la Mariña Lucense et l'ouest des Asturies depuis Illa Pancha.",
+    "introText1": "Ribadeo se trouve juste à la frontière entre la Galice et les Asturies, sur la Côte Verte cantabrique. Depuis nos appartements, vous pouvez explorer deux régions au caractère unique en moins d'une heure de voiture.",
+    "introText2": "Voici les lieux que nous recommandons à nos hôtes : plages, villages, phares, belvédères et adresses gourmandes. Le tout à proximité.",
+    "galiciaTag": "Galice · Mariña Lucense",
+    "marinaTitle": "La <em>Mariña Lucense</em>",
+    "marinaDesc": "Falaises de légende, plages préservées et villages marins qui conservent l'âme galicienne. Idéal pour les amateurs de nature, gastronomie et patrimoine.",
+    "asturiasTag": "Asturies · Ouest",
+    "asturiasTitle": "Ouest des <em>Asturies</em>",
+    "asturiasDesc": "Traversez le Puente de los Santos pour entrer dans les Asturies : villages blancs, ports de pêche de carte postale, falaises spectaculaires et le meilleur cidre du Cantabrique.",
+    "mapEyebrow": "La carte",
+    "mapTitle": "Toute la région en un clin d'œil",
+    "mapDesc": "Ribadeo est une base idéale : en moins d'1 heure, vous accédez à As Catedrais, Cudillero, Lugo et Luarca.",
+    "ctaTitle": "Prêt à <em>découvrir ?</em>",
+    "ctaDesc": "Réservez votre appartement à Illa Pancha et partez explorer la plus belle côte du nord de l'Espagne.",
+    "ctaContact": "Nous contacter",
+    "marinaPoi": [
+      {
+        "t": "20 min",
+        "d": "Plage de As Catedrais",
+        "desc": "Patrimoine naturel. Arches et voûtes sculptées par la mer dans les falaises d'ardoise. Réservez à l'avance en haute saison.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Centre historique de Ribadeo",
+        "desc": "Plaza de España, demeures indianas, palais coloniaux et belvédères sur la ria du Eo. Idéal à pied avec une dégustation de poulpe.",
+        "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Phare de Isla Pancha",
+        "desc": "Le phare le plus photogénique du Cantabrique, sur une petite île reliée par une passerelle. Couchers de soleil inoubliables.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Foz et Praia de Llas",
+        "desc": "Village de pêcheurs animé avec une grande plage de dunes parfaite pour le surf et les familles.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Mondoñedo",
+        "desc": "Ancienne capitale du royaume de Galice. Cathédrale basilique, place à arcades et pâtisseries traditionnelles. Un joyau de l'intérieur.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Viveiro",
+        "desc": "Centre historique fortifié et la Semaine Sainte la plus célèbre du nord. Porte d'entrée de la Mariña occidentale.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Lugo · Remparts romains",
+        "desc": "Patrimoine UNESCO. Le seul rempart romain au monde conservé sur tout son périmètre : 2 km à parcourir sur le sommet.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Praia das Catedrais à marée basse",
+        "desc": "Pour ceux qui reviennent : la zone la moins fréquentée, accessible uniquement à marée basse. Vérifiez les horaires officiels.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      }
+    ],
+    "asturiasPoi": [
+      {
+        "t": "5 min",
+        "d": "Puente de los Santos",
+        "desc": "Le pont emblématique sur la ria du Eo qui relie la Galice et les Asturies. Belvédère incontournable au coucher du soleil.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "10 min",
+        "d": "Castropol",
+        "desc": "Le village blanc des Asturies. Maisons chaulées, belvédère sur la ria et place avec le plus vieux cyprès du pays.",
+        "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "20 min",
+        "d": "Tapia de Casariego",
+        "desc": "La Mecque du surf du nord. Phare, plages pour tous niveaux et un centre marin authentique.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cabo Busto",
+        "desc": "Falaises vertigineuses et l'un des phares les plus spectaculaires du Cantabrique. Point d'observation des cétacés au printemps.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Luarca · Villa Blanca",
+        "desc": "Village de pêcheurs aux maisons blanches, cimetière panoramique, sept ponts et plage urbaine. Goûtez le poisson du jour.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Cudillero",
+        "desc": "Le village de pêcheurs le plus photographié d'Espagne. Maisons colorées en cascade dans une gorge marine. Arrivez tôt.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 30min",
+        "d": "Playa del Silencio",
+        "desc": "Crique sauvage entourée de falaises verticales et de petits îlots. Le paradis géologique de l'ouest asturien.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },

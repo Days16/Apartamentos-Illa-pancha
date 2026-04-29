@@ -24,6 +24,7 @@ const Book = lazy(() => import('./pages/Book'));
 const Faq = lazy(() => import('./pages/Faq'));
 const Directions = lazy(() => import('./pages/Directions'));
 const LeaveReview = lazy(() => import('./pages/LeaveReview'));
+const Experiences = lazy(() => import('./pages/Experiences'));
 
 // Auth — lazy (rarely visited)
 const Login = lazy(() => import('./pages/Login'));
@@ -60,6 +61,7 @@ const EmailConfig = lazy(() => import('./pages/admin/EmailConfig'));
 const DiscountCodes = lazy(() => import('./pages/admin/DiscountCodes'));
 const AuditLog = lazy(() => import('./pages/admin/AuditLog'));
 const PdfEditorAdmin = lazy(() => import('./pages/admin/PdfEditorAdmin'));
+const ExperiencesAdmin = lazy(() => import('./pages/admin/ExperiencesAdmin'));
 
 // Components
 import CookieBanner from './components/CookieBanner';
@@ -180,6 +182,7 @@ export default function App() {
                             <Route path="/apartamentos" element={<Apartments />} />
                             <Route path="/apartamentos/:slug" element={<ApartmentDetail />} />
                             <Route path="/nosotros" element={<About />} />
+                            <Route path="/experiencias" element={<Experiences />} />
                             <Route path="/contacto" element={<Contact />} />
                             <Route path="/privacidad" element={<Privacy />} />
                             <Route path="/cookies" element={<Cookies />} />
@@ -229,6 +232,7 @@ export default function App() {
                                 <Route path="descuentos" element={<DiscountCodes />} />
                                 <Route path="auditoria" element={<AuditLog />} />
                                 <Route path="pdf-editor" element={<PdfEditorAdmin />} />
+                                <Route path="experiencias" element={<ExperiencesAdmin />} />
                               </Route>
                             </Route>
 

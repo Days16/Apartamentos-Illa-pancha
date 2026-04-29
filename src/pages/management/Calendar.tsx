@@ -38,6 +38,14 @@ const MONTH_NAMES = [
   'Dic',
 ];
 
+const FALLBACK_APARTMENT_COLOR = '#1a5f6e';
+
+const normalizeApartmentColor = (color?: string) => {
+  if (!color || typeof color !== 'string') return FALLBACK_APARTMENT_COLOR;
+  const trimmed = color.trim();
+  return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(trimmed) ? trimmed : FALLBACK_APARTMENT_COLOR;
+};
+
 export default function Calendario() {
   const navigate = useNavigate();
   const scrollContainerRef = useRef(null);
@@ -501,7 +509,14 @@ export default function Calendario() {
                   <tr key={apt.slug} className="hover:bg-gray-50/50 group">
                     {/* Celda fija de nombre de apartamento */}
                     <td className="p-3 border border-gray-200 text-xs font-bold text-blue-800 bg-white sticky left-0 z-10 group-hover:bg-gray-50">
-                      <div className="truncate max-w-[170px]">{apt.internalName || apt.name}</div>
+                      <div className="truncate max-w-[170px] flex items-center gap-1.5">
+                        <span
+                          className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: normalizeApartmentColor(apt.color) }}
+                          aria-hidden="true"
+                        />
+                        <span className="truncate">{apt.internalName || apt.name}</span>
+                      </div>
                     </td>
 
                     {/* Day cells */}
@@ -536,8 +551,10 @@ export default function Calendario() {
                       const isSelected =
                         selectedDate &&
                         new Date(selectedDate + 'T00:00:00').toDateString() === date.toDateString();
+                      const apartmentColor = normalizeApartmentColor(apt.color);
 
                       const isOccupied = !!(res && !isCheckin) || isSplitDay;
+                      const hasOccupancy = !!res || !!resCheckout;
                       const isDragSel = isDragSelected(apt.slug, dateStr);
 
                       return (
@@ -619,6 +636,13 @@ export default function Calendario() {
                           {/* Indicador de hoy */}
                           {isToday && (
                             <div className="absolute inset-x-0 top-0 h-0.5 bg-teal-500 z-20" />
+                          )}
+
+                          {hasOccupancy && (
+                            <div
+                              className="absolute inset-y-0 left-0 w-1 z-20 pointer-events-none"
+                              style={{ backgroundColor: apartmentColor }}
+                            />
                           )}
 
                           {/* Borde izquierdo para días ocupados intermedios (excepto primera columna para limpieza visual) */}

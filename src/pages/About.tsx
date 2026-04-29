@@ -155,7 +155,7 @@ export default function About() {
         </div>
       </div>
 
-      {/* SECCIÓN: EXPERIENCIAS */}
+      {/* SECCIÓN: TEASER EXPERIENCIAS */}
       <div id="experiencias" className="py-24 bg-slate-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2
@@ -163,12 +163,9 @@ export default function About() {
             dangerouslySetInnerHTML={safeHtml(A.experienceRibadeo)}
           />
           <div className="w-24 h-1 bg-teal mx-auto mb-10" />
-          <div className="max-w-3xl mx-auto text-lg text-gray-600 space-y-6 mb-16">
-            <p>{A.expDesc1}</p>
-            <p>{A.expDesc2}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(A.poi || []).map((item, i) => (
+          <p className="max-w-3xl mx-auto text-lg text-gray-600 mb-12">{A.expDesc1}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {(A.poi || []).slice(0, 3).map((item, i) => (
               <div
                 key={i}
                 className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden text-left group"
@@ -190,6 +187,13 @@ export default function About() {
               </div>
             ))}
           </div>
+          <button
+            className="inline-flex items-center gap-2 px-8 py-4 bg-teal text-white hover:bg-teal-600 font-medium rounded transition-colors text-lg shadow-sm"
+            onClick={() => navigate('/experiencias')}
+          >
+            {A.expSeeAll}
+            <span aria-hidden="true">→</span>
+          </button>
         </div>
       </div>
 

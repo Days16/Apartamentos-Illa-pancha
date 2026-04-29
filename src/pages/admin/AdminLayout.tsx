@@ -20,6 +20,7 @@ const NAV_SECTIONS: NavSection[] = [
       { path: '/admin/extras', label: 'Servicios extra', icon: paths.plus },
       { path: '/admin/resenas', label: 'Reseñas', icon: paths.msg, badge: 'reviews' },
       { path: '/admin/faq', label: 'FAQ', icon: paths.check },
+      { path: '/admin/experiencias', label: 'Fotos experiencias', icon: paths.photo },
       //{ path: '/admin/web', label: 'Textos web', icon: paths.edit },
     ],
   },
@@ -68,6 +69,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/admin/pdf-editor': 'Editor de PDF',
   '/admin/changelog': 'Changelog',
   '/admin/usuarios': 'Usuarios',
+  '/admin/experiencias': 'Fotos experiencias',
 };
 
 function SunIcon() {

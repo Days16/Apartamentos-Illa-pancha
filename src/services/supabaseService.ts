@@ -196,6 +196,27 @@ export async function deleteSeasonPrice(id: string) {
   return data;
 }
 
+export async function fetchDynamicNightPrice(
+  basePrice: number,
+  checkin: string,
+  apartmentSlug: string
+): Promise<{ finalPrice: number; modifier: number; appliedRules: Array<{ label: string; modifier: number }> }> {
+  try {
+    const { data, error } = await supabase.functions.invoke('dynamic-pricing', {
+      body: { basePrice, checkin, apartmentSlug },
+    });
+    if (error) throw error;
+    return {
+      finalPrice: Number(data?.finalPrice ?? basePrice),
+      modifier: Number(data?.modifier ?? 0),
+      appliedRules: Array.isArray(data?.appliedRules) ? data.appliedRules : [],
+    };
+  } catch (err) {
+    console.warn('Error fetching dynamic night price:', err);
+    return { finalPrice: basePrice, modifier: 0, appliedRules: [] };
+  }
+}
+
 // ─── EXTRAS ──────────────────────────────────────────────────────────────
 export async function fetchExtras(): Promise<DbExtra[]> {
   const { data, error } = await supabase

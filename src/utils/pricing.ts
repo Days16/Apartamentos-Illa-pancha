@@ -7,6 +7,13 @@ export interface PricingInput {
   depositPct?: number;
 }
 
+export interface SeasonPriceLike {
+  start_date: string;
+  end_date: string;
+  price: number;
+  type?: string | null;
+}
+
 export interface PricingResult {
   subtotal: number;
   discountAmount: number;
@@ -47,4 +54,29 @@ export function calculateBookingPrice(input: PricingInput): PricingResult {
     total,
     deposit,
   };
+}
+
+export function getEffectivePricePerNight(
+  basePrice: number,
+  date: string,
+  seasonPrices: SeasonPriceLike[]
+): number {
+  const activeSeason = seasonPrices.find(
+    season => date >= season.start_date && date <= season.end_date && Number(season.price) > 0
+  );
+  return activeSeason ? Number(activeSeason.price) : basePrice;
+}
+
+export function getNightsInRange(checkin: string, checkout: string): string[] {
+  if (!checkin || !checkout) return [];
+  const start = new Date(checkin + 'T00:00:00');
+  const end = new Date(checkout + 'T00:00:00');
+  const nights: string[] = [];
+  for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    nights.push(`${y}-${m}-${day}`);
+  }
+  return nights;
 }

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLang } from '../contexts/LangContext';
@@ -6,7 +6,12 @@ import { useDiscount } from '../contexts/DiscountContext';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { strToDate, dateToStr } from '../utils/format';
 import { supabase } from '../lib/supabase';
-import type { Apartment } from '../types';
+import {
+  fetchDynamicNightPrice,
+  fetchSeasonPrices,
+} from '../services/supabaseService';
+import { getEffectivePricePerNight, getNightsInRange } from '../utils/pricing';
+import type { Apartment, DbSeasonPrice } from '../types';
 import type { useT } from '../i18n/translations';
 
 export default function BookingWidget({
@@ -30,6 +35,9 @@ export default function BookingWidget({
   const [promoError, setPromoError] = useState('');
   const [promoLoading, setPromoLoading] = useState(false);
   const [promoExpanded, setPromoExpanded] = useState(false);
+  const [seasonPrices, setSeasonPrices] = useState<DbSeasonPrice[]>([]);
+  const [nightlyBasePrices, setNightlyBasePrices] = useState<number[]>([]);
+  const [dynamicRuleAdjustment, setDynamicRuleAdjustment] = useState(0);
 
   const occupiedDatesList = apt.occupiedDatesList || [];
 
@@ -68,6 +76,45 @@ export default function BookingWidget({
 
   const nights = calcNights();
 
+  useEffect(() => {
+    let mounted = true;
+    fetchSeasonPrices(apt.slug)
+      .then(data => mounted && setSeasonPrices(data))
+      .catch(() => mounted && setSeasonPrices([]));
+    return () => {
+      mounted = false;
+    };
+  }, [apt.slug]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      if (!checkin || !checkout) {
+        setNightlyBasePrices([]);
+        setDynamicRuleAdjustment(0);
+        return;
+      }
+
+      const nightDates = getNightsInRange(checkin, checkout);
+      const basePrices = nightDates.map(date =>
+        getEffectivePricePerNight(apt.price, date, seasonPrices || [])
+      );
+      setNightlyBasePrices(basePrices);
+
+      const dynamicResults = await Promise.all(
+        nightDates.map((date, idx) => fetchDynamicNightPrice(basePrices[idx], date, apt.slug))
+      );
+      if (cancelled) return;
+      const dynamicTotal = dynamicResults.reduce((sum, row) => sum + Number(row.finalPrice || 0), 0);
+      const baseTotal = basePrices.reduce((sum, price) => sum + price, 0);
+      setDynamicRuleAdjustment(Math.round(dynamicTotal - baseTotal));
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [apt.price, apt.slug, checkin, checkout, seasonPrices]);
+
   const checkHasOverlap = () => {
     if (!checkin || !checkout || !occupiedDatesList.length) return false;
     const dIn = new Date(checkin + 'T00:00:00');
@@ -79,7 +126,13 @@ export default function BookingWidget({
   };
 
   const hasOverlap = checkHasOverlap();
-  const subtotal = apt.price * nights;
+  const seasonalSubtotal =
+    nights > 0
+      ? nightlyBasePrices.length
+        ? nightlyBasePrices.reduce((sum, price) => sum + price, 0)
+        : apt.price * nights
+      : 0;
+  const subtotal = seasonalSubtotal + dynamicRuleAdjustment;
 
   let discountAmount = 0;
   if (activeDiscount) {
@@ -158,9 +211,18 @@ export default function BookingWidget({
     setPromoExpanded(false);
   };
 
+  const averageNightPrice = nights > 0 ? Math.round(subtotal / nights) : apt.price;
   const pricePerNightWithDiscount = activeDiscount
-    ? Math.round(apt.price * (1 - activeDiscount.discount_percentage / 100))
+    ? Math.round(averageNightPrice * (1 - activeDiscount.discount_percentage / 100))
     : null;
+
+  const nightlyBreakdown = useMemo(() => {
+    const counts = new Map<number, number>();
+    nightlyBasePrices.forEach(price => {
+      counts.set(price, (counts.get(price) || 0) + 1);
+    });
+    return Array.from(counts.entries());
+  }, [nightlyBasePrices]);
 
   if (globalSettings?.booking_mode === 'redirect') {
     return (
@@ -367,7 +429,8 @@ export default function BookingWidget({
           <div className="h-px bg-gray-200 dark:bg-gray-700 my-4" />
           <div className="flex justify-between items-center text-sm text-gray-700">
             <span>
-              {convertPrice(apt.price)} × {nights} {nights === 1 ? T.common.night : T.common.nights}
+              {convertPrice(averageNightPrice)} × {nights}{' '}
+              {nights === 1 ? T.common.night : T.common.nights}
             </span>
             <strong
               className={`${discountAmount > 0 ? 'line-through opacity-60' : 'no-underline opacity-100'}`}
@@ -375,6 +438,22 @@ export default function BookingWidget({
               {convertPrice(subtotal)}
             </strong>
           </div>
+          {nightlyBreakdown.length > 1 && (
+            <div className="text-xs text-gray-500 -mt-1">
+              {nightlyBreakdown
+                .map(([price, count]) => `${count}×${convertPrice(price)}`)
+                .join(' + ')}
+            </div>
+          )}
+          {dynamicRuleAdjustment !== 0 && (
+            <div className="flex justify-between items-center text-sm text-gray-700">
+              <span>Ajuste reglas dinámicas</span>
+              <strong>
+                {dynamicRuleAdjustment > 0 ? '+' : ''}
+                {convertPrice(dynamicRuleAdjustment)}
+              </strong>
+            </div>
+          )}
           {discountAmount > 0 && (
             <div className="flex justify-between items-center text-sm text-green-500 -mt-1.5">
               <span className="text-xs">

@@ -27,16 +27,12 @@
     "verifiedReviews": "4.9 ★ · +220 verified reviews",
     "bookNowNoComm": "Book now no commission",
     "freeCancelDays": "Free cancellation · {days} days before",
-    "heroTitle": "Book<br /><em>direct,</em><br />no commissions",
+    "heroTitle": "Apartamentos Illa Pancha<br /><em>Taste the flavour of the north</em>",
     "heroDesc": "Eight apartments by the Eo estuary. Book with us and pay less than on any platform.",
-    "feature1Title": "No commissions",
-    "feature1Desc": "Direct booking. What you pay is what we receive, no middlemen or surprises.",
     "feature2Title": "Secure payment",
-    "feature2Desc": "{pct}% now by card as deposit. The rest in cash upon arrival.",
-    "feature3Title": "Always updated",
-    "feature3Desc": "Our calendar syncs with Booking in real-time. Double bookings will never happen.",
+    "feature2Desc": "{pct}% now by card as a deposit. The rest upon arrival at the apartment.",
     "feature4Title": "Ribadeo, Galicia",
-    "feature4Desc": "5 minutes from the international bridge and the best beaches on the northern Galician coast.",
+    "feature4Desc": "10 minutes from Playa de las Catedrales and spectacular coastal landscapes, unique beaches and fishing villages. Come and meet us.",
     "bannerTitle": "Why book<br /><em>direct with us?</em>",
     "bannerDesc": "Save between 15% and 20% compared to Booking.com. Same apartment, same service, no commissions.",
     "faqHeading": "Frequently asked questions",
@@ -225,7 +221,9 @@
     "comoLlegarTitle": "How to reach Illa Pancha Ribadeo",
     "comoLlegarDesc": "Av. Rosalía de Castro 25, Ribadeo, Spain. Drive via A-8, ALSA buses from Lugo or Oviedo, or fly to Santiago and Asturias airports. Parking nearby.",
     "leaveReviewTitle": "Review your Illa Pancha stay",
-    "leaveReviewDesc": "Share feedback after your Ribadeo apartment stay. Verified guest reviews help travellers and improve our service. Quick secure form after your booking."
+    "leaveReviewDesc": "Share feedback after your Ribadeo apartment stay. Verified guest reviews help travellers and improve our service. Quick secure form after your booking.",
+    "experiencesTitle": "What to see in Ribadeo and surroundings",
+    "experiencesDesc": "Guide to the Mariña Lucense and western Asturias: As Catedrais, Mondoñedo, Castropol, Cudillero and more. Plan your trip from Illa Pancha."
   },
   "common": {
     "offerApplied": "Offer applied",
@@ -269,9 +267,10 @@
     "ctaTitle": "Shall we encourage you <em>to come?</em>",
     "ctaDesc": "Check availability and book directly. No commissions, with personal treatment and the best price guaranteed.",
     "ctaContact": "Contact",
-    "experienceRibadeo": "Experiences in Ribadeo",
-    "expDesc1": "Beyond the apartments, Ribadeo offers a unique cultural and gastronomic agenda on the Cantabrian coast.",
+    "experienceRibadeo": "What to see near Illa Pancha",
+    "expDesc1": "From Ribadeo, the Mariña Lucense and western Asturias are right at your doorstep. Here are some essentials.",
     "expDesc2": "Craft markets, music festivals, hiking through the Mariña lucense or surfing on the best beaches in the north.",
+    "expSeeAll": "See the full local guide",
     "zone": "The area",
     "charmingView": "Charming sea view",
     "poi": [
@@ -304,6 +303,119 @@
         "t": "1h",
         "d": "Lugo (Roman wall)",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=600"
+      }
+    ]
+  },
+  "experiences": {
+    "heroEyebrow": "What to see and do",
+    "heroTitle": "Ribadeo and its <em>surroundings</em>",
+    "heroDesc": "An honest guide to discover the Mariña Lucense and western Asturias from Illa Pancha.",
+    "introText1": "Ribadeo sits right on the border between Galicia and Asturias, on the Cantabrian Green Coast. From our apartments you can explore two regions with their own identity in less than an hour by car.",
+    "introText2": "Here are the spots we recommend to our guests: beaches, villages, lighthouses, viewpoints and food gems. All within easy reach.",
+    "galiciaTag": "Galicia · Mariña Lucense",
+    "marinaTitle": "The <em>Mariña Lucense</em>",
+    "marinaDesc": "Legendary cliffs, pristine beaches and seafaring villages that keep the Galician soul alive. Perfect for nature, food and heritage lovers.",
+    "asturiasTag": "Asturias · West",
+    "asturiasTitle": "Western <em>Asturias</em>",
+    "asturiasDesc": "Cross the Puente de los Santos bridge into Asturias: white-washed villages, postcard fishing towns, dramatic cliffs and the best cider on the Cantabrian.",
+    "mapEyebrow": "The map",
+    "mapTitle": "The whole region at a glance",
+    "mapDesc": "Ribadeo is a perfect base: in less than 1 hour you reach As Catedrais, Cudillero, Lugo and Luarca.",
+    "ctaTitle": "Ready to <em>discover it?</em>",
+    "ctaDesc": "Book your apartment at Illa Pancha and start exploring the best coast in northern Spain.",
+    "ctaContact": "Contact",
+    "marinaPoi": [
+      {
+        "t": "20 min",
+        "d": "As Catedrais Beach",
+        "desc": "Natural Heritage. Arches and vaults carved by the sea on slate cliffs. Book in advance during high season to access the sand.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Ribadeo Historic Centre",
+        "desc": "Plaza de España, indiano mansions, colonial palaces and viewpoints over the Eo estuary. Perfect to wander and try octopus.",
+        "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Pancha Island Lighthouse",
+        "desc": "The most photogenic lighthouse on the Cantabrian, on a small island linked by a footbridge. Unforgettable sunsets.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Foz and Praia de Llas",
+        "desc": "Lively fishing town with a wide dune beach perfect for surfing and families.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Mondoñedo",
+        "desc": "Former capital of the Kingdom of Galicia. Basilica cathedral, arcaded square and traditional bakeries. An inland gem.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Viveiro",
+        "desc": "Walled historic centre and the most famous Holy Week in the north. Gateway to the western Mariña.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Lugo · Roman Wall",
+        "desc": "UNESCO World Heritage. The only Roman wall in the world preserved along its full perimeter: 2 km you can walk on top.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Praia das Catedrais at low tide",
+        "desc": "For repeat visitors: the least crowded part of the beach, only accessible at low tide. Check official tide schedules first.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      }
+    ],
+    "asturiasPoi": [
+      {
+        "t": "5 min",
+        "d": "Puente de los Santos",
+        "desc": "The iconic bridge over the Eo estuary linking Galicia and Asturias. A must-see viewpoint at sunset.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "10 min",
+        "d": "Castropol",
+        "desc": "The white village of Asturias. Whitewashed houses, viewpoint with the best views over the estuary and a square with the oldest cypress in Spain.",
+        "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "20 min",
+        "d": "Tapia de Casariego",
+        "desc": "Surf mecca of the north. Lighthouse, beaches for all levels and an authentic seafaring centre.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cabo Busto",
+        "desc": "Vertigo cliffs and one of the most spectacular lighthouses on the Cantabrian. Whale watching point in spring.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Luarca · The White Town",
+        "desc": "White-washed fishing town with a panoramic cemetery, seven bridges and an urban beach. Try the catch of the day.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Cudillero",
+        "desc": "The most photographed fishing village in Spain. Colourful houses cascading down a sea ravine. Arrive early.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 30min",
+        "d": "Playa del Silencio",
+        "desc": "Wild cove surrounded by vertical cliffs and small islets. The geological paradise of western Asturias.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },

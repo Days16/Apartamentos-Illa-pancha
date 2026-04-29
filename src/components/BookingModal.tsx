@@ -5,7 +5,7 @@ import Ico, { paths } from './Ico';
 import { supabase } from '../lib/supabase';
 import { createPaymentIntent, confirmPayment } from '../lib/stripe';
 import { sendBookingConfirmation, sendOwnerNotification } from '../services/resendService';
-import { fetchExtras, fetchSettings } from '../services/supabaseService';
+import { fetchDynamicNightPrice, fetchExtras, fetchSeasonPrices, fetchSettings } from '../services/supabaseService';
 import { useDiscount } from '../contexts/DiscountContext';
 import { useLang } from '../contexts/LangContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -15,6 +15,8 @@ import { formatPrice, strToDate, dateToStr } from '../utils/format';
 import { getReservations } from '../services/dataService';
 import { trackEvent, EVENTS } from '../utils/analytics';
 import type { Apartment, Extra } from '../types';
+import type { DbSeasonPrice } from '../types';
+import { getEffectivePricePerNight, getNightsInRange } from '../utils/pricing';
 
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -56,6 +58,9 @@ export default function BookingModal({
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
   const [showErrors, setShowErrors] = useState(false);
+  const [seasonPrices, setSeasonPrices] = useState<DbSeasonPrice[]>([]);
+  const [nightlyBasePrices, setNightlyBasePrices] = useState<number[]>([]);
+  const [dynamicRuleAdjustment, setDynamicRuleAdjustment] = useState(0);
 
   const DRAFT_KEY = `booking_draft_${apt.slug}`;
 
@@ -91,10 +96,11 @@ export default function BookingModal({
 
   // Load extras from Supabase
   useEffect(() => {
-    Promise.all([fetchExtras(), fetchSettings(), getReservations()])
-      .then(([extras, settings, resData]) => {
+    Promise.all([fetchExtras(), fetchSettings(), getReservations(), fetchSeasonPrices(apt.slug)])
+      .then(([extras, settings, resData, seasonData]) => {
         setAllExtras(extras);
         setGlobalSettings(settings);
+        setSeasonPrices(seasonData);
 
         // Calculate occupied dates for this apartment
         const relevantRes = resData.filter(
@@ -128,6 +134,35 @@ export default function BookingModal({
   const { activeDiscount } = useDiscount();
   const nights = calculateNights();
 
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      const checkin = checkinDate ? dateToStr(checkinDate) : '';
+      const checkout = checkoutDate ? dateToStr(checkoutDate) : '';
+      if (!checkin || !checkout) {
+        setNightlyBasePrices([]);
+        setDynamicRuleAdjustment(0);
+        return;
+      }
+      const nightDates = getNightsInRange(checkin, checkout);
+      const basePrices = nightDates.map(date =>
+        getEffectivePricePerNight(apt.price, date, seasonPrices || [])
+      );
+      setNightlyBasePrices(basePrices);
+      const dynamicResults = await Promise.all(
+        nightDates.map((date, idx) => fetchDynamicNightPrice(basePrices[idx], date, apt.slug))
+      );
+      if (cancelled) return;
+      const dynamicTotal = dynamicResults.reduce((sum, row) => sum + Number(row.finalPrice || 0), 0);
+      const baseTotal = basePrices.reduce((sum, price) => sum + price, 0);
+      setDynamicRuleAdjustment(Math.round(dynamicTotal - baseTotal));
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [apt.price, apt.slug, checkinDate, checkoutDate, seasonPrices]);
+
   // Minimum stay: date-based rule > apartment minimum > 1
   const effectiveMinStay = (() => {
     if (!checkinDate) return apt.minStay || 1;
@@ -141,7 +176,13 @@ export default function BookingModal({
 
   const taxPct =
     typeof globalSettings.tax_percentage === 'number' ? globalSettings.tax_percentage : 10;
-  const subtotal = apt.price * nights;
+  const seasonalSubtotal =
+    nights > 0
+      ? nightlyBasePrices.length
+        ? nightlyBasePrices.reduce((sum, price) => sum + price, 0)
+        : apt.price * nights
+      : 0;
+  const subtotal = seasonalSubtotal + dynamicRuleAdjustment;
 
   let discountAmount = 0;
   if (activeDiscount) {
@@ -438,12 +479,33 @@ export default function BookingModal({
               <div className="flex justify-between items-center text-sm py-2 border-b border-white/10 px-0">
                 <span className="text-white/55">
                   {nights} {nights === 1 ? T.common.night : T.common.nights} ×{' '}
-                  {formatPrice(apt.price)}
+                  {formatPrice(nights > 0 ? Math.round(subtotal / nights) : apt.price)}
                 </span>
                 <span className={discountAmount > 0 ? 'line-through opacity-60' : ''}>
                   {formatPrice(subtotal)}
                 </span>
               </div>
+              {nightlyBasePrices.length > 1 && new Set(nightlyBasePrices).size > 1 && (
+                <div className="text-[11px] text-white/60 py-1 border-b border-white/10">
+                  {Array.from(
+                    nightlyBasePrices.reduce((map, price) => {
+                      map.set(price, (map.get(price) || 0) + 1);
+                      return map;
+                    }, new Map<number, number>())
+                  )
+                    .map(([price, count]) => `${count}×${formatPrice(price)}`)
+                    .join(' + ')}
+                </div>
+              )}
+              {dynamicRuleAdjustment !== 0 && (
+                <div className="flex justify-between items-center text-sm py-2 border-b border-white/10 px-0">
+                  <span className="text-white/55">Ajuste reglas dinámicas</span>
+                  <span>
+                    {dynamicRuleAdjustment > 0 ? '+' : ''}
+                    {formatPrice(dynamicRuleAdjustment)}
+                  </span>
+                </div>
+              )}
               {discountAmount > 0 && (
                 <div className="flex justify-between items-center text-sm py-2 border-b border-white/10 px-0 text-green-500 -mt-2 mb-2">
                   <span className="text-xs">

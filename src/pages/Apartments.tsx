@@ -54,7 +54,8 @@ export default function Apartments() {
             if (apt.coverPhotoUrl) return { ...apt, coverPhoto: apt.coverPhotoUrl };
             try {
               const photos = await fetchApartmentPhotos(apt.slug);
-              return { ...apt, coverPhoto: photos?.[0]?.photo_url ?? null };
+              const main = photos?.find(p => p.is_main) ?? photos?.[0];
+              return { ...apt, coverPhoto: main?.photo_url ?? null };
             } catch (err) {
               console.warn(`Photos fail for ${apt.slug}`, err);
               return { ...apt, coverPhoto: null };

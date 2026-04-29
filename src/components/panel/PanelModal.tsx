@@ -42,10 +42,21 @@ export default function PanelModal({
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Foco en primer elemento interactivo
+    // Foco en primer elemento de entrada (input/textarea/select),
+    // o primer botón que NO sea el de cerrar. Evita que pulsar Enter/Espacio
+    // tras abrir el modal active accidentalmente el botón Cerrar.
     const timer = setTimeout(() => {
-      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE);
-      focusable?.[0]?.focus();
+      if (!modalRef.current) return;
+      const firstField = modalRef.current.querySelector<HTMLElement>(
+        'input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled])'
+      );
+      if (firstField) {
+        firstField.focus();
+        return;
+      }
+      const focusable = modalRef.current.querySelectorAll<HTMLElement>(FOCUSABLE);
+      const target = Array.from(focusable).find(el => el.getAttribute('aria-label') !== 'Cerrar');
+      target?.focus();
     }, 60);
 
     function onKeyDown(e: KeyboardEvent) {

@@ -95,10 +95,7 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
       ref={navRef}
     >
       <Link to="/">
-        <picture>
-          <source srcSet="/logo_lineas.webp" type="image/webp" />
-          <img src="/logo_lineas.png" alt="Illa Pancha" className="h-10 w-auto" />
-        </picture>
+        <img src="/logo_color.png" alt="Illa Pancha" className="h-10 w-auto" />
       </Link>
 
       {/* Links - desktop and mobile menu */}
@@ -111,30 +108,20 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
         >
           {T.nav.apartments}
         </Link>
+        {/*
         <Link
           to="/nosotros"
           className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/nosotros') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.ribadeo}
         </Link>
-        <span
-          className="py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium cursor-pointer"
-          onClick={() => {
-            setMobileOpen(false);
-            if (location.pathname === '/nosotros') {
-              document.getElementById('experiencias')?.scrollIntoView({ behavior: 'smooth' });
-            } else {
-              navigate('/nosotros');
-              setTimeout(() => {
-                document.getElementById('experiencias')?.scrollIntoView({ behavior: 'smooth' });
-              }, 500);
-            }
-          }}
-          role="button"
-          tabIndex={0}
+        */}
+        <Link
+          to="/experiencias"
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/experiencias') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.experiences}
-        </span>
+        </Link>
         <Link
           to="/contacto"
           className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/contacto') ? 'text-teal border-b-2 border-teal' : ''}`}

@@ -362,8 +362,12 @@ export default function ApartamentosAdmin() {
       const newPhotos = [];
       let currentCount = photos.length;
 
+      let firstUploadedUrl: string | null = null;
       for (const file of files) {
         const { path, publicUrl } = await uploadPhotoToStorage(editing, file);
+
+        const isFirstEver = currentCount === 0;
+        if (isFirstEver) firstUploadedUrl = publicUrl;
 
         const { data, error: insertError } = await supabase
           .from('apartment_photos')
@@ -373,7 +377,7 @@ export default function ApartamentosAdmin() {
               photo_url: publicUrl,
               storage_path: path,
               order_index: currentCount,
-              is_main: currentCount === 0,
+              is_main: isFirstEver,
             },
           ])
           .select();
@@ -381,6 +385,14 @@ export default function ApartamentosAdmin() {
         if (insertError) throw insertError;
         newPhotos.push(data[0]);
         currentCount++;
+      }
+
+      // Si era la primera foto subida, sincronizar cover_photo_url
+      if (firstUploadedUrl) {
+        await supabase
+          .from('apartments')
+          .update({ cover_photo_url: firstUploadedUrl })
+          .eq('slug', editing);
       }
 
       setPhotos(prev => [...prev, ...newPhotos]);
@@ -404,6 +416,7 @@ export default function ApartamentosAdmin() {
     }
 
     try {
+      const isFirstEver = photos.length === 0;
       const { data, error: insertError } = await supabase
         .from('apartment_photos')
         .insert([
@@ -412,12 +425,20 @@ export default function ApartamentosAdmin() {
             photo_url: unsplashUrl,
             storage_path: null,
             order_index: photos.length,
-            is_main: photos.length === 0,
+            is_main: isFirstEver,
           },
         ])
         .select();
 
       if (insertError) throw insertError;
+
+      // Si era la primera foto, sincronizar cover_photo_url
+      if (isFirstEver) {
+        await supabase
+          .from('apartments')
+          .update({ cover_photo_url: unsplashUrl })
+          .eq('slug', editing);
+      }
 
       setPhotos([...photos, data[0]]);
       setUnsplashUrl('');
@@ -432,6 +453,7 @@ export default function ApartamentosAdmin() {
   const deletePhoto = async photoId => {
     try {
       const photo = photos.find(p => p.id === photoId);
+      const wasMain = !!photo?.is_main;
 
       const { error: deleteError } = await supabase
         .from('apartment_photos')
@@ -445,7 +467,29 @@ export default function ApartamentosAdmin() {
         await deletePhotoFromStorage(photo.storage_path);
       }
 
-      setPhotos(photos.filter(p => p.id !== photoId));
+      const remaining = photos.filter(p => p.id !== photoId);
+
+      // Si se borró la principal, promover la siguiente como principal
+      if (wasMain && remaining.length > 0) {
+        const next = remaining[0];
+        await supabase
+          .from('apartment_photos')
+          .update({ is_main: true })
+          .eq('id', next.id);
+        await supabase
+          .from('apartments')
+          .update({ cover_photo_url: next.photo_url })
+          .eq('slug', editing);
+        next.is_main = true;
+      } else if (wasMain && remaining.length === 0) {
+        // No quedan fotos
+        await supabase
+          .from('apartments')
+          .update({ cover_photo_url: null })
+          .eq('slug', editing);
+      }
+
+      setPhotos(remaining);
       setSuccess('✓ Foto eliminada correctamente');
       setTimeout(() => setSuccess(null), 2000);
     } catch (err) {
@@ -464,6 +508,15 @@ export default function ApartamentosAdmin() {
 
       // Marcar la nueva foto como principal
       await supabase.from('apartment_photos').update({ is_main: true }).eq('id', photoId);
+
+      // Sincronizar cover_photo_url del apartamento para que se refleje en home/listado
+      const newMain = photos.find(p => p.id === photoId);
+      if (newMain) {
+        await supabase
+          .from('apartments')
+          .update({ cover_photo_url: newMain.photo_url })
+          .eq('slug', editing);
+      }
 
       // Update local state
       setPhotos(
@@ -500,7 +553,7 @@ export default function ApartamentosAdmin() {
           {
             apartment_slug: editing,
             type: newSeasonData.type,
-            price_per_night: parseFloat(newSeasonData.price),
+            price: parseFloat(newSeasonData.price),
             start_date: newSeasonData.start_date,
             end_date: newSeasonData.end_date,
           },
@@ -1124,7 +1177,7 @@ export default function ApartamentosAdmin() {
                               <span className="text-sm">{seasonType?.label}</span>
                             </div>
                             <div className="text-sm font-semibold panel-text-accent">
-                              {season.price_per_night} €
+                              {season.price} €
                             </div>
                             <div className="text-sm">
                               {new Date(season.start_date).toLocaleDateString()}

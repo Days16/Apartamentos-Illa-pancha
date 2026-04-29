@@ -27,16 +27,12 @@
     "verifiedReviews": "4.9 ★ · +220 opiniões verificadas",
     "bookNowNoComm": "Reservar agora sem comissão",
     "freeCancelDays": "Cancelamento gratuito · {days} dias antes",
-    "heroTitle": "Alugar<br /><em>direto,</em><br />sem comissões",
+    "heroTitle": "Apartamentos Illa Pancha<br /><em>Viva o sabor do norte</em>",
     "heroDesc": "Oito apartamentos junto à ria do Eo. Reserve connosco e pague menos do que em qualquer plataforma.",
-    "feature1Title": "Sem comissões",
-    "feature1Desc": "Reserva direta. O que paga é o que recebemos, sem intermediários.",
     "feature2Title": "Pagamento seguro",
-    "feature2Desc": "{pct}% agora com cartão como depósito. O resto em dinheiro à chegada.",
-    "feature3Title": "Sempre atualizado",
-    "feature3Desc": "O nosso calendário sincroniza-se com o Booking em tempo real. Nunca haverá reserva dupla.",
+    "feature2Desc": "{pct}% agora com cartão como reserva. O resto à chegada ao apartamento.",
     "feature4Title": "Ribadeo, Galiza",
-    "feature4Desc": "A 5 minutos da ponte internacional e das melhores praias da costa norte galega.",
+    "feature4Desc": "A 10 minutos da Playa de las Catedrales e de paisagens costeiras espetaculares, praias únicas e vilas piscatórias. Venha conhecer-nos.",
     "bannerTitle": "Por que reservar<br /><em>diretamente connosco?</em>",
     "bannerDesc": "Poupe entre 15 e 20% em relação ao Booking.com. O mesmo apartamento, o mesmo serviço, sem comissões.",
     "faqHeading": "Perguntas frequentes",
@@ -225,7 +221,9 @@
     "comoLlegarTitle": "Como chegar aos Illa Pancha Ribadeo",
     "comoLlegarDesc": "Morada Av. Rosalía de Castro 25, Ribadeo. De carro pela A-8, autocarro ALSA desde Lugo ou Oviedo, aeroportos de Santiago e Astúrias. Estacionamento perto.",
     "leaveReviewTitle": "Avaliar estadia Illa Pancha",
-    "leaveReviewDesc": "Deixe a sua opinião após a estadia nos nossos apartamentos de Ribadeo. Comentários verificados ajudam outros hóspedes. Formulário rápido após a reserva."
+    "leaveReviewDesc": "Deixe a sua opinião após a estadia nos nossos apartamentos de Ribadeo. Comentários verificados ajudam outros hóspedes. Formulário rápido após a reserva.",
+    "experiencesTitle": "O que ver em Ribadeo e arredores",
+    "experiencesDesc": "Guia da Mariña Lucense e do ocidente das Astúrias: As Catedrais, Mondoñedo, Castropol, Cudillero e muito mais. Planeie a sua escapada a partir de Illa Pancha."
   },
   "common": {
     "offerApplied": "Oferta aplicada",
@@ -272,6 +270,7 @@
     "experienceRibadeo": "Experiências em Ribadeo",
     "expDesc1": "Para além dos apartamentos, Ribadeo oferece uma agenda cultural e gastronómica única.",
     "expDesc2": "Mercados artesanais, festivais de música, caminhadas ou surf nas melhores praias do norte.",
+    "expSeeAll": "Ver todo o guia da região",
     "zone": "A região",
     "charmingView": "Vista ao mar com encanto",
     "poi": [
@@ -304,6 +303,119 @@
         "t": "1h",
         "d": "Lugo (muralha romana)",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=600"
+      }
+    ]
+  },
+  "experiences": {
+    "heroEyebrow": "O que ver e fazer",
+    "heroTitle": "Ribadeo e os seus <em>arredores</em>",
+    "heroDesc": "Um guia honesto para descobrir a Mariña Lucense e o ocidente das Astúrias a partir de Illa Pancha.",
+    "introText1": "Ribadeo está mesmo na fronteira entre a Galiza e as Astúrias, em plena Costa Verde cantábrica. A partir dos nossos apartamentos pode percorrer duas comarcas com personalidade própria em menos de uma hora de carro.",
+    "introText2": "Aqui ficam os lugares que recomendamos aos nossos hóspedes: praias, vilas, faróis, miradouros e cantos gastronómicos. Tudo a um passo.",
+    "galiciaTag": "Galiza · Mariña Lucense",
+    "marinaTitle": "A <em>Mariña Lucense</em>",
+    "marinaDesc": "Falésias de lenda, praias virgens e vilas piscatórias que conservam a alma galega. Ideal para quem procura natureza, gastronomia e património.",
+    "asturiasTag": "Astúrias · Ocidente",
+    "asturiasTitle": "Ocidente das <em>Astúrias</em>",
+    "asturiasDesc": "Atravessando a Ponte dos Santos entra-se nas Astúrias: vilas brancas, povoações piscatórias de postal, falésias espetaculares e a melhor sidra do Cantábrico.",
+    "mapEyebrow": "O mapa",
+    "mapTitle": "Toda a região num relance",
+    "mapDesc": "Ribadeo é uma base ideal: em menos de 1 hora chega de As Catedrais a Cudillero, passando por Lugo e Luarca.",
+    "ctaTitle": "Pronto para <em>descobrir?</em>",
+    "ctaDesc": "Reserve o seu apartamento em Illa Pancha e comece a explorar a melhor costa do norte de Espanha.",
+    "ctaContact": "Contactar",
+    "marinaPoi": [
+      {
+        "t": "20 min",
+        "d": "Praia de As Catedrais",
+        "desc": "Património Natural. Arcos e abóbadas esculpidos pelo mar em falésias de ardósia. Reserve com antecedência na época alta para aceder à areia.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Centro histórico de Ribadeo",
+        "desc": "Plaza de España, casas indianas, palácios coloniais e miradouros sobre a ria do Eo. Ideal para passear a pé e petiscar polvo.",
+        "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Farol de Isla Pancha",
+        "desc": "O farol mais fotogénico do Cantábrico, sobre uma pequena ilha ligada por um passadiço. Pôr do sol inesquecíveis.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Foz e Praia de Llas",
+        "desc": "Vila piscatória vibrante e uma praia ampla com dunas perfeita para o surf e para famílias.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Mondoñedo",
+        "desc": "Antiga capital do reino da Galiza. Catedral basílica, praça com arcadas e doçaria artesanal. Uma joia do interior.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Viveiro",
+        "desc": "Centro histórico amuralhado e a Semana Santa mais famosa do norte. Porta de entrada para a Mariña ocidental.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Lugo · Muralha romana",
+        "desc": "Património Mundial UNESCO. A única muralha romana do mundo conservada em todo o seu perímetro: 2 km percorríveis.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Praia das Catedrais com maré baixa",
+        "desc": "Para quem repete: a zona menos visitada da praia, acessível só com maré baixa. Consulte os horários oficiais antes de ir.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      }
+    ],
+    "asturiasPoi": [
+      {
+        "t": "5 min",
+        "d": "Ponte dos Santos",
+        "desc": "A passagem emblemática sobre a ria do Eo que une a Galiza e as Astúrias. Miradouro imprescindível ao pôr do sol.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "10 min",
+        "d": "Castropol",
+        "desc": "A vila branca das Astúrias. Casas caiadas, miradouro com as melhores vistas para a ria e praça com o cipreste mais antigo do país.",
+        "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "20 min",
+        "d": "Tapia de Casariego",
+        "desc": "A meca do surf do norte. Farol, praias para todos os níveis e um centro urbano com sabor piscatório autêntico.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cabo Busto",
+        "desc": "Falésias vertiginosas e um dos faróis mais espetaculares do Cantábrico. Ponto de avistamento de cetáceos na primavera.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Luarca · Villa Blanca",
+        "desc": "Vila piscatória pintada de branco, com cemitério panorâmico, sete pontes e praia urbana. Imperdível comer peixe do dia.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Cudillero",
+        "desc": "A vila piscatória mais fotografada de Espanha. Casas coloridas escalonadas numa garganta marinha. Chegue cedo.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 30min",
+        "d": "Praia do Silêncio",
+        "desc": "Enseada selvagem rodeada de falésias verticais e pequenos ilhéus. O paraíso geológico do ocidente asturiano.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },

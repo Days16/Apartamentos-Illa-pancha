@@ -27,16 +27,12 @@
     "verifiedReviews": "4.9 ★ · +220 geprüfte Bewertungen",
     "bookNowNoComm": "Jetzt ohne Provision buchen",
     "freeCancelDays": "Kostenlose Stornierung · {days} Tage vorher",
-    "heroTitle": "Direkt<br /><em>mieten,</em><br />ohne Provision",
+    "heroTitle": "Apartamentos Illa Pancha<br /><em>Erleben Sie den Geschmack des Nordens</em>",
     "heroDesc": "Acht Apartments am Ufer der Ría del Eo. Buchen Sie bei uns und zahlen Sie weniger als auf jeder Plattform.",
-    "feature1Title": "Keine Provision",
-    "feature1Desc": "Direktbuchung. Was Sie zahlen, erhalten wir ohne Vermittler.",
     "feature2Title": "Sichere Zahlung",
-    "feature2Desc": "{pct}% jetzt per Karte als Anzahlung. Den Rest in bar bei Ankunft.",
-    "feature3Title": "Immer aktuell",
-    "feature3Desc": "Unser Kalender synchronisiert sich mit Booking in Echtzeit. Keine Doppelbuchungen.",
+    "feature2Desc": "{pct}% jetzt per Karte als Anzahlung. Den Rest bei Ankunft im Apartment.",
     "feature4Title": "Ribadeo, Galicien",
-    "feature4Desc": "5 Minuten von der Internationalen Brücke und den schönsten Stränden der nordgalizischen Küste.",
+    "feature4Desc": "10 Minuten von der Playa de las Catedrales und spektakulären Küstenlandschaften, einzigartigen Stränden und Fischerdörfern entfernt. Kommen Sie und lernen Sie uns kennen.",
     "bannerTitle": "Warum direkt<br /><em>bei uns buchen?</em>",
     "bannerDesc": "Sparen Sie 15 bis 20% im Vergleich zu Booking.com. Dasselbe Apartment, derselbe Service, ohne Vermittlerprovision.",
     "faqHeading": "Häufige Fragen",
@@ -225,7 +221,9 @@
     "comoLlegarTitle": "Anreise Illa Pancha Ribadeo",
     "comoLlegarDesc": "Adresse Av. Rosalía de Castro 25, Ribadeo. Anfahrt per A-8, ALSA-Bus ab Lugo oder Oviedo, Flughäfen Santiago und Asturien. Parken in der Nähe.",
     "leaveReviewTitle": "Aufenthalt bei Illa Pancha bewerten",
-    "leaveReviewDesc": "Teilen Sie nach Ihrem Ribadeo-Aufenthalt Ihre Meinung. Verifizierte Gästebewertungen helfen anderen. Schnelles Formular nach Ihrer Buchung."
+    "leaveReviewDesc": "Teilen Sie nach Ihrem Ribadeo-Aufenthalt Ihre Meinung. Verifizierte Gästebewertungen helfen anderen. Schnelles Formular nach Ihrer Buchung.",
+    "experiencesTitle": "Was man in Ribadeo und Umgebung sehen kann",
+    "experiencesDesc": "Reiseführer für die Mariña Lucense und das westliche Asturien: As Catedrais, Mondoñedo, Castropol, Cudillero und mehr. Planen Sie Ihren Ausflug von Illa Pancha aus."
   },
   "common": {
     "offerApplied": "Angebot angewendet",
@@ -269,9 +267,10 @@
     "ctaTitle": "Kommen Sie uns besuchen?",
     "ctaDesc": "Prüfen Sie die Verfügbarkeit und buchen Sie direkt. Ohne Provision, mit persönlichem Service.",
     "ctaContact": "Kontakt",
-    "experienceRibadeo": "Erlebnisse in Ribadeo",
-    "expDesc1": "Über die Apartments hinaus bietet Ribadeo ein einzigartiges kulturelles und gastronomisches Programm.",
+    "experienceRibadeo": "Was es in der Nähe von Illa Pancha zu sehen gibt",
+    "expDesc1": "Von Ribadeo aus haben Sie die Mariña Lucense und das westliche Asturien direkt vor der Haustür. Hier sind einige Highlights.",
     "expDesc2": "Kunsthandwerksmärkte, Musikfestivals, Wandern oder Surfen an den besten Stränden des Nordens.",
+    "expSeeAll": "Den vollständigen Reiseführer ansehen",
     "zone": "Die Region",
     "charmingView": "Meerblick mit Charme",
     "poi": [
@@ -304,6 +303,119 @@
         "t": "1h",
         "d": "Lugo (Römische Stadtmauer)",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=600"
+      }
+    ]
+  },
+  "experiences": {
+    "heroEyebrow": "Was man sehen und tun kann",
+    "heroTitle": "Ribadeo und seine <em>Umgebung</em>",
+    "heroDesc": "Ein ehrlicher Reiseführer, um die Mariña Lucense und das westliche Asturien von Illa Pancha aus zu entdecken.",
+    "introText1": "Ribadeo liegt direkt an der Grenze zwischen Galizien und Asturien, an der kantabrischen Grünen Küste. Von unseren Apartments aus können Sie zwei Regionen mit ganz eigenem Charakter in weniger als einer Autostunde erkunden.",
+    "introText2": "Hier sind die Orte, die wir unseren Gästen empfehlen: Strände, Dörfer, Leuchttürme, Aussichtspunkte und kulinarische Geheimtipps. Alles in der Nähe.",
+    "galiciaTag": "Galizien · Mariña Lucense",
+    "marinaTitle": "Die <em>Mariña Lucense</em>",
+    "marinaDesc": "Legendäre Klippen, unberührte Strände und Fischerdörfer, die die galizische Seele bewahren. Ideal für Naturliebhaber, Feinschmecker und Kulturinteressierte.",
+    "asturiasTag": "Asturien · Westen",
+    "asturiasTitle": "Westliches <em>Asturien</em>",
+    "asturiasDesc": "Über die Puente de los Santos gelangen Sie nach Asturien: weiße Dörfer, malerische Fischerorte, dramatische Klippen und der beste Cidre des Kantabrischen Meeres.",
+    "mapEyebrow": "Die Karte",
+    "mapTitle": "Die ganze Region auf einen Blick",
+    "mapDesc": "Ribadeo ist die ideale Basis: in weniger als einer Stunde erreichen Sie As Catedrais, Cudillero, Lugo und Luarca.",
+    "ctaTitle": "Bereit, sie zu <em>entdecken?</em>",
+    "ctaDesc": "Buchen Sie Ihr Apartment bei Illa Pancha und beginnen Sie, die schönste Küste Nordspaniens zu erkunden.",
+    "ctaContact": "Kontakt",
+    "marinaPoi": [
+      {
+        "t": "20 min",
+        "d": "Strand As Catedrais",
+        "desc": "Naturerbe. Bögen und Gewölbe, vom Meer in Schieferklippen geschnitten. In der Hochsaison vorher buchen.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Historisches Zentrum Ribadeo",
+        "desc": "Plaza de España, Indianer-Häuser, koloniale Paläste und Aussichtspunkte über die Eo-Mündung. Perfekt zum Bummeln und Pulpo essen.",
+        "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Leuchtturm Isla Pancha",
+        "desc": "Der fotogenste Leuchtturm des Kantabrischen Meeres, auf einer kleinen Insel mit Steg. Unvergessliche Sonnenuntergänge.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Foz und Praia de Llas",
+        "desc": "Lebendiges Fischerdorf mit einem breiten Dünenstrand, perfekt zum Surfen und für Familien.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Mondoñedo",
+        "desc": "Ehemalige Hauptstadt des Königreichs Galizien. Kathedrale, Arkadenplatz und traditionelle Konditoreien. Ein Juwel im Inland.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Viveiro",
+        "desc": "Ummauerte Altstadt und die berühmteste Karwoche im Norden. Tor zur westlichen Mariña.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Lugo · Römische Stadtmauer",
+        "desc": "UNESCO-Welterbe. Die einzige römische Mauer der Welt, die in voller Länge erhalten ist: 2 km begehbar.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Praia das Catedrais bei Ebbe",
+        "desc": "Für Wiederholungstäter: der weniger besuchte Bereich, nur bei Ebbe zugänglich. Vorher offizielle Gezeiten prüfen.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      }
+    ],
+    "asturiasPoi": [
+      {
+        "t": "5 min",
+        "d": "Puente de los Santos",
+        "desc": "Die ikonische Brücke über die Eo-Mündung verbindet Galizien und Asturien. Aussichtspunkt bei Sonnenuntergang.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "10 min",
+        "d": "Castropol",
+        "desc": "Das weiße Dorf Asturiens. Weiß getünchte Häuser, Aussichtspunkt mit den besten Blicken auf die Mündung und Platz mit der ältesten Zypresse Spaniens.",
+        "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "20 min",
+        "d": "Tapia de Casariego",
+        "desc": "Surf-Mekka des Nordens. Leuchtturm, Strände für alle Niveaus und ein authentisches Fischerzentrum.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cabo Busto",
+        "desc": "Schwindelerregende Klippen und einer der spektakulärsten Leuchttürme des Kantabrischen Meeres. Im Frühling Ort zur Walbeobachtung.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Luarca · Villa Blanca",
+        "desc": "Weiß getünchtes Fischerdorf mit Panoramafriedhof, sieben Brücken und Stadtstrand. Den Tagesfang probieren!",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Cudillero",
+        "desc": "Das meistfotografierte Fischerdorf Spaniens. Bunte Häuser staffeln sich in einer Meeresschlucht. Früh anreisen.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 30min",
+        "d": "Playa del Silencio",
+        "desc": "Wilde Bucht, umgeben von senkrechten Klippen und kleinen Inseln. Das geologische Paradies des westlichen Asturiens.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },

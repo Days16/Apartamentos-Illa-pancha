@@ -27,16 +27,12 @@
     "verifiedReviews": "4.9 ★ · +220 opiniones verificadas",
     "bookNowNoComm": "Reservar ahora sin comisión",
     "freeCancelDays": "Cancelación gratuita · {days} días antes",
-    "heroTitle": "Alquila<br /><em>directo,</em><br />sin comisiones",
+    "heroTitle": "Apartamentos Illa Pancha<br /><em>Vive el sabor del norte</em>",
     "heroDesc": "Ocho apartamentos junto a la ría del Eo. Reserva con nosotros y paga menos que en cualquier plataforma.",
-    "feature1Title": "Sin comisiones",
-    "feature1Desc": "Reserva directa. Lo que pagas es lo que recibimos nosotros, sin intermediarios ni sorpresas.",
     "feature2Title": "Pago seguro",
-    "feature2Desc": "{pct}% ahora con tarjeta como depósito. El resto en efectivo cuando llegues al apartamento.",
-    "feature3Title": "Siempre actualizado",
-    "feature3Desc": "Nuestro calendario se sincroniza con Booking en tiempo real. Nunca habrá doble reserva.",
+    "feature2Desc": "{pct}% ahora con tarjeta como reserva. Y el resto al llegar al apartamento.",
     "feature4Title": "Ribadeo, Galicia",
-    "feature4Desc": "A 5 minutos del puente internacional y de las mejores playas de la costa norte gallega.",
+    "feature4Desc": "A 10 minutos de la Playa de las Catedrales y de espectaculares paisajes costeros, playas únicas y pueblos marineros. Ven a conocernos.",
     "bannerTitle": "¿Por qué reservar<br /><em>directo con nosotros?</em>",
     "bannerDesc": "Ahorra entre un 15 y un 20% respecto a Booking.com. El mismo apartamento, el mismo servicio, sin comisiones de intermediarios.",
     "faqHeading": "Preguntas frecuentes",
@@ -225,7 +221,9 @@
     "comoLlegarTitle": "Cómo llegar a Illa Pancha en Ribadeo",
     "comoLlegarDesc": "Av. Rosalía de Castro 25, Ribadeo. Acceso en coche por la A-8, bus ALSA desde Lugo u Oviedo, o aeropuertos de Santiago y Asturias. Parking cercano.",
     "leaveReviewTitle": "Valorar tu estancia Illa Pancha",
-    "leaveReviewDesc": "Deja tu opinión sobre Illa Pancha en Ribadeo. Reseñas verificadas que ayudan a otros huéspedes. Formulario rápido y seguro tras tu reserva directa."
+    "leaveReviewDesc": "Deja tu opinión sobre Illa Pancha en Ribadeo. Reseñas verificadas que ayudan a otros huéspedes. Formulario rápido y seguro tras tu reserva directa.",
+    "experiencesTitle": "Qué ver en Ribadeo y alrededores",
+    "experiencesDesc": "Guía de la Mariña lucense y el occidente de Asturias: As Catedrais, Mondoñedo, Castropol, Cudillero y mucho más. Planifica tu escapada desde Illa Pancha."
   },
   "common": {
     "offerApplied": "Oferta aplicada",
@@ -269,9 +267,10 @@
     "ctaTitle": "¿Te animamos a <em>venir?</em>",
     "ctaDesc": "Consulta la disponibilidad y reserva directamente. Sin comisiones, con trato personal y al mejor precio garantizado.",
     "ctaContact": "Contactar",
-    "experienceRibadeo": "Experiencias en Ribadeo",
-    "expDesc1": "Más allá de los apartamentos, Ribadeo ofrece una agenda cultural y gastronómica única en la cornisa cantábrica.",
+    "experienceRibadeo": "Qué ver cerca de Illa Pancha",
+    "expDesc1": "Desde Ribadeo tienes la Mariña lucense y el occidente de Asturias a un paso. Te dejamos algunos imprescindibles.",
     "expDesc2": "Mercados artesanales, festivales de música, senderismo por la Mariña lucense o surf en las mejores playas del norte.",
+    "expSeeAll": "Ver toda la guía de la zona",
     "zone": "La zona",
     "charmingView": "Vista al mar con encanto",
     "poi": [
@@ -304,6 +303,119 @@
         "t": "1h",
         "d": "Lugo (muralla romana)",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=600"
+      }
+    ]
+  },
+  "experiences": {
+    "heroEyebrow": "Qué ver y hacer",
+    "heroTitle": "Ribadeo y sus <em>alrededores</em>",
+    "heroDesc": "Una guía honesta para descubrir la Mariña lucense y el occidente de Asturias desde Illa Pancha.",
+    "introText1": "Ribadeo está justo en la frontera entre Galicia y Asturias, en plena Costa Verde cantábrica. Desde nuestros apartamentos puedes recorrer dos comarcas con personalidad propia sin coger más de una hora de coche.",
+    "introText2": "Aquí te dejamos los lugares que recomendamos a nuestros huéspedes: playas, pueblos, faros, miradores y rincones gastronómicos. Todo a tiro de piedra.",
+    "galiciaTag": "Galicia · Mariña Lucense",
+    "marinaTitle": "La <em>Mariña Lucense</em>",
+    "marinaDesc": "Acantilados de leyenda, playas vírgenes y pueblos marineros que conservan el alma gallega. Ideal para quien busca naturaleza, gastronomía y patrimonio.",
+    "asturiasTag": "Asturias · Occidente",
+    "asturiasTitle": "Occidente de <em>Asturias</em>",
+    "asturiasDesc": "Cruzando el Puente de los Santos entras en Asturias: villas blancas, pueblos pesqueros de postal, acantilados espectaculares y la mejor sidra del Cantábrico.",
+    "mapEyebrow": "El mapa",
+    "mapTitle": "Toda la zona en un vistazo",
+    "mapDesc": "Ribadeo es una base ideal: en menos de 1 hora tienes desde As Catedrais hasta Cudillero, pasando por Lugo y Luarca.",
+    "ctaTitle": "¿Listo para <em>descubrirlo?</em>",
+    "ctaDesc": "Reserva tu apartamento en Illa Pancha y empieza a explorar la mejor costa del norte de España.",
+    "ctaContact": "Contactar",
+    "marinaPoi": [
+      {
+        "t": "20 min",
+        "d": "Playa de As Catedrais",
+        "desc": "Patrimonio Natural. Arcos y bóvedas tallados por el mar en acantilados de pizarra. Reserva con antelación en temporada alta para acceder a la arena.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Centro histórico de Ribadeo",
+        "desc": "Plaza de España, casas indianas, palacios coloniales y miradores sobre la ría del Eo. Ideal para perderse a pie y tapear pulpo.",
+        "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "5 min",
+        "d": "Faro de Isla Pancha",
+        "desc": "El faro más fotogénico del Cantábrico, sobre una pequeña isla unida por una pasarela. Atardeceres inolvidables.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Foz y Praia de Llas",
+        "desc": "Pueblo marinero con un casco urbano vivo y una playa amplia con dunas perfecta para el surf y para familias.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Mondoñedo",
+        "desc": "Antigua capital del reino de Galicia. Catedral basílica, plaza porticada y pastelería artesana. Una joya de interior.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Viveiro",
+        "desc": "Casco histórico amurallado y la Semana Santa más famosa del norte. Punto de partida para la Mariña occidental.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h",
+        "d": "Lugo · Muralla romana",
+        "desc": "Patrimonio de la Humanidad UNESCO. La única muralla romana del mundo conservada en todo su perímetro: 2 km transitables.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Praia das Catedrais por la marea baja",
+        "desc": "Para los que repiten: la zona menos visitada de la playa, accesible solo con marea baja. Consulta horarios oficiales antes de ir.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      }
+    ],
+    "asturiasPoi": [
+      {
+        "t": "5 min",
+        "d": "Puente de los Santos",
+        "desc": "El paso emblemático sobre la ría del Eo que une Galicia y Asturias. Mirador imprescindible al atardecer.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "10 min",
+        "d": "Castropol",
+        "desc": "El pueblo blanco de Asturias. Casas encaladas, mirador con las mejores vistas a la ría y plaza con el ciprés más antiguo del país.",
+        "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "20 min",
+        "d": "Tapia de Casariego",
+        "desc": "La meca del surf del norte. Faro, playas para todos los niveles y un casco urbano con sabor marinero auténtico.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cabo Busto",
+        "desc": "Acantilados de vértigo y uno de los faros más espectaculares del Cantábrico. Punto de avistamiento de cetáceos en primavera.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "45 min",
+        "d": "Luarca · Villa Blanca",
+        "desc": "Pueblo pesquero pintado de blanco con un cementerio panorámico, siete puentes y playa urbana. Indispensable comer pescado del día.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 15min",
+        "d": "Cudillero",
+        "desc": "El pueblo pesquero más fotografiado de España. Casas de colores escalonadas en una garganta marina. Llega temprano.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "1h 30min",
+        "d": "Playa del Silencio",
+        "desc": "Cala salvaje rodeada de acantilados verticales y pequeños islotes. El paraíso geológico del occidente asturiano.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },

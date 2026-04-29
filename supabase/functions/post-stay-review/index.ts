@@ -22,7 +22,40 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-function buildEmailHtml(guestName: string, apartmentName: string, googleUrl: string, siteReviewUrl: string): string {
+interface DiscountInfo {
+  code: string;
+  percent: number;
+  validUntil: string; // dd/mm/yyyy ya formateado
+}
+
+function buildDiscountBlock(discount: DiscountInfo, siteUrl: string): string {
+  return `
+    <div style="background: linear-gradient(135deg, #1a5f6e 0%, #2a7f8e 100%); padding: 28px 24px; border-radius: 12px; margin-bottom: 32px; text-align: center; color: #fff;">
+      <p style="font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 8px; color: #D4A843;">Gracias por tu visita</p>
+      <p style="font-size: 18px; margin: 0 0 16px; font-weight: 300;">Tu próxima estancia con</p>
+      <div style="font-size: 42px; font-weight: bold; color: #D4A843; margin-bottom: 8px;">-${discount.percent}%</div>
+      <div style="background: rgba(255,255,255,0.12); border: 1px dashed rgba(255,255,255,0.4); padding: 14px 20px; border-radius: 8px; margin: 16px 0; font-family: monospace; font-size: 20px; font-weight: bold; letter-spacing: 2px;">
+        ${discount.code}
+      </div>
+      <p style="font-size: 13px; margin: 0 0 16px; color: rgba(255,255,255,0.8);">
+        Válido hasta el <strong>${discount.validUntil}</strong> · Aplica el código al reservar
+      </p>
+      <a href="${siteUrl}/apartamentos" target="_blank" style="display: inline-block; background: #D4A843; color: #0f172a; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600;">
+        Reservar de nuevo →
+      </a>
+    </div>
+  `;
+}
+
+function buildEmailHtml(
+  guestName: string,
+  apartmentName: string,
+  googleUrl: string,
+  siteReviewUrl: string,
+  discount?: DiscountInfo,
+  siteUrl: string = "https://apartamentosillapancha.com"
+): string {
+  const discountBlock = discount ? buildDiscountBlock(discount, siteUrl) : "";
   return `
 <!DOCTYPE html>
 <html lang="es">
@@ -39,13 +72,13 @@ function buildEmailHtml(guestName: string, apartmentName: string, googleUrl: str
     </h1>
 
     <p style="color: #4b5563; line-height: 1.7; margin-bottom: 24px; text-align: center;">
-      Esperamos que hayas disfrutado de tu reciente estancia en <strong>${apartmentName}</strong>. 
+      Esperamos que hayas disfrutado de tu reciente estancia en <strong>${apartmentName}</strong>.
       Tu opinión es fundamental para nosotros y para ayudar a otros viajeros.
     </p>
 
     <div style="background: #fdfdfd; padding: 24px; border: 1px dashed #e2e8f0; border-radius: 12px; margin-bottom: 32px; text-align: center;">
       <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">¿Podrías dedicarnos un minuto?</p>
-      
+
       <a href="${googleUrl}" target="_blank" style="display: block; background: #1a5f6e; color: #fff; text-decoration: none; padding: 14px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; margin-bottom: 12px;">
         🌟 Reseña en Google (1 clic)
       </a>
@@ -55,12 +88,14 @@ function buildEmailHtml(guestName: string, apartmentName: string, googleUrl: str
       </a>
     </div>
 
+    ${discountBlock}
+
     <p style="color: #64748b; font-size: 13px; line-height: 1.6; text-align: center;">
       Si hubo algo que no fue de tu agrado, por favor responde a este correo directamente para que podamos solucionarlo.
     </p>
 
     <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 40px 0;" />
-    
+
     <p style="color: #94a3b8; font-size: 11px; text-align: center;">
       Illa Pancha Ribadeo · Galicia · España
     </p>
@@ -73,18 +108,20 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-  const { guestEmail, guestName, apartmentName, reviewToken, manual } = await req.json();
+  const { guestEmail, guestName, apartmentName, reviewToken, manual, discount } = await req.json();
 
   if (manual) {
     // Invocación manual para una reserva específica
     const siteReviewUrl = `${SITE_URL}/dejar-resena?token=${reviewToken}`;
-    
+
     try {
       const { data, error } = await resend.emails.send({
         from: `Illa Pancha <${FROM_EMAIL}>`,
         to: [guestEmail],
-        subject: `¿Cómo te fue en ${apartmentName}? 🌟`,
-        html: buildEmailHtml(guestName || "estimado huésped", apartmentName, GOOGLE_REVIEWS_URL, siteReviewUrl),
+        subject: discount
+          ? `Gracias por tu estancia en ${apartmentName} · -${discount.percent}% en tu próxima reserva 🎁`
+          : `¿Cómo te fue en ${apartmentName}? 🌟`,
+        html: buildEmailHtml(guestName || "estimado huésped", apartmentName, GOOGLE_REVIEWS_URL, siteReviewUrl, discount, SITE_URL),
       });
 
       if (error) throw error;

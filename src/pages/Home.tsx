@@ -78,7 +78,8 @@ export default function Home() {
             if (!aptsNeedingPhoto.includes(apt)) return { ...apt, coverPhoto: null };
             try {
               const photos = await fetchApartmentPhotos(apt.slug);
-              return { ...apt, coverPhoto: photos?.[0]?.photo_url ?? null };
+              const main = photos?.find(p => p.is_main) ?? photos?.[0];
+              return { ...apt, coverPhoto: main?.photo_url ?? null };
             } catch {
               return { ...apt, coverPhoto: null };
             }
@@ -168,6 +169,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/55" />
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center max-w-4xl">
+          <img
+            src="/logo_color.png"
+            alt="Illa Pancha"
+            className="h-24 md:h-32 w-auto mb-6 drop-shadow-lg"
+          />
           <div className="text-sm font-semibold text-white uppercase tracking-widest mb-4">
             {T.home.feature4Title}
           </div>
@@ -268,15 +274,13 @@ export default function Home() {
       </div>
 
       {/* CARACTERÍSTICAS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-20 px-4 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-20 px-4 max-w-4xl mx-auto">
         {[
-          { icon: paths.cash, t: T.home.feature1Title, d: T.home.feature1Desc },
           {
             icon: paths.lock,
             t: T.home.feature2Title,
             d: T.home.feature2Desc.replace('{pct}', String(depositPct)),
           },
-          { icon: paths.sync, t: T.home.feature3Title, d: T.home.feature3Desc },
           { icon: paths.map, t: T.home.feature4Title, d: T.home.feature4Desc },
         ].map((f, i) => (
           <div key={i} className="flex flex-col items-center text-center">
