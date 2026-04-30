@@ -25,6 +25,8 @@ const Faq = lazy(() => import('./pages/Faq'));
 const Directions = lazy(() => import('./pages/Directions'));
 const LeaveReview = lazy(() => import('./pages/LeaveReview'));
 const Experiences = lazy(() => import('./pages/Experiences'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogPost = lazy(() => import('./pages/BlogPost'));
 
 // Auth — lazy (rarely visited)
 const Login = lazy(() => import('./pages/Login'));
@@ -62,6 +64,7 @@ const DiscountCodes = lazy(() => import('./pages/admin/DiscountCodes'));
 const AuditLog = lazy(() => import('./pages/admin/AuditLog'));
 const PdfEditorAdmin = lazy(() => import('./pages/admin/PdfEditorAdmin'));
 const ExperiencesAdmin = lazy(() => import('./pages/admin/ExperiencesAdmin'));
+const BlogAdmin = lazy(() => import('./pages/admin/BlogAdmin'));
 
 // Components
 import CookieBanner from './components/CookieBanner';
@@ -194,6 +197,8 @@ export default function App() {
                             <Route path="/faq" element={<Faq />} />
                             <Route path="/como-llegar" element={<Directions />} />
                             <Route path="/dejar-resena" element={<LeaveReview />} />
+                            <Route path="/blog" element={<Blog />} />
+                            <Route path="/blog/:slug" element={<BlogPost />} />
 
                             <Route path="/login" element={<Login />} />
                             <Route path="/reset-password" element={<ResetPassword />} />
@@ -233,6 +238,7 @@ export default function App() {
                                 <Route path="auditoria" element={<AuditLog />} />
                                 <Route path="pdf-editor" element={<PdfEditorAdmin />} />
                                 <Route path="experiencias" element={<ExperiencesAdmin />} />
+                                <Route path="blog" element={<BlogAdmin />} />
                               </Route>
                             </Route>
 

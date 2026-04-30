@@ -134,6 +134,12 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
         >
           {T.nav.faq}
         </Link>
+        <Link
+          to="/blog"
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/blog') ? 'text-teal border-b-2 border-teal' : ''}`}
+        >
+          {T.nav.blog}
+        </Link>
 
         {/* Book button visible only in mobile menu */}
         <button

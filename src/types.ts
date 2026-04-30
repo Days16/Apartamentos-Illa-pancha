@@ -154,6 +154,38 @@ export interface DbAuditLog {
   created_at: string;
 }
 
+export interface DbBlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  title_en: string | null;
+  title_fr: string | null;
+  title_de: string | null;
+  title_pt: string | null;
+  excerpt: string | null;
+  excerpt_en: string | null;
+  excerpt_fr: string | null;
+  excerpt_de: string | null;
+  excerpt_pt: string | null;
+  content: string | null;
+  content_en: string | null;
+  content_fr: string | null;
+  content_de: string | null;
+  content_pt: string | null;
+  cover_url: string | null;
+  cover_alt: string | null;
+  cover_alt_en: string | null;
+  cover_alt_fr: string | null;
+  cover_alt_de: string | null;
+  cover_alt_pt: string | null;
+  tags: string[];
+  author: string | null;
+  published_at: string | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // NORMALIZED TYPES FOR REACT (camelCase — from dataService.ts)
 // ─────────────────────────────────────────────────────────────────────────────

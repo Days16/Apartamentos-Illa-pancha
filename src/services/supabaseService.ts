@@ -8,6 +8,7 @@ import type {
   DbExtra,
   DbReservation,
   DbFaq,
+  DbBlogPost,
 } from '../types';
 
 // ─── APARTAMENTOS ────────────────────────────────────────────────────────
@@ -590,6 +591,83 @@ export async function updateFaq(id: string, updates: Partial<DbFaq>): Promise<vo
 export async function deleteFaq(id: string): Promise<void> {
   const { error } = await supabase.from('faqs').delete().eq('id', id);
   if (error) throw error;
+}
+
+// ─── BLOG ────────────────────────────────────────────────────────────────────
+
+const BLOG_STORAGE_BUCKET = 'blog-images';
+
+export async function fetchPublishedPosts(): Promise<DbBlogPost[]> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('active', true)
+    .not('published_at', 'is', null)
+    .lte('published_at', new Date().toISOString())
+    .order('published_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function fetchPublishedPostBySlug(slug: string): Promise<DbBlogPost | null> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('active', true)
+    .not('published_at', 'is', null)
+    .lte('published_at', new Date().toISOString())
+    .single();
+  if (error) return null;
+  return data;
+}
+
+export async function fetchAllBlogPosts(): Promise<DbBlogPost[]> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createBlogPost(
+  post: Omit<DbBlogPost, 'id' | 'created_at' | 'updated_at'>
+): Promise<DbBlogPost> {
+  const { data, error } = await supabase.from('blog_posts').insert(post).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateBlogPost(id: string, updates: Partial<DbBlogPost>): Promise<void> {
+  const { error } = await supabase.from('blog_posts').update(updates).eq('id', id);
+  if (error) throw error;
+}
+
+export async function deleteBlogPost(id: string): Promise<void> {
+  const { error } = await supabase.from('blog_posts').delete().eq('id', id);
+  if (error) throw error;
+}
+
+export async function uploadBlogCover(
+  slug: string,
+  file: File
+): Promise<{ path: string; publicUrl: string }> {
+  const ext = (file.name.split('.').pop() ?? 'jpg').toLowerCase();
+  const safeName = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  const path = `${slug}/${safeName}`;
+  const { error } = await supabase.storage
+    .from(BLOG_STORAGE_BUCKET)
+    .upload(path, file, { cacheControl: '3600', upsert: false });
+  if (error) throw error;
+  const { data } = supabase.storage.from(BLOG_STORAGE_BUCKET).getPublicUrl(path);
+  return { path, publicUrl: data.publicUrl };
+}
+
+export async function deleteBlogCover(storagePath: string | null): Promise<void> {
+  if (!storagePath) return;
+  const { error } = await supabase.storage.from(BLOG_STORAGE_BUCKET).remove([storagePath]);
+  if (error) console.warn('Error borrando portada del blog:', error.message);
 }
 
 // ─── AUDITORÍA ───────────────────────────────────────────────────────────────

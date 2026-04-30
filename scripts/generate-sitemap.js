@@ -29,6 +29,7 @@ const STATIC_ROUTES = [
   { path: '/contacto', priority: '0.7', changefreq: 'monthly' },
   { path: '/como-llegar', priority: '0.65', changefreq: 'monthly' },
   { path: '/faq', priority: '0.65', changefreq: 'monthly' },
+  { path: '/blog', priority: '0.8', changefreq: 'weekly' },
   { path: '/privacidad', priority: '0.3', changefreq: 'yearly' },
   { path: '/proteccion-datos', priority: '0.3', changefreq: 'yearly' },
   { path: '/cookies', priority: '0.3', changefreq: 'yearly' },
@@ -37,10 +38,10 @@ const STATIC_ROUTES = [
 
 const today = new Date().toISOString().split('T')[0];
 
-function urlEntry({ loc, priority, changefreq }) {
+function urlEntry({ loc, priority, changefreq, lastmod }) {
   return `  <url>
     <loc>${loc}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${lastmod || today}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;
@@ -63,6 +64,23 @@ async function generateSitemap() {
             loc: `${SITE_URL}/apartamentos/${apt.slug}`,
             priority: '0.8',
             changefreq: 'weekly',
+          }));
+        });
+      }
+
+      const { data: posts } = await supabase
+        .from('blog_posts')
+        .select('slug, published_at')
+        .eq('active', true)
+        .not('published_at', 'is', null)
+        .lte('published_at', new Date().toISOString());
+      if (posts) {
+        posts.forEach(post => {
+          entries.push(urlEntry({
+            loc: `${SITE_URL}/blog/${post.slug}`,
+            priority: '0.75',
+            changefreq: 'monthly',
+            lastmod: post.published_at ? post.published_at.split('T')[0] : today,
           }));
         });
       }

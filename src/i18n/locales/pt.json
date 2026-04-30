@@ -5,6 +5,7 @@
     "experiences": "Experiências",
     "contact": "Contacto",
     "faq": "FAQ",
+    "blog": "Blog",
     "book": "Reservar agora"
   },
   "home": {
@@ -203,6 +204,19 @@
     "privacy": "Privacidade",
     "dataProtection": "Proteção de dados",
     "cookies": "Cookies"
+  },
+  "blogPage": {
+    "seoTitle": "Blog · Ribadeo e o norte de Espanha",
+    "seoDesc": "Artigos sobre Ribadeo, a Mariña lucense e a costa norte de Espanha. Dicas de viagem, guias locais e novidades da Illa Pancha.",
+    "title": "Blog",
+    "subtitle": "Artigos sobre Ribadeo, a Mariña lucense e o norte de Espanha.",
+    "readMore": "Ler mais →",
+    "back": "← Voltar ao blog",
+    "publishedOn": "Publicado em",
+    "by": "por",
+    "empty": "Em breve publicaremos aqui artigos sobre Ribadeo e a região.",
+    "tagsLabel": "Etiquetas",
+    "relatedPosts": "Artigos relacionados"
   },
   "faqPage": {
     "title": "Perguntas frequentes",
