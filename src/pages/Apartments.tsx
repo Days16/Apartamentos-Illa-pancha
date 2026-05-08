@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { trackEvent, EVENTS } from '../utils/analytics';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
@@ -538,10 +538,10 @@ export default function Apartments() {
                       <div className="flex justify-between items-center pt-4 border-t border-gray-100 mt-auto">
                         <div>
                           <span className="text-xl font-bold text-navy">
-                            {convertPrice(apt.price)}
+                            {T.common.from} {convertPrice(apt.price)}
                           </span>
                           <span className="text-xs text-slate-400 font-normal ml-1">
-                            {T.apartments.perNight}
+                            {T.common.perNight}
                           </span>
                         </div>
                         <span className="text-teal font-semibold text-sm group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">

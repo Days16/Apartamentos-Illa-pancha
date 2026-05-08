@@ -406,8 +406,8 @@ export default function Home() {
                           {apt.capacity} pers · {apt.beds} dorm
                         </span>
                         <span className="font-semibold text-teal text-lg">
-                          {convertPrice(apt.price)}
-                          <span className="text-xs text-gray-500">/{T.common.night}</span>
+                          {T.common.from} {convertPrice(apt.price)}
+                          <span className="text-xs text-gray-500">{T.common.perNight}</span>
                         </span>
                       </div>
                     </div>

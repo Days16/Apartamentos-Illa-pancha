@@ -1,13 +1,13 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
 interface AuditEntry {
   id: string;
   action: string;
-  record_id: string;
+  entity_id: string;
   details: Record<string, any> | null;
   created_at: string;
-  user_id?: string;
+  user_email?: string;
 }
 
 const ACTION_CONFIG: Record<string, { icon: string; label: string; color: string }> = {
@@ -65,9 +65,10 @@ export default function ReservationTimeline({ reservationId }: Props) {
     if (!reservationId) return;
     setLoading(true);
     supabase
-      .from('audits')
+      .from('audit_log')
       .select('*')
-      .eq('record_id', reservationId)
+      .eq('entity_id', reservationId)
+      .eq('entity', 'reservation')
       .order('created_at', { ascending: false })
       .limit(30)
       .then(({ data }) => {

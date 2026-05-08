@@ -59,7 +59,7 @@
     "available": "Disponible",
     "occupied": "Ocupado",
     "unavailable": "No disponible",
-    "perNight": "/noche",
+    "perNight": "/noches",
     "persons": "personas",
     "person": "persona",
     "beds": "dormitorios",
@@ -240,6 +240,7 @@
     "experiencesDesc": "Guía de la Mariña lucense y el occidente de Asturias: As Catedrais, Mondoñedo, Castropol, Cudillero y mucho más. Planifica tu escapada desde Illa Pancha."
   },
   "common": {
+    "from": "Desde",
     "offerApplied": "Oferta aplicada",
     "discount": "Descuento",
     "night": "noche",
@@ -249,6 +250,7 @@
     "occupied": "Ocupado",
     "available": "Disponible",
     "past": "Pasado",
+    "perNight": "/noches",
     "seeMore": "Ver más",
     "openMaps": "Ver en Google Maps ↗"
   },
@@ -324,7 +326,7 @@
   "experiences": {
     "heroEyebrow": "Qué ver y hacer",
     "heroTitle": "Ribadeo y sus <em>alrededores</em>",
-    "heroDesc": "Una guía honesta para descubrir la Mariña lucense y el occidente de Asturias desde Illa Pancha.",
+    "heroDesc": "Una guía para descubrir la Mariña lucense y el occidente de Asturias.",
     "introText1": "Ribadeo está justo en la frontera entre Galicia y Asturias, en plena Costa Verde cantábrica. Desde nuestros apartamentos puedes recorrer dos comarcas con personalidad propia sin coger más de una hora de coche.",
     "introText2": "Aquí te dejamos los lugares que recomendamos a nuestros huéspedes: playas, pueblos, faros, miradores y rincones gastronómicos. Todo a tiro de piedra.",
     "galiciaTag": "Galicia · Mariña Lucense",

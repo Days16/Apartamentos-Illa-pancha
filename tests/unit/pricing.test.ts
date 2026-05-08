@@ -41,15 +41,15 @@ describe('calculateBookingPrice', () => {
     expect(r.total).toBe(240);
   });
 
-  it('redondea impuestos con fracciones', () => {
+  it('mantiene decimales en impuestos', () => {
     const r = calculateBookingPrice({ pricePerNight: 75, nights: 1, taxPct: 10, depositPct: 50 });
-    expect(r.taxes).toBe(8); // 75 * 0.10 = 7.5 → round → 8
-    expect(r.total).toBe(83);
+    expect(r.taxes).toBe(7.5); // 75 * 0.10 = 7.5
+    expect(r.total).toBe(82.5);
   });
 
-  it('redondea depósito con fracciones', () => {
-    const r = calculateBookingPrice({ pricePerNight: 100, nights: 1, taxPct: 0, depositPct: 33 });
-    expect(r.deposit).toBe(33); // 100 * 0.33 = 33 exacto
+  it('mantiene decimales en depósito', () => {
+    const r = calculateBookingPrice({ pricePerNight: 75, nights: 1, taxPct: 0, depositPct: 50 });
+    expect(r.deposit).toBe(37.5); // 75 * 0.50 = 37.5
   });
 
   it('resultado para 0 noches es todo cero', () => {

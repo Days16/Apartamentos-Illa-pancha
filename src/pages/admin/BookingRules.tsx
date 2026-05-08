@@ -11,11 +11,14 @@ import {
 import Ico, { paths } from '../../components/Ico';
 import { PanelPageHeader, PanelConfirm, PanelModal } from '../../components/panel';
 import { usePanelData } from '../../hooks/usePanelData';
+import { useToast } from '../../contexts/ToastContext';
 
 export default function ReglasReserva() {
+  const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRule, setEditingRule] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     apartment_slug: '',
     start_date: '',
@@ -43,11 +46,23 @@ export default function ReglasReserva() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setSaving(true);
+
+    // Limpiamos el payload para enviar solo campos que existen en la DB
+    const payload = {
+      apartment_slug: formData.apartment_slug,
+      start_date: formData.start_date,
+      end_date: formData.end_date,
+      min_nights: Number(formData.min_nights),
+    };
+
     try {
       if (editingRule) {
-        await updateMinStayRule(editingRule.id, formData);
+        await updateMinStayRule(editingRule.id, payload);
+        toast.success('Regla actualizada correctamente');
       } else {
-        await addMinStayRule(formData);
+        await addMinStayRule(payload);
+        toast.success('Regla creada correctamente');
       }
       setIsModalOpen(false);
       setEditingRule(null);
@@ -60,7 +75,10 @@ export default function ReglasReserva() {
       });
       loadData();
     } catch (err) {
-      alert('Error guardando la regla');
+      console.error('Error saving rule:', err);
+      toast.error('Error al guardar la regla. Revisa que todos los campos sean correctos.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -263,8 +281,9 @@ export default function ReglasReserva() {
             >
               Cancelar
             </button>
-            <button type="submit" className="panel-btn panel-btn-primary flex-1">
-              Guardar
+            <button type="submit" disabled={saving} className="panel-btn panel-btn-primary flex-1 flex items-center justify-center gap-2">
+              {saving && <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+              {saving ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
         </form>

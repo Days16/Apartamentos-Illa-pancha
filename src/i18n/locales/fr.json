@@ -240,6 +240,7 @@
     "experiencesDesc": "Guide de la Mariña Lucense et de l'ouest des Asturies : As Catedrais, Mondoñedo, Castropol, Cudillero et bien plus. Préparez votre escapade depuis Illa Pancha."
   },
   "common": {
+    "from": "À partir de",
     "offerApplied": "Offre appliquée",
     "discount": "Réduction",
     "night": "nuit",
@@ -249,6 +250,7 @@
     "occupied": "Occupé",
     "available": "Disponible",
     "past": "Passé",
+    "perNight": "/nuit",
     "seeMore": "Voir plus",
     "openMaps": "Voir sur Google Maps ↗"
   },
@@ -324,7 +326,7 @@
   "experiences": {
     "heroEyebrow": "À voir et à faire",
     "heroTitle": "Ribadeo et ses <em>alentours</em>",
-    "heroDesc": "Un guide honnête pour découvrir la Mariña Lucense et l'ouest des Asturies depuis Illa Pancha.",
+    "heroDesc": "Un guide pour découvrir la Mariña Lucense et l'ouest des Asturies.",
     "introText1": "Ribadeo se trouve juste à la frontière entre la Galice et les Asturies, sur la Côte Verte cantabrique. Depuis nos appartements, vous pouvez explorer deux régions au caractère unique en moins d'une heure de voiture.",
     "introText2": "Voici les lieux que nous recommandons à nos hôtes : plages, villages, phares, belvédères et adresses gourmandes. Le tout à proximité.",
     "galiciaTag": "Galice · Mariña Lucense",

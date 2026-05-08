@@ -136,39 +136,6 @@ export default function Footer() {
               </Link>
             </div>
           </div>
-
-          {/* Book On Section */}
-          <div>
-            <button
-              className="w-full text-left font-semibold text-white cursor-pointer flex justify-between items-center hover:text-teal transition-colors md:pb-2 md:border-0"
-              onClick={() => toggleSection('book')}
-              aria-expanded={expandedSection === 'book'}
-            >
-              {F.bookOn}
-              <span
-                className={`text-lg transition-transform md:hidden ${expandedSection === 'book' ? 'rotate-45' : ''}`}
-              >
-                +
-              </span>
-            </button>
-            <div
-              className={`flex flex-col gap-3 pl-0 max-h-0 overflow-hidden transition-all duration-300 md:max-h-full md:overflow-visible ${expandedSection === 'book' ? 'max-h-64 mt-3' : 'md:mt-4'}`}
-            >
-              {settings?.booking_com_url ? (
-                <a
-                  href={settings.booking_com_url as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-300 hover:text-teal transition-colors text-sm"
-                >
-                  Booking.com ↗
-                </a>
-              ) : (
-                <span className="text-gray-300 text-sm cursor-default">Booking.com ↗</span>
-              )}
-              {/*<span className="text-gray-300 hover:text-teal transition-colors text-sm cursor-default">Airbnb ↗</span>*/}
-            </div>
-          </div>
         </div>
       </div>
 

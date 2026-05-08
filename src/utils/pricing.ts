@@ -36,13 +36,13 @@ export function calculateBookingPrice(input: PricingInput): PricingResult {
   } = input;
 
   const subtotal = pricePerNight * nights;
-  const discountAmount = discountPct > 0 ? Math.round(subtotal * (discountPct / 100)) : 0;
+  const discountAmount = discountPct > 0 ? subtotal * (discountPct / 100) : 0;
   const subtotalWithDiscount = subtotal - discountAmount;
   const extra = extraNightSupplement * nights;
   const subtotalWithExtras = subtotalWithDiscount + extra;
-  const taxes = Math.round(subtotalWithExtras * (taxPct / 100));
+  const taxes = subtotalWithExtras * (taxPct / 100);
   const total = subtotalWithExtras + taxes;
-  const deposit = Math.round(total * (depositPct / 100));
+  const deposit = total * (depositPct / 100);
 
   return {
     subtotal,

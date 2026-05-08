@@ -155,7 +155,7 @@ export default function BookingModal({
       if (cancelled) return;
       const dynamicTotal = dynamicResults.reduce((sum, row) => sum + Number(row.finalPrice || 0), 0);
       const baseTotal = basePrices.reduce((sum, price) => sum + price, 0);
-      setDynamicRuleAdjustment(Math.round(dynamicTotal - baseTotal));
+      setDynamicRuleAdjustment(dynamicTotal - baseTotal);
     };
     run();
     return () => {
@@ -186,7 +186,7 @@ export default function BookingModal({
 
   let discountAmount = 0;
   if (activeDiscount) {
-    discountAmount = Math.round(subtotal * (activeDiscount.discount_percentage / 100));
+    discountAmount = subtotal * (activeDiscount.discount_percentage / 100);
   }
   const subtotalWithDiscount = subtotal - discountAmount;
 
@@ -198,7 +198,7 @@ export default function BookingModal({
   }, 0);
 
   const subtotalWithDiscountAndExtras = subtotalWithDiscount + extrasTotal;
-  const taxes = Math.round(subtotalWithDiscountAndExtras * (taxPct / 100));
+  const taxes = subtotalWithDiscountAndExtras * (taxPct / 100);
   const total = subtotalWithDiscountAndExtras + taxes;
 
   // Global preferences > Apt > Default
@@ -212,7 +212,7 @@ export default function BookingModal({
       ? globalSettings.payment_deposit_percentage
       : 50);
 
-  const deposit = Math.round(total * (depositPct / 100));
+  const deposit = total * (depositPct / 100);
 
   // Format dates for display
   const formatDate = (date: Date | null): string => {
@@ -480,7 +480,7 @@ export default function BookingModal({
               <div className="flex justify-between items-center text-sm py-2 border-b border-white/10 px-0">
                 <span className="text-white/55">
                   {nights} {nights === 1 ? T.common.night : T.common.nights} ×{' '}
-                  {formatPrice(nights > 0 ? Math.round(subtotal / nights) : apt.price)}
+                  {formatPrice(nights > 0 ? subtotal / nights : apt.price)}
                 </span>
                 <span className={discountAmount > 0 ? 'line-through opacity-60' : ''}>
                   {formatPrice(subtotal)}

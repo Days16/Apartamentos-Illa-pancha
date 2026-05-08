@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS apartments (
   bedrooms            INT         DEFAULT 1,
   baths               INT         DEFAULT 1,
   beds                INT         DEFAULT 1,
-  price               INT         NOT NULL,
-  extra_night         INT         DEFAULT 0,
+  price               NUMERIC(10,2) NOT NULL,
+  extra_night         NUMERIC(10,2) DEFAULT 0,
   min_stay            INT         DEFAULT 2,
   cancellation_days   INT         DEFAULT 14,
   deposit_percentage  INT         DEFAULT 50,
@@ -63,15 +63,15 @@ CREATE TABLE IF NOT EXISTS reservations (
   checkin DATE NOT NULL,
   checkout DATE NOT NULL,
   nights INT NOT NULL,
-  total INT NOT NULL,
-  deposit INT NOT NULL,
+  total NUMERIC(10,2) NOT NULL,
+  deposit NUMERIC(10,2) NOT NULL,
   status TEXT DEFAULT 'pending',
   source TEXT DEFAULT 'web',
   cash_paid BOOLEAN DEFAULT FALSE,
   email TEXT,
   phone TEXT,
   extras TEXT[] DEFAULT '{}',
-  extras_total INT DEFAULT 0,
+  extras_total NUMERIC(10,2) DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS extras (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   description TEXT,
-  price INT DEFAULT 0,
+  price NUMERIC(10,2) DEFAULT 0,
   active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -123,11 +123,23 @@ CREATE TABLE IF NOT EXISTS reviews (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- REGISTRO DE AUDITORÍA
+CREATE TABLE IF NOT EXISTS audit_log (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_email TEXT,
+  action TEXT NOT NULL,
+  entity TEXT NOT NULL,
+  entity_id TEXT,
+  details JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Row Level Security (lectura pública para la web)
 ALTER TABLE apartments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE extras ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Apartamentos públicos" ON apartments FOR SELECT USING (true);
 CREATE POLICY "Extras públicos" ON extras FOR SELECT USING (true);
@@ -135,4 +147,6 @@ CREATE POLICY "Reseñas públicas" ON reviews FOR SELECT USING (true);
 CREATE POLICY "Insertar reservas" ON reservations FOR INSERT WITH CHECK (true);
 CREATE POLICY "Leer reservas propias" ON reservations FOR SELECT USING (true);
 CREATE POLICY "Actualizar reservas" ON reservations FOR UPDATE USING (true);
+CREATE POLICY "Leer auditoría" ON audit_log FOR SELECT USING (true);
+CREATE POLICY "Insertar auditoría" ON audit_log FOR INSERT WITH CHECK (true);
 */

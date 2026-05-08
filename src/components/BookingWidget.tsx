@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSettings } from '../contexts/SettingsContext';
 import { useLang } from '../contexts/LangContext';
@@ -107,7 +107,7 @@ export default function BookingWidget({
       if (cancelled) return;
       const dynamicTotal = dynamicResults.reduce((sum, row) => sum + Number(row.finalPrice || 0), 0);
       const baseTotal = basePrices.reduce((sum, price) => sum + price, 0);
-      setDynamicRuleAdjustment(Math.round(dynamicTotal - baseTotal));
+      setDynamicRuleAdjustment(dynamicTotal - baseTotal);
     };
     run();
     return () => {
@@ -136,7 +136,7 @@ export default function BookingWidget({
 
   let discountAmount = 0;
   if (activeDiscount) {
-    discountAmount = Math.round(subtotal * (activeDiscount.discount_percentage / 100));
+    discountAmount = subtotal * (activeDiscount.discount_percentage / 100);
   }
   const subtotalWithDiscount = subtotal - discountAmount;
 
@@ -145,9 +145,9 @@ export default function BookingWidget({
 
   const extra = apt.extraNight ? apt.extraNight * nights : 0;
   const subtotalWithDiscountAndExtras = subtotalWithDiscount + extra;
-  const taxes = Math.round(subtotalWithDiscountAndExtras * (taxPct / 100));
+  const taxes = subtotalWithDiscountAndExtras * (taxPct / 100);
   const total = subtotalWithDiscountAndExtras + taxes;
-  const deposit = Math.round(total * (depositPct / 100));
+  const deposit = total * (depositPct / 100);
 
   const handleDateClick = (date: Date, type: 'checkin' | 'checkout') => {
     const normalized = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -211,9 +211,9 @@ export default function BookingWidget({
     setPromoExpanded(false);
   };
 
-  const averageNightPrice = nights > 0 ? Math.round(subtotal / nights) : apt.price;
+  const averageNightPrice = nights > 0 ? subtotal / nights : apt.price;
   const pricePerNightWithDiscount = activeDiscount
-    ? Math.round(averageNightPrice * (1 - activeDiscount.discount_percentage / 100))
+    ? averageNightPrice * (1 - activeDiscount.discount_percentage / 100)
     : null;
 
   const nightlyBreakdown = useMemo(() => {
@@ -231,14 +231,14 @@ export default function BookingWidget({
           {pricePerNightWithDiscount ? (
             <div className="flex items-baseline gap-2">
               <div className="text-3xl font-serif font-bold text-teal">
-                {convertPrice(pricePerNightWithDiscount)}
+                {T.common.from} {convertPrice(pricePerNightWithDiscount)}
               </div>
               <div className="text-lg font-serif text-gray-400 line-through">
                 {convertPrice(apt.price)}
               </div>
             </div>
           ) : (
-            <div className="text-3xl font-serif font-bold text-teal">{convertPrice(apt.price)}</div>
+            <div className="text-3xl font-serif font-bold text-teal">{T.common.from} {convertPrice(apt.price)}</div>
           )}
           <div className="text-xs text-gray-500 mt-1">{T.detail.pricePerNight}</div>
           {pricePerNightWithDiscount && (
@@ -271,7 +271,7 @@ export default function BookingWidget({
       {pricePerNightWithDiscount ? (
         <div className="flex items-baseline gap-2 mb-0">
           <div className="text-3xl font-serif font-bold text-teal">
-            {convertPrice(pricePerNightWithDiscount)}
+            {T.common.from} {convertPrice(pricePerNightWithDiscount)}
           </div>
           <div className="text-lg font-serif text-gray-400 line-through">
             {convertPrice(apt.price)}
@@ -279,7 +279,7 @@ export default function BookingWidget({
         </div>
       ) : (
         <div className="text-3xl font-serif font-bold text-teal mb-0">
-          {convertPrice(apt.price)}
+          {T.common.from} {convertPrice(apt.price)}
         </div>
       )}
       <div className="text-xs text-gray-600 -mt-1 mb-4">

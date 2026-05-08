@@ -140,6 +140,33 @@ export async function confirmAndMarkPaid(id: string): Promise<boolean> {
   }
 }
 
+export async function updateReservation(id: string, patch: Partial<Reservation>): Promise<boolean> {
+  try {
+    const payload: any = {};
+    if (patch.guest !== undefined) payload.guest = patch.guest;
+    if (patch.email !== undefined) payload.email = patch.email;
+    if (patch.phone !== undefined) payload.phone = patch.phone;
+    if (patch.checkin !== undefined) payload.checkin = patch.checkin;
+    if (patch.checkout !== undefined) payload.checkout = patch.checkout;
+    if (patch.nights !== undefined) payload.nights = patch.nights;
+    if (patch.total !== undefined) payload.total = patch.total;
+    if (patch.deposit !== undefined) payload.deposit = patch.deposit;
+    if (patch.status !== undefined) payload.status = patch.status;
+    if (patch.aptSlug !== undefined) payload.apt_slug = patch.aptSlug;
+    if (patch.apt !== undefined) payload.apt = patch.apt;
+    if (patch.cashPaid !== undefined) payload.cash_paid = patch.cashPaid;
+    if (patch.extras !== undefined) payload.extras = patch.extras;
+    if (patch.extrasTotal !== undefined) payload.extras_total = patch.extrasTotal;
+
+    const { error } = await supabase.from('reservations').update(payload).eq('id', id);
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    console.error('Error updating reservation:', err);
+    return false;
+  }
+}
+
 export async function deleteReservation(id: string): Promise<boolean> {
   try {
     const { error } = await supabase.from('reservations').delete().eq('id', id);

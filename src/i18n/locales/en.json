@@ -240,6 +240,7 @@
     "experiencesDesc": "Guide to the Mariña Lucense and western Asturias: As Catedrais, Mondoñedo, Castropol, Cudillero and more. Plan your trip from Illa Pancha."
   },
   "common": {
+    "from": "From",
     "offerApplied": "Offer applied",
     "discount": "Discount",
     "night": "night",
@@ -249,6 +250,7 @@
     "occupied": "Occupied",
     "available": "Available",
     "past": "Past",
+    "perNight": "/night",
     "seeMore": "See more",
     "openMaps": "Open in Google Maps ↗"
   },
@@ -324,7 +326,7 @@
   "experiences": {
     "heroEyebrow": "What to see and do",
     "heroTitle": "Ribadeo and its <em>surroundings</em>",
-    "heroDesc": "An honest guide to discover the Mariña Lucense and western Asturias from Illa Pancha.",
+    "heroDesc": "A guide to discovering the Mariña Lucense and western Asturias.",
     "introText1": "Ribadeo sits right on the border between Galicia and Asturias, on the Cantabrian Green Coast. From our apartments you can explore two regions with their own identity in less than an hour by car.",
     "introText2": "Here are the spots we recommend to our guests: beaches, villages, lighthouses, viewpoints and food gems. All within easy reach.",
     "galiciaTag": "Galicia · Mariña Lucense",

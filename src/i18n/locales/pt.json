@@ -240,6 +240,7 @@
     "experiencesDesc": "Guia da Mariña Lucense e do ocidente das Astúrias: As Catedrais, Mondoñedo, Castropol, Cudillero e muito mais. Planeie a sua escapada a partir de Illa Pancha."
   },
   "common": {
+    "from": "A partir de",
     "offerApplied": "Oferta aplicada",
     "discount": "Desconto",
     "night": "noite",
@@ -249,6 +250,7 @@
     "occupied": "Ocupado",
     "available": "Disponível",
     "past": "Passado",
+    "perNight": "/noite",
     "seeMore": "Ver mais",
     "openMaps": "Ver no Google Maps ↗"
   },
@@ -324,7 +326,7 @@
   "experiences": {
     "heroEyebrow": "O que ver e fazer",
     "heroTitle": "Ribadeo e os seus <em>arredores</em>",
-    "heroDesc": "Um guia honesto para descobrir a Mariña Lucense e o ocidente das Astúrias a partir de Illa Pancha.",
+    "heroDesc": "Um guia para descobrir a Mariña Lucense e o ocidente das Astúrias.",
     "introText1": "Ribadeo está mesmo na fronteira entre a Galiza e as Astúrias, em plena Costa Verde cantábrica. A partir dos nossos apartamentos pode percorrer duas comarcas com personalidade própria em menos de uma hora de carro.",
     "introText2": "Aqui ficam os lugares que recomendamos aos nossos hóspedes: praias, vilas, faróis, miradouros e cantos gastronómicos. Tudo a um passo.",
     "galiciaTag": "Galiza · Mariña Lucense",

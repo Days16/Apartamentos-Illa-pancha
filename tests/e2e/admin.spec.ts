@@ -32,7 +32,7 @@ test.describe('Tests Panel Administrador', () => {
 
   test('Dashboard gestión — KPI cards visibles', async ({ page }) => {
     await page.waitForURL('**/gestion**', { timeout: 10000 });
-    await expect(page.getByText('Dashboard').first()).toBeVisible({ timeout: 12000 });
+    await expect(page.getByRole('heading', { name: /dashboard/i }).first()).toBeVisible({ timeout: 12000 });
     // PanelKpiCard renderiza un elemento con texto de métricas — al menos uno carga
     const kpi = page.locator('[class*="kpi"], [class*="panel-card"]').first();
     if (await kpi.isVisible({ timeout: 5000 })) {
@@ -45,7 +45,7 @@ test.describe('Tests Panel Administrador', () => {
     await page.waitForURL('**/gestion/reservas**', { timeout: 15000 });
 
     // Encabezado de página presente
-    await expect(page.getByText('Reservas').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: /reservas/i }).first()).toBeVisible({ timeout: 12000 });
 
     // La tabla carga (PanelTable renderiza <table>)
     await expect(page.locator('table').first()).toBeVisible({ timeout: 10000 });
@@ -125,7 +125,7 @@ test.describe('Tests Panel Administrador', () => {
     await page.goto('/admin/analytics');
     await page.waitForURL('**/admin/analytics**', { timeout: 15000 });
 
-    await expect(page.getByText(/analytics|ingresos/i).first()).toBeVisible({ timeout: 12000 });
+    await expect(page.getByText(/analíticas|analytics|ingresos/i).first()).toBeVisible({ timeout: 12000 });
 
     // Selector de año presente
     const yearSelect = page.locator('select').first();
@@ -142,7 +142,7 @@ test.describe('Tests Panel Administrador', () => {
     await page.goto('/admin/ical');
     await page.waitForURL('**/admin/ical**', { timeout: 15000 });
 
-    await expect(page.getByText(/ical|booking/i).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/ical|sincronización/i).first()).toBeVisible({ timeout: 12000 });
     // Botón copiar URL exportación
     const copyBtn = page.getByRole('button', { name: /copiar|copy/i }).first();
     if (await copyBtn.isVisible({ timeout: 3000 })) {

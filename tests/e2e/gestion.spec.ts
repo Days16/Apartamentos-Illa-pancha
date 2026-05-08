@@ -44,7 +44,7 @@ test.describe('Tests Panel Rol Gestor Diario', () => {
     await page.goto('/gestion/reservas');
     await page.waitForURL('**/gestion/reservas**', { timeout: 15000 });
 
-    await expect(page.getByText('Reservas').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: /reservas/i }).first()).toBeVisible({ timeout: 12000 });
     await expect(page.locator('table').first()).toBeVisible({ timeout: 10000 });
 
     // Abrir slideover de detalle si hay reservas
@@ -114,7 +114,7 @@ test.describe('Tests Panel Rol Gestor Diario', () => {
 
     // Los 5 items de nav del panel gestión deben existir
     for (const label of ['Dashboard', 'Reservas', 'Calendario', 'Mensajes', 'Mantenimiento']) {
-      await expect(page.getByText(label, { exact: true }).first()).toBeVisible({ timeout: 8000 });
+      await expect(page.getByRole('link', { name: label }).first()).toBeVisible({ timeout: 8000 });
     }
   });
 

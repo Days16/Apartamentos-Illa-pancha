@@ -21,6 +21,7 @@ import { logAudit } from '../../services/supabaseService';
 import generateInvoice from '../../utils/generateInvoice';
 import exportReservationsExcel from '../../utils/exportExcel';
 import ManualBookingModal from '../../components/ManualBookingModal';
+import EditReservationModal from '../../components/EditReservationModal';
 import Ico, { paths } from '../../components/Ico';
 import { sendOwnerNotification } from '../../services/resendService';
 import { printCheckIn } from '../../components/CheckInForm';
@@ -65,6 +66,8 @@ export default function Reservas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [slideOpen, setSlideOpen] = useState(false);
   const [apartmentData, setApartmentData] = useState({});
@@ -75,7 +78,6 @@ export default function Reservas() {
   const [savingExtras, setSavingExtras] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
   const [confirmStatus, setConfirmStatus] = useState(null); // { id, status }
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [registroSettings, setRegistroSettings] = useState({});
 
   // Filtros avanzados
@@ -920,7 +922,19 @@ export default function Reservas() {
           </div>
 
           {/* Detalles de la reserva */}
-          <PanelCard title="Detalles de la reserva" className="mb-4">
+          <PanelCard
+            title="Detalles de la reserva"
+            actions={
+              <button
+                className="text-xs font-semibold"
+                style={{ color: 'var(--panel-accent)' }}
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                Editar
+              </button>
+            }
+            className="mb-4"
+          >
             {[
               [
                 'Referencia',
@@ -1200,6 +1214,19 @@ export default function Reservas() {
           onClose={() => setIsModalOpen(false)}
           onSuccess={fetchData}
           apartments={Object.values(apartmentData)}
+        />
+      )}
+
+      {isEditModalOpen && selectedReservation && (
+        <EditReservationModal
+          reservation={selectedReservation}
+          onClose={() => setIsEditModalOpen(false)}
+          onSuccess={() => {
+            fetchData();
+            // Refrescar selectedReservation
+            const updated = filtered.find(r => r.id === selectedReservation.id);
+            if (updated) setSelectedReservation(updated);
+          }}
         />
       )}
     </div>
