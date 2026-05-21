@@ -11,12 +11,12 @@ import { useSettings } from '../contexts/SettingsContext';
 // Política de cancelación traducida (ES, EN, FR, DE, PT)
 // ─────────────────────────────────────────────────────────────────────────────
 function renderCancellationPolicy(lang: string, depositPct: number) {
-  const SITE = ‘www.apartamentosillapancha.com’;
-  const EMAIL = ‘info@apartamentosillapancha.com’;
+  const SITE = "www.apartamentosillapancha.com";
+  const EMAIL = "info@apartamentosillapancha.com";
 
   const content: Record<string, any> = {
     ES: {
-      title: ‘5. Política de cancelación’,
+      title: "5. Política de cancelación",
       intro: (
         <>
           Gracias por elegir nuestros apartamentos en <strong>{SITE}</strong>. Una vez realizada
@@ -24,33 +24,33 @@ function renderCancellationPolicy(lang: string, depositPct: number) {
           del total, tu apartamento quedará reservado para la fecha seleccionada.
         </>
       ),
-      noticeLabel: ‘Si necesitas cancelar tu reserva, ten en cuenta lo siguiente:’,
+      noticeLabel: "Si necesitas cancelar tu reserva, ten en cuenta lo siguiente:",
       tiers: [
-        [‘De 0 a 7 días antes de tu llegada:’, <>Se cobrará el 100% del importe de la reserva. <strong>No hay reembolso.</strong></>],
-        [‘De 8 a 14 días antes de tu llegada:’, ‘Te devolvemos el 50% del depósito.’],
-        [‘De 15 a 29 días antes de tu llegada:’, ‘Te devolvemos el 75% del depósito.’],
-        [‘30 días o más antes de tu llegada:’, ‘Te devolvemos el 100% del depósito.’],
+        ["De 0 a 7 días antes de tu llegada:", <>Se cobrará el 100% del importe de la reserva. <strong>No hay reembolso.</strong></>],
+        ["De 8 a 14 días antes de tu llegada:", "Te devolvemos el 50% del depósito."],
+        ["De 15 a 29 días antes de tu llegada:", "Te devolvemos el 75% del depósito."],
+        ["30 días o más antes de tu llegada:", "Te devolvemos el 100% del depósito."],
       ],
-      generalTitle: ‘Condiciones generales’,
+      generalTitle: "Condiciones generales",
       general: [
-        [‘Reserva garantizada:’, ‘Tu reserva se confirma una vez recibido el anticipo. Si no te presentas sin avisar, se cobrará el 100% de la estancia.’],
-        [‘Estancia mínima:’, ‘En julio y agosto, la estancia mínima es de 5 noches.’],
-        [‘Capacidad del apartamento:’, ‘El número de personas no debe superar la capacidad máxima del apartamento.’],
-        [‘Pago final:’, ‘El total de la estancia se abonará el día de llegada, descontando el anticipo ya pagado.’],
-        [‘Horarios de entrada y salida:’, ‘La entrada es a partir de las 16:00 h y la salida debe realizarse antes de las 11:00 h para garantizar el servicio de limpieza.’],
-        [‘Abandono anticipado:’, ‘Si abandonas el apartamento antes de la fecha prevista, no se realizará ningún reembolso.’],
-        [‘Documentación necesaria:’, ‘Al llegar, necesitarás presentar el DNI o pasaporte de todos los huéspedes.’],
-        [‘No presentarse:’, ‘Si no llegas en las 24 horas siguientes a la fecha de entrada, tu reserva se considerará cancelada y perderás el importe abonado.’],
-        [‘Prórroga de estancia:’, ‘Si deseas ampliar tu estancia, consulta con nosotros. Estará sujeta a disponibilidad.’],
-        [‘Modificaciones o cancelaciones:’, <>Para cualquier cambio, contacta con nosotros por escrito a <strong>{EMAIL}</strong>.</>],
-        [‘Condiciones meteorológicas:’, ‘No se ofrecen reembolsos ni descuentos por mal tiempo.’],
-        [‘Justificación de cancelaciones:’, <>Si cancelas por motivos excepcionales, envíanos la documentación justificativa junto con tu solicitud. Se podrán ofrecer cambios de fechas (hasta 6 meses) en casos justificados y según disponibilidad.</>],
-        [‘Grupos:’, ‘Las reservas de más de un apartamento deberán ser autorizadas previamente. No está permitido intercambiar mobiliario, ropa de cama o menaje entre apartamentos.’],
-        [‘Menores:’, ‘Los menores deben estar acompañados por sus padres o tutores legales. En caso contrario, no se permitirá el acceso.’],
+        ["Reserva garantizada:", "Tu reserva se confirma una vez recibido el anticipo. Si no te presentas sin avisar, se cobrará el 100% de la estancia."],
+        ["Estancia mínima:", "En julio y agosto, la estancia mínima es de 5 noches."],
+        ["Capacidad del apartamento:", "El número de personas no debe superar la capacidad máxima del apartamento."],
+        ["Pago final:", "El total de la estancia se abonará el día de llegada, descontando el anticipo ya pagado."],
+        ["Horarios de entrada y salida:", "La entrada es a partir de las 16:00 h y la salida debe realizarse antes de las 11:00 h para garantizar el servicio de limpieza."],
+        ["Abandono anticipado:", "Si abandonas el apartamento antes de la fecha prevista, no se realizará ningún reembolso."],
+        ["Documentación necesaria:", "Al llegar, necesitarás presentar el DNI o pasaporte de todos los huéspedes."],
+        ["No presentarse:", "Si no llegas en las 24 horas siguientes a la fecha de entrada, tu reserva se considerará cancelada y perderás el importe abonado."],
+        ["Prórroga de estancia:", "Si deseas ampliar tu estancia, consulta con nosotros. Estará sujeta a disponibilidad."],
+        ["Modificaciones o cancelaciones:", <>Para cualquier cambio, contacta con nosotros por escrito a <strong>{EMAIL}</strong>.</>],
+        ["Condiciones meteorológicas:", "No se ofrecen reembolsos ni descuentos por mal tiempo."],
+        ["Justificación de cancelaciones:", <>Si cancelas por motivos excepcionales, envíanos la documentación justificativa junto con tu solicitud. Se podrán ofrecer cambios de fechas (hasta 6 meses) en casos justificados y según disponibilidad.</>],
+        ["Grupos:", "Las reservas de más de un apartamento deberán ser autorizadas previamente. No está permitido intercambiar mobiliario, ropa de cama o menaje entre apartamentos."],
+        ["Menores:", "Los menores deben estar acompañados por sus padres o tutores legales. En caso contrario, no se permitirá el acceso."],
       ],
     },
     EN: {
-      title: ‘5. Cancellation policy’,
+      title: "5. Cancellation policy",
       intro: (
         <>
           Thank you for choosing our apartments at <strong>{SITE}</strong>. Once your booking is
@@ -58,101 +58,101 @@ function renderCancellationPolicy(lang: string, depositPct: number) {
           apartment will be reserved for the selected dates.
         </>
       ),
-      noticeLabel: ‘If you need to cancel your booking, please note the following:’,
+      noticeLabel: "If you need to cancel your booking, please note the following:",
       tiers: [
-        [‘0 to 7 days before your arrival:’, <>100% of the booking amount will be charged. <strong>No refund.</strong></>],
-        [‘8 to 14 days before your arrival:’, ‘We refund 50% of the deposit.’],
-        [‘15 to 29 days before your arrival:’, ‘We refund 75% of the deposit.’],
-        [‘30 days or more before your arrival:’, ‘We refund 100% of the deposit.’],
+        ["0 to 7 days before your arrival:", <>100% of the booking amount will be charged. <strong>No refund.</strong></>],
+        ["8 to 14 days before your arrival:", "We refund 50% of the deposit."],
+        ["15 to 29 days before your arrival:", "We refund 75% of the deposit."],
+        ["30 days or more before your arrival:", "We refund 100% of the deposit."],
       ],
-      generalTitle: ‘General conditions’,
+      generalTitle: "General conditions",
       general: [
-        [‘Guaranteed reservation:’, ‘Your booking is confirmed once the deposit is received. If you do not show up without notice, 100% of the stay will be charged.’],
-        [‘Minimum stay:’, ‘In July and August, the minimum stay is 5 nights.’],
-        [‘Apartment capacity:’, ‘The number of guests must not exceed the maximum capacity of the apartment.’],
-        [‘Final payment:’, ‘The total of the stay must be paid on the day of arrival, deducting the deposit already paid.’],
-        [‘Check-in and check-out times:’, ‘Check-in is from 4:00 PM to 7:00 PM and check-out must be before 11:00 AM to guarantee the cleaning service.’],
-        [‘Early departure:’, ‘If you leave the apartment before the scheduled date, no refund will be issued.’],
-        [‘Required documentation:’, ‘On arrival, you must present the ID or passport of all guests.’],
-        [‘No-show:’, ‘If you do not arrive within 24 hours of the check-in date, your booking will be considered cancelled and you will lose the amount paid.’],
-        [‘Stay extension:’, ‘If you wish to extend your stay, please ask us. It will be subject to availability.’],
-        [‘Modifications or cancellations:’, <>For any changes, please contact us in writing at <strong>{EMAIL}</strong>.</>],
-        [‘Weather conditions:’, ‘No refunds or discounts are offered for bad weather.’],
-        [‘Cancellation justification:’, <>If you cancel for exceptional reasons, please send us supporting documentation with your request. Date changes (up to 6 months) may be offered in justified cases and subject to availability.</>],
-        [‘Groups:’, ‘Bookings for more than one apartment must be previously authorised. Exchanging furniture, bed linen or kitchenware between apartments is not permitted.’],
-        [‘Minors:’, ‘Minors must be accompanied by their parents or legal guardians. Otherwise, access will not be permitted.’],
+        ["Guaranteed reservation:", "Your booking is confirmed once the deposit is received. If you do not show up without notice, 100% of the stay will be charged."],
+        ["Minimum stay:", "In July and August, the minimum stay is 5 nights."],
+        ["Apartment capacity:", "The number of guests must not exceed the maximum capacity of the apartment."],
+        ["Final payment:", "The total of the stay must be paid on the day of arrival, deducting the deposit already paid."],
+        ["Check-in and check-out times:", "Check-in is from 4:00 PM to 7:00 PM and check-out must be before 11:00 AM to guarantee the cleaning service."],
+        ["Early departure:", "If you leave the apartment before the scheduled date, no refund will be issued."],
+        ["Required documentation:", "On arrival, you must present the ID or passport of all guests."],
+        ["No-show:", "If you do not arrive within 24 hours of the check-in date, your booking will be considered cancelled and you will lose the amount paid."],
+        ["Stay extension:", "If you wish to extend your stay, please ask us. It will be subject to availability."],
+        ["Modifications or cancellations:", <>For any changes, please contact us in writing at <strong>{EMAIL}</strong>.</>],
+        ["Weather conditions:", "No refunds or discounts are offered for bad weather."],
+        ["Cancellation justification:", <>If you cancel for exceptional reasons, please send us supporting documentation with your request. Date changes (up to 6 months) may be offered in justified cases and subject to availability.</>],
+        ["Groups:", "Bookings for more than one apartment must be previously authorised. Exchanging furniture, bed linen or kitchenware between apartments is not permitted."],
+        ["Minors:", "Minors must be accompanied by their parents or legal guardians. Otherwise, access will not be permitted."],
       ],
     },
     FR: {
-      title: ‘5. Politique d\’annulation’,
+      title: "5. Politique d'annulation",
       intro: (
         <>
-          Merci d’avoir choisi nos appartements sur <strong>{SITE}</strong>. Une fois votre
+          Merci d"avoir choisi nos appartements sur <strong>{SITE}</strong>. Une fois votre
           réservation effectuée, vous recevrez un e-mail de confirmation. En réglant {depositPct}%
           du total, votre appartement sera réservé pour les dates sélectionnées.
         </>
       ),
-      noticeLabel: ‘Si vous devez annuler votre réservation, veuillez tenir compte de ce qui suit :’,
+      noticeLabel: "Si vous devez annuler votre réservation, veuillez tenir compte de ce qui suit :",
       tiers: [
-        [‘De 0 à 7 jours avant votre arrivée :’, <>100% du montant de la réservation sera facturé. <strong>Aucun remboursement.</strong></>],
-        [‘De 8 à 14 jours avant votre arrivée :’, ‘Nous remboursons 50% de l\’acompte.’],
-        [‘De 15 à 29 jours avant votre arrivée :’, ‘Nous remboursons 75% de l\’acompte.’],
-        [‘30 jours ou plus avant votre arrivée :’, ‘Nous remboursons 100% de l\’acompte.’],
+        ["De 0 à 7 jours avant votre arrivée :", <>100% du montant de la réservation sera facturé. <strong>Aucun remboursement.</strong></>],
+        ["De 8 à 14 jours avant votre arrivée :", "Nous remboursons 50% de l'acompte."],
+        ["De 15 à 29 jours avant votre arrivée :", "Nous remboursons 75% de l'acompte."],
+        ["30 jours ou plus avant votre arrivée :", "Nous remboursons 100% de l'acompte."],
       ],
-      generalTitle: ‘Conditions générales’,
+      generalTitle: "Conditions générales",
       general: [
-        [‘Réservation garantie :’, ‘Votre réservation est confirmée dès réception de l\’acompte. En cas de non-présentation sans préavis, 100% du séjour sera facturé.’],
-        [‘Séjour minimum :’, ‘En juillet et août, le séjour minimum est de 5 nuits.’],
-        [‘Capacité de l\’appartement :’, ‘Le nombre de personnes ne doit pas dépasser la capacité maximale de l\’appartement.’],
-        [‘Paiement final :’, ‘Le total du séjour doit être réglé le jour de l\’arrivée, en déduisant l\’acompte déjà payé.’],
-        [‘Horaires d\’arrivée et de départ :’, ‘L\’arrivée se fait à partir de 16h00 jusqu\’à 19h00 et le départ doit avoir lieu avant 11h00 pour garantir le service de ménage.’],
-        [‘Départ anticipé :’, ‘Si vous quittez l\’appartement avant la date prévue, aucun remboursement ne sera effectué.’],
-        [‘Documents requis :’, ‘À votre arrivée, vous devrez présenter la pièce d\’identité ou le passeport de tous les occupants.’],
-        [‘Non-présentation :’, ‘Si vous n\’arrivez pas dans les 24 heures suivant la date d\’entrée, votre réservation sera considérée comme annulée et vous perdrez le montant versé.’],
-        [‘Prolongation du séjour :’, ‘Si vous souhaitez prolonger votre séjour, consultez-nous. Cela sera soumis à disponibilité.’],
-        [‘Modifications ou annulations :’, <>Pour toute modification, contactez-nous par écrit à <strong>{EMAIL}</strong>.</>],
-        [‘Conditions météorologiques :’, ‘Aucun remboursement ni réduction n\’est accordé en cas de mauvais temps.’],
-        [‘Justification des annulations :’, <>En cas d\’annulation pour motifs exceptionnels, veuillez nous envoyer les justificatifs avec votre demande. Des changements de dates (jusqu\’à 6 mois) peuvent être proposés dans les cas justifiés et selon disponibilité.</>],
-        [‘Groupes :’, ‘Les réservations de plus d\’un appartement doivent être préalablement autorisées. L\’échange de mobilier, de linge de lit ou de vaisselle entre appartements n\’est pas autorisé.’],
-        [‘Mineurs :’, ‘Les mineurs doivent être accompagnés de leurs parents ou tuteurs légaux. Dans le cas contraire, l\’accès ne sera pas autorisé.’],
+        ["Réservation garantie :", "Votre réservation est confirmée dès réception de l'acompte. En cas de non-présentation sans préavis, 100% du séjour sera facturé."],
+        ["Séjour minimum :", "En juillet et août, le séjour minimum est de 5 nuits."],
+        ["Capacité de l'appartement :", "Le nombre de personnes ne doit pas dépasser la capacité maximale de l'appartement."],
+        ["Paiement final :", "Le total du séjour doit être réglé le jour de l'arrivée, en déduisant l'acompte déjà payé."],
+        ["Horaires d'arrivée et de départ :", "L'arrivée se fait à partir de 16h00 jusqu'à 19h00 et le départ doit avoir lieu avant 11h00 pour garantir le service de ménage."],
+        ["Départ anticipé :", "Si vous quittez l'appartement avant la date prévue, aucun remboursement ne sera effectué."],
+        ["Documents requis :", "À votre arrivée, vous devrez présenter la pièce d'identité ou le passeport de tous les occupants."],
+        ["Non-présentation :", "Si vous n'arrivez pas dans les 24 heures suivant la date d'entrée, votre réservation sera considérée comme annulée et vous perdrez le montant versé."],
+        ["Prolongation du séjour :", "Si vous souhaitez prolonger votre séjour, consultez-nous. Cela sera soumis à disponibilité."],
+        ["Modifications ou annulations :", <>Pour toute modification, contactez-nous par écrit à <strong>{EMAIL}</strong>.</>],
+        ["Conditions météorologiques :", "Aucun remboursement ni réduction n'est accordé en cas de mauvais temps."],
+        ["Justification des annulations :", <>En cas d'annulation pour motifs exceptionnels, veuillez nous envoyer les justificatifs avec votre demande. Des changements de dates (jusqu'à 6 mois) peuvent être proposés dans les cas justifiés et selon disponibilité.</>],
+        ["Groupes :", "Les réservations de plus d'un appartement doivent être préalablement autorisées. L'échange de mobilier, de linge de lit ou de vaisselle entre appartements n'est pas autorisé."],
+        ["Mineurs :", "Les mineurs doivent être accompagnés de leurs parents ou tuteurs légaux. Dans le cas contraire, l'accès ne sera pas autorisé."],
       ],
     },
     DE: {
-      title: ‘5. Stornierungsbedingungen’,
+      title: "5. Stornierungsbedingungen",
       intro: (
         <>
           Vielen Dank, dass Sie sich für unsere Apartments auf <strong>{SITE}</strong> entschieden
-          haben. Nach Ihrer Buchung erhalten Sie eine Bestätigungs-E-Mail. Mit der Zahlung von{‘ ‘}
+          haben. Nach Ihrer Buchung erhalten Sie eine Bestätigungs-E-Mail. Mit der Zahlung von{" "}
           {depositPct}% des Gesamtbetrags ist Ihr Apartment für den gewählten Zeitraum reserviert.
         </>
       ),
-      noticeLabel: ‘Falls Sie Ihre Buchung stornieren müssen, beachten Sie bitte Folgendes:’,
+      noticeLabel: "Falls Sie Ihre Buchung stornieren müssen, beachten Sie bitte Folgendes:",
       tiers: [
-        [‘0 bis 7 Tage vor Ihrer Anreise:’, <>Es werden 100% des Buchungsbetrags berechnet. <strong>Keine Rückerstattung.</strong></>],
-        [‘8 bis 14 Tage vor Ihrer Anreise:’, ‘Wir erstatten 50% der Anzahlung.’],
-        [‘15 bis 29 Tage vor Ihrer Anreise:’, ‘Wir erstatten 75% der Anzahlung.’],
-        [‘30 Tage oder mehr vor Ihrer Anreise:’, ‘Wir erstatten 100% der Anzahlung.’],
+        ["0 bis 7 Tage vor Ihrer Anreise:", <>Es werden 100% des Buchungsbetrags berechnet. <strong>Keine Rückerstattung.</strong></>],
+        ["8 bis 14 Tage vor Ihrer Anreise:", "Wir erstatten 50% der Anzahlung."],
+        ["15 bis 29 Tage vor Ihrer Anreise:", "Wir erstatten 75% der Anzahlung."],
+        ["30 Tage oder mehr vor Ihrer Anreise:", "Wir erstatten 100% der Anzahlung."],
       ],
-      generalTitle: ‘Allgemeine Bedingungen’,
+      generalTitle: "Allgemeine Bedingungen",
       general: [
-        [‘Garantierte Reservierung:’, ‘Ihre Buchung wird bestätigt, sobald die Anzahlung eingegangen ist. Bei Nichtanreise ohne Vorankündigung werden 100% des Aufenthalts berechnet.’],
-        [‘Mindestaufenthalt:’, ‘Im Juli und August beträgt der Mindestaufenthalt 5 Nächte.’],
-        [‘Kapazität des Apartments:’, ‘Die Anzahl der Personen darf die maximale Kapazität des Apartments nicht überschreiten.’],
-        [‘Schlusszahlung:’, ‘Der Gesamtbetrag des Aufenthalts ist am Anreisetag zu zahlen, abzüglich der bereits geleisteten Anzahlung.’],
-        [‘Check-in- und Check-out-Zeiten:’, ‘Check-in ist von 16:00 bis 19:00 Uhr und Check-out muss vor 11:00 Uhr erfolgen, um den Reinigungsservice zu gewährleisten.’],
-        [‘Vorzeitige Abreise:’, ‘Wenn Sie das Apartment vor dem geplanten Datum verlassen, erfolgt keine Rückerstattung.’],
-        [‘Erforderliche Dokumente:’, ‘Bei der Ankunft müssen Sie den Ausweis oder Reisepass aller Gäste vorlegen.’],
-        [‘Nichterscheinen:’, ‘Wenn Sie nicht innerhalb von 24 Stunden nach dem Anreisedatum eintreffen, gilt Ihre Buchung als storniert und der gezahlte Betrag verfällt.’],
-        [‘Verlängerung des Aufenthalts:’, ‘Wenn Sie Ihren Aufenthalt verlängern möchten, fragen Sie uns. Dies erfolgt vorbehaltlich der Verfügbarkeit.’],
-        [‘Änderungen oder Stornierungen:’, <>Für Änderungen kontaktieren Sie uns bitte schriftlich unter <strong>{EMAIL}</strong>.</>],
-        [‘Wetterbedingungen:’, ‘Bei schlechtem Wetter werden keine Rückerstattungen oder Rabatte gewährt.’],
-        [‘Begründung von Stornierungen:’, <>Bei Stornierung aus außergewöhnlichen Gründen senden Sie uns bitte die Belege mit Ihrem Antrag. Terminverschiebungen (bis zu 6 Monate) können in begründeten Fällen je nach Verfügbarkeit angeboten werden.</>],
-        [‘Gruppen:’, ‘Buchungen für mehr als ein Apartment müssen vorher genehmigt werden. Der Austausch von Möbeln, Bettwäsche oder Küchenausstattung zwischen Apartments ist nicht gestattet.’],
-        [‘Minderjährige:’, ‘Minderjährige müssen von ihren Eltern oder gesetzlichen Vormund begleitet werden. Andernfalls wird der Zutritt verweigert.’],
+        ["Garantierte Reservierung:", "Ihre Buchung wird bestätigt, sobald die Anzahlung eingegangen ist. Bei Nichtanreise ohne Vorankündigung werden 100% des Aufenthalts berechnet."],
+        ["Mindestaufenthalt:", "Im Juli und August beträgt der Mindestaufenthalt 5 Nächte."],
+        ["Kapazität des Apartments:", "Die Anzahl der Personen darf die maximale Kapazität des Apartments nicht überschreiten."],
+        ["Schlusszahlung:", "Der Gesamtbetrag des Aufenthalts ist am Anreisetag zu zahlen, abzüglich der bereits geleisteten Anzahlung."],
+        ["Check-in- und Check-out-Zeiten:", "Check-in ist von 16:00 bis 19:00 Uhr und Check-out muss vor 11:00 Uhr erfolgen, um den Reinigungsservice zu gewährleisten."],
+        ["Vorzeitige Abreise:", "Wenn Sie das Apartment vor dem geplanten Datum verlassen, erfolgt keine Rückerstattung."],
+        ["Erforderliche Dokumente:", "Bei der Ankunft müssen Sie den Ausweis oder Reisepass aller Gäste vorlegen."],
+        ["Nichterscheinen:", "Wenn Sie nicht innerhalb von 24 Stunden nach dem Anreisedatum eintreffen, gilt Ihre Buchung als storniert und der gezahlte Betrag verfällt."],
+        ["Verlängerung des Aufenthalts:", "Wenn Sie Ihren Aufenthalt verlängern möchten, fragen Sie uns. Dies erfolgt vorbehaltlich der Verfügbarkeit."],
+        ["Änderungen oder Stornierungen:", <>Für Änderungen kontaktieren Sie uns bitte schriftlich unter <strong>{EMAIL}</strong>.</>],
+        ["Wetterbedingungen:", "Bei schlechtem Wetter werden keine Rückerstattungen oder Rabatte gewährt."],
+        ["Begründung von Stornierungen:", <>Bei Stornierung aus außergewöhnlichen Gründen senden Sie uns bitte die Belege mit Ihrem Antrag. Terminverschiebungen (bis zu 6 Monate) können in begründeten Fällen je nach Verfügbarkeit angeboten werden.</>],
+        ["Gruppen:", "Buchungen für mehr als ein Apartment müssen vorher genehmigt werden. Der Austausch von Möbeln, Bettwäsche oder Küchenausstattung zwischen Apartments ist nicht gestattet."],
+        ["Minderjährige:", "Minderjährige müssen von ihren Eltern oder gesetzlichen Vormund begleitet werden. Andernfalls wird der Zutritt verweigert."],
       ],
     },
     PT: {
-      title: ‘5. Política de cancelamento’,
+      title: "5. Política de cancelamento",
       intro: (
         <>
           Obrigado por escolher os nossos apartamentos em <strong>{SITE}</strong>. Após efetuar a
@@ -160,29 +160,29 @@ function renderCancellationPolicy(lang: string, depositPct: number) {
           apartamento ficará reservado para a data selecionada.
         </>
       ),
-      noticeLabel: ‘Se precisar de cancelar a sua reserva, tenha em conta o seguinte:’,
+      noticeLabel: "Se precisar de cancelar a sua reserva, tenha em conta o seguinte:",
       tiers: [
-        [‘De 0 a 7 dias antes da sua chegada:’, <>Será cobrado 100% do valor da reserva. <strong>Sem reembolso.</strong></>],
-        [‘De 8 a 14 dias antes da sua chegada:’, ‘Devolvemos 50% do depósito.’],
-        [‘De 15 a 29 dias antes da sua chegada:’, ‘Devolvemos 75% do depósito.’],
-        [‘30 dias ou mais antes da sua chegada:’, ‘Devolvemos 100% do depósito.’],
+        ["De 0 a 7 dias antes da sua chegada:", <>Será cobrado 100% do valor da reserva. <strong>Sem reembolso.</strong></>],
+        ["De 8 a 14 dias antes da sua chegada:", "Devolvemos 50% do depósito."],
+        ["De 15 a 29 dias antes da sua chegada:", "Devolvemos 75% do depósito."],
+        ["30 dias ou mais antes da sua chegada:", "Devolvemos 100% do depósito."],
       ],
-      generalTitle: ‘Condições gerais’,
+      generalTitle: "Condições gerais",
       general: [
-        [‘Reserva garantida:’, ‘A sua reserva é confirmada após a receção do sinal. Se não comparecer sem aviso, será cobrado 100% da estadia.’],
-        [‘Estadia mínima:’, ‘Em julho e agosto, a estadia mínima é de 5 noites.’],
-        [‘Capacidade do apartamento:’, ‘O número de pessoas não pode exceder a capacidade máxima do apartamento.’],
-        [‘Pagamento final:’, ‘O total da estadia é pago no dia da chegada, descontando o sinal já pago.’],
-        [‘Horários de entrada e saída:’, ‘A entrada é a partir das 16:00 h até às 19:00 h e a saída deve ser efetuada antes das 11:00 h para garantir o serviço de limpeza.’],
-        [‘Saída antecipada:’, ‘Se abandonar o apartamento antes da data prevista, não haverá lugar a reembolso.’],
-        [‘Documentação necessária:’, ‘À chegada, terá de apresentar o documento de identificação ou passaporte de todos os hóspedes.’],
-        [‘Não comparência:’, ‘Se não chegar no prazo de 24 horas após a data de entrada, a sua reserva será considerada cancelada e perderá o valor pago.’],
-        [‘Prolongamento da estadia:’, ‘Se desejar prolongar a sua estadia, consulte-nos. Estará sujeito a disponibilidade.’],
-        [‘Alterações ou cancelamentos:’, <>Para qualquer alteração, contacte-nos por escrito para <strong>{EMAIL}</strong>.</>],
-        [‘Condições meteorológicas:’, ‘Não são oferecidos reembolsos nem descontos por mau tempo.’],
-        [‘Justificação de cancelamentos:’, <>Se cancelar por motivos excecionais, envie-nos a documentação justificativa com o seu pedido. Podem ser oferecidas alterações de datas (até 6 meses) em casos justificados e sujeito a disponibilidade.</>],
-        [‘Grupos:’, ‘As reservas de mais de um apartamento devem ser previamente autorizadas. Não é permitida a troca de mobiliário, roupa de cama ou utensílios de cozinha entre apartamentos.’],
-        [‘Menores:’, ‘Os menores devem ser acompanhados pelos seus pais ou tutores legais. Caso contrário, o acesso não será permitido.’],
+        ["Reserva garantida:", "A sua reserva é confirmada após a receção do sinal. Se não comparecer sem aviso, será cobrado 100% da estadia."],
+        ["Estadia mínima:", "Em julho e agosto, a estadia mínima é de 5 noites."],
+        ["Capacidade do apartamento:", "O número de pessoas não pode exceder a capacidade máxima do apartamento."],
+        ["Pagamento final:", "O total da estadia é pago no dia da chegada, descontando o sinal já pago."],
+        ["Horários de entrada e saída:", "A entrada é a partir das 16:00 h até às 19:00 h e a saída deve ser efetuada antes das 11:00 h para garantir o serviço de limpeza."],
+        ["Saída antecipada:", "Se abandonar o apartamento antes da data prevista, não haverá lugar a reembolso."],
+        ["Documentação necessária:", "À chegada, terá de apresentar o documento de identificação ou passaporte de todos os hóspedes."],
+        ["Não comparência:", "Se não chegar no prazo de 24 horas após a data de entrada, a sua reserva será considerada cancelada e perderá o valor pago."],
+        ["Prolongamento da estadia:", "Se desejar prolongar a sua estadia, consulte-nos. Estará sujeito a disponibilidade."],
+        ["Alterações ou cancelamentos:", <>Para qualquer alteração, contacte-nos por escrito para <strong>{EMAIL}</strong>.</>],
+        ["Condições meteorológicas:", "Não são oferecidos reembolsos nem descontos por mau tempo."],
+        ["Justificação de cancelamentos:", <>Se cancelar por motivos excecionais, envie-nos a documentação justificativa com o seu pedido. Podem ser oferecidas alterações de datas (até 6 meses) em casos justificados e sujeito a disponibilidade.</>],
+        ["Grupos:", "As reservas de mais de um apartamento devem ser previamente autorizadas. Não é permitida a troca de mobiliário, roupa de cama ou utensílios de cozinha entre apartamentos."],
+        ["Menores:", "Os menores devem ser acompanhados pelos seus pais ou tutores legais. Caso contrário, o acesso não será permitido."],
       ],
     },
   };
