@@ -343,10 +343,10 @@
     "ctaContact": "Contactar",
     "marinaPoi": [
       {
-        "t": "20 min",
-        "d": "Playa de As Catedrais",
-        "desc": "Patrimonio Natural. Arcos y bóvedas tallados por el mar en acantilados de pizarra. Reserva con antelación en temporada alta para acceder a la arena.",
-        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+        "t": "5 min",
+        "d": "Faro de Isla Pancha",
+        "desc": "El faro más fotogénico del Cantábrico, sobre una pequeña isla unida por una pasarela. Atardeceres inolvidables.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "5 min",
@@ -355,40 +355,58 @@
         "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "5 min",
-        "d": "Faro de Isla Pancha",
-        "desc": "El faro más fotogénico del Cantábrico, sobre una pequeña isla unida por una pasarela. Atardeceres inolvidables.",
-        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+        "t": "10 min",
+        "d": "Playa de As Catedrais",
+        "desc": "Patrimonio Natural. Arcos y bóvedas tallados por el mar en acantilados de pizarra. Reserva con antelación en temporada alta para acceder a la arena.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "30 min",
+        "t": "25 min",
         "d": "Foz y Praia de Llas",
         "desc": "Pueblo marinero con un casco urbano vivo y una playa amplia con dunas perfecta para el surf y para familias.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "45 min",
+        "t": "30 min",
         "d": "Mondoñedo",
         "desc": "Antigua capital del reino de Galicia. Catedral basílica, plaza porticada y pastelería artesana. Una joya de interior.",
         "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "40 min",
+        "d": "Mirador Monte Castelo · Burela",
+        "desc": "Mirador elevado sobre el litoral de la Mariña lucense con amplias vistas panorámicas al mar Cantábrico. Ideal para contemplar la costa desde las alturas.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
         "d": "Viveiro",
         "desc": "Casco histórico amurallado y la Semana Santa más famosa del norte. Punto de partida para la Mariña occidental.",
         "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "50 min",
+        "d": "Acantilados de papel",
+        "desc": "La zona menos visitada de la Playa de As Catedrais, accesible solo con marea baja. Formaciones rocosas que recuerdan a hojas de papel apiladas por la acción del mar.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "San Ciprián",
+        "desc": "Localidad costera de la Mariña lucense con playas tranquilas y entorno natural. Conocida por sus aguas cristalinas y el avistamiento de cetáceos en primavera.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "75 min",
+        "d": "Fuciño do Porco",
+        "desc": "Espectacular promontorio con vistas de vértigo sobre los acantilados del Cantábrico. Uno de los paisajes más dramáticos y menos masificados de la costa gallega.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "90 min",
         "d": "Lugo · Muralla romana",
         "desc": "Patrimonio de la Humanidad UNESCO. La única muralla romana del mundo conservada en todo su perímetro: 2 km transitables.",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 15min",
-        "d": "Praia das Catedrais por la marea baja",
-        "desc": "Para los que repiten: la zona menos visitada de la playa, accesible solo con marea baja. Consulta horarios oficiales antes de ir.",
-        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
       }
     ],
     "asturiasPoi": [
@@ -405,34 +423,64 @@
         "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "20 min",
+        "t": "15 min",
         "d": "Tapia de Casariego",
         "desc": "La meca del surf del norte. Faro, playas para todos los niveles y un casco urbano con sabor marinero auténtico.",
         "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "50 min",
+        "t": "15 min",
+        "d": "Playa de Porcia",
+        "desc": "Playa salvaje y poco frecuentada rodeada de prados asturianos. Excelente para el surf y para quienes buscan tranquilidad lejos de las multitudes.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "25 min",
+        "d": "Puerto de Vega",
+        "desc": "Precioso pueblo pesquero asturiano declarado Conjunto Histórico Artístico. Puerto pintoresco, palacetes de indianos y playa urbana ideal para el paseo.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Luarca · Villa Blanca",
+        "desc": "Pueblo pesquero pintado de blanco con un cementerio panorámico, siete puentes y playa urbana. Indispensable comer pescado del día.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Ruta del ferrocarril",
+        "desc": "Antigua vía del ferrocarril reconvertida en sendero verde que recorre el litoral asturiano entre acantilados y playas poco conocidas. Accesible para toda la familia.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
+        "d": "Taramundi",
+        "desc": "Pequeño municipio del occidente asturiano conocido por sus cuchilleros artesanos. Inicio de la Ruta de los Molinos y ejemplo de turismo rural auténtico.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
         "d": "Cabo Busto",
         "desc": "Acantilados de vértigo y uno de los faros más espectaculares del Cantábrico. Punto de avistamiento de cetáceos en primavera.",
         "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "45 min",
-        "d": "Luarca · Villa Blanca",
-        "desc": "Pueblo pesquero pintado de blanco con un cementerio panorámico, siete puentes y playa urbana. Indispensable comer pescado del día.",
-        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+        "d": "Comarca de los Oscos",
+        "desc": "Tres municipios (Santa Eulalia, San Martín y Villanueva de Oscos) en un interior asturiano virgen. Arquitectura popular, naturaleza y turismo rural sostenible.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h 15min",
-        "d": "Cudillero",
-        "desc": "El pueblo pesquero más fotografiado de España. Casas de colores escalonadas en una garganta marina. Llega temprano.",
-        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 30min",
+        "t": "45 min",
         "d": "Playa del Silencio",
         "desc": "Cala salvaje rodeada de acantilados verticales y pequeños islotes. El paraíso geológico del occidente asturiano.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cudillero",
+        "desc": "El pueblo pesquero más fotografiado de España. Casas de colores escalonadas en una garganta marina. Llega temprano.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },
@@ -464,7 +512,7 @@
     "hours": "Lun–Dom · 9:00 – 21:00",
     "response": "Respuesta en < 24h",
     "waMsg": "Hola, me gustaría información sobre los apartamentos en Ribadeo.",
-    "checkinTime": "A partir de las 15:00",
+    "checkinTime": "A partir de las 16:00",
     "checkoutTime": "Antes de las 11:00",
     "waLabel": "WhatsApp",
     "immediateResponse": "Respuesta inmediata",

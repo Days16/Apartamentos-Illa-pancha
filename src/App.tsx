@@ -12,7 +12,6 @@ import Apartments from './pages/Apartments';
 import ApartmentDetail from './pages/ApartmentDetail';
 
 // Secondary pages — lazy (not primary traffic landing pages)
-const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Cookies = lazy(() => import('./pages/Cookies'));
@@ -184,7 +183,6 @@ export default function App() {
                             <Route path="/" element={<Home />} />
                             <Route path="/apartamentos" element={<Apartments />} />
                             <Route path="/apartamentos/:slug" element={<ApartmentDetail />} />
-                            <Route path="/nosotros" element={<About />} />
                             <Route path="/experiencias" element={<Experiences />} />
                             <Route path="/contacto" element={<Contact />} />
                             <Route path="/privacidad" element={<Privacy />} />

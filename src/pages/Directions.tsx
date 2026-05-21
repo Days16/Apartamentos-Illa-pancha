@@ -20,12 +20,12 @@ const INFO_ES = [
   {
     icon: paths.map,
     title: 'Transporte público',
-    text: 'Bus ALSA desde Lugo, Oviedo y A Coruña con parada en Ribadeo. Estación de autobús a 10 minutos a pie de los apartamentos.',
+    text: 'Bus ALSA desde Lugo, Oviedo y A Coruña con parada en Ribadeo. Estación de autobús a 15 minutos a pie de los apartamentos.',
   },
   {
     icon: paths.map,
     title: 'Aeropuerto más cercano',
-    text: 'Aeropuerto de Santiago de Compostela (SCQ) a 170 km. Aeropuerto de Asturias (OVD) a 100 km. Alquiler de coche recomendado.',
+    text: 'Aeropuerto de Santiago de Compostela (SCQ) a 175 km. Aeropuerto de Asturias (OVD) a 155 km. Alquiler de coche recomendado.',
   },
 ];
 
@@ -38,12 +38,12 @@ const INFO_EN = [
   {
     icon: paths.map,
     title: 'Public transport',
-    text: 'ALSA buses from Lugo, Oviedo and A Coruña stop in Ribadeo. Bus station is a 10-minute walk from the apartments.',
+    text: 'ALSA buses from Lugo, Oviedo and A Coruña stop in Ribadeo. Bus station is a 15-minute walk from the apartments.',
   },
   {
     icon: paths.map,
     title: 'Nearest airport',
-    text: 'Santiago de Compostela Airport (SCQ) 170 km away. Asturias Airport (OVD) 100 km away. Car hire recommended.',
+    text: 'Santiago de Compostela Airport (SCQ) 175 km away. Asturias Airport (OVD) 155 km away. Car hire recommended.',
   },
 ];
 

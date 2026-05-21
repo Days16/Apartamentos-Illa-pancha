@@ -25,19 +25,21 @@ export default function Privacy() {
         </div>
         <div className="policy-content max-w-3xl mx-auto px-4 py-12">
           <p>
-            En <strong>Illa Pancha Ribadeo</strong> (en adelante, «nosotros») nos comprometemos a
-            proteger tu privacidad. Esta política explica qué datos personales recopilamos, para qué
-            los usamos y cuáles son tus derechos al respecto, de conformidad con el Reglamento (UE)
-            2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).
+            En <strong>Apartamentos Illa Pancha VUT</strong> (en adelante, «nosotros») nos
+            comprometemos a proteger tu privacidad. Esta política explica qué datos personales
+            recopilamos, para qué los usamos y cuáles son tus derechos al respecto, de conformidad
+            con el Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).
           </p>
 
           <h2>1. Responsable del tratamiento</h2>
           <p>
-            <strong>Titular:</strong> Illa Pancha Ribadeo S.L. (en constitución)
+            <strong>Titular:</strong> Ribatella Gestión S.L.
             <br />
             <strong>Dirección:</strong> Ribadeo, Lugo, Galicia, España
             <br />
             <strong>Email:</strong> info@apartamentosillapancha.com
+            <br />
+            <strong>Teléfono:</strong> +34 614 52 30 77
           </p>
 
           <h2>2. Datos que recopilamos</h2>

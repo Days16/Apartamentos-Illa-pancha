@@ -343,10 +343,10 @@
     "ctaContact": "Contactar",
     "marinaPoi": [
       {
-        "t": "20 min",
-        "d": "Praia de As Catedrais",
-        "desc": "Património Natural. Arcos e abóbadas esculpidos pelo mar em falésias de ardósia. Reserve com antecedência na época alta para aceder à areia.",
-        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+        "t": "5 min",
+        "d": "Farol de Isla Pancha",
+        "desc": "O farol mais fotogénico do Cantábrico, sobre uma pequena ilha ligada por um passadiço. Pôr do sol inesquecíveis.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "5 min",
@@ -355,40 +355,58 @@
         "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "5 min",
-        "d": "Farol de Isla Pancha",
-        "desc": "O farol mais fotogénico do Cantábrico, sobre uma pequena ilha ligada por um passadiço. Pôr do sol inesquecíveis.",
-        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+        "t": "10 min",
+        "d": "Praia de As Catedrais",
+        "desc": "Património Natural. Arcos e abóbadas esculpidos pelo mar em falésias de ardósia. Reserve com antecedência na época alta para aceder à areia.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "30 min",
+        "t": "25 min",
         "d": "Foz e Praia de Llas",
         "desc": "Vila piscatória vibrante e uma praia ampla com dunas perfeita para o surf e para famílias.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "45 min",
+        "t": "30 min",
         "d": "Mondoñedo",
         "desc": "Antiga capital do reino da Galiza. Catedral basílica, praça com arcadas e doçaria artesanal. Uma joia do interior.",
         "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "40 min",
+        "d": "Miradouro Monte Castelo · Burela",
+        "desc": "Miradouro elevado sobre o litoral da Mariña lucense com vistas panorâmicas ao mar Cantábrico.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
         "d": "Viveiro",
         "desc": "Centro histórico amuralhado e a Semana Santa mais famosa do norte. Porta de entrada para a Mariña ocidental.",
         "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "50 min",
+        "d": "Falésias de papel",
+        "desc": "A zona menos visitada da Praia de As Catedrais, acessível só com maré baixa. Formações rochosas que lembram folhas de papel empilhadas.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "San Ciprián",
+        "desc": "Localidade costeira da Mariña lucense com praias tranquilas e ambiente natural. Conhecida pelo avistamento de cetáceos na primavera.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "75 min",
+        "d": "Fuciño do Porco",
+        "desc": "Espetacular promontório com vistas vertiginosas sobre as falésias cantábricas. Uma das paisagens mais dramáticas da costa galega.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "90 min",
         "d": "Lugo · Muralha romana",
         "desc": "Património Mundial UNESCO. A única muralha romana do mundo conservada em todo o seu perímetro: 2 km percorríveis.",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 15min",
-        "d": "Praia das Catedrais com maré baixa",
-        "desc": "Para quem repete: a zona menos visitada da praia, acessível só com maré baixa. Consulte os horários oficiais antes de ir.",
-        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
       }
     ],
     "asturiasPoi": [
@@ -405,34 +423,64 @@
         "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "20 min",
+        "t": "15 min",
         "d": "Tapia de Casariego",
         "desc": "A meca do surf do norte. Farol, praias para todos os níveis e um centro urbano com sabor piscatório autêntico.",
         "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "50 min",
+        "t": "15 min",
+        "d": "Praia de Porcia",
+        "desc": "Praia selvagem e pouco frequentada rodeada de prados asturianos. Excelente para o surf e para quem busca tranquilidade.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "25 min",
+        "d": "Puerto de Vega",
+        "desc": "Bela vila piscatória declarada Conjunto Histórico Artístico. Porto pitoresco, palacetes de indianos e praia urbana.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Luarca · Villa Blanca",
+        "desc": "Vila piscatória pintada de branco, com cemitério panorâmico, sete pontes e praia urbana. Imperdível comer peixe do dia.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Rota do caminho de ferro",
+        "desc": "Antiga via ferroviária reconvertida em percurso verde que percorre o litoral asturiano entre falésias e praias pouco conhecidas.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
+        "d": "Taramundi",
+        "desc": "Pequeno município do ocidente asturiano conhecido pelos seus cuteleiros artesanais. Início da Rota dos Moinhos e turismo rural autêntico.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
         "d": "Cabo Busto",
         "desc": "Falésias vertiginosas e um dos faróis mais espetaculares do Cantábrico. Ponto de avistamento de cetáceos na primavera.",
         "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "45 min",
-        "d": "Luarca · Villa Blanca",
-        "desc": "Vila piscatória pintada de branco, com cemitério panorâmico, sete pontes e praia urbana. Imperdível comer peixe do dia.",
-        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+        "d": "Comarca de los Oscos",
+        "desc": "Três municípios num interior asturiano virgem. Arquitetura popular, natureza e turismo rural sustentável.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h 15min",
-        "d": "Cudillero",
-        "desc": "A vila piscatória mais fotografada de Espanha. Casas coloridas escalonadas numa garganta marinha. Chegue cedo.",
-        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 30min",
+        "t": "45 min",
         "d": "Praia do Silêncio",
         "desc": "Enseada selvagem rodeada de falésias verticais e pequenos ilhéus. O paraíso geológico do ocidente asturiano.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cudillero",
+        "desc": "A vila piscatória mais fotografada de Espanha. Casas coloridas escalonadas numa garganta marinha. Chegue cedo.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },
@@ -464,7 +512,7 @@
     "hours": "Seg–Dom · 9:00 – 21:00",
     "response": "Resposta em < 24h",
     "waMsg": "Olá, gostaria de informações sobre os apartamentos em Ribadeo.",
-    "checkinTime": "A partir das 15:00",
+    "checkinTime": "A partir das 16:00",
     "checkoutTime": "Antes das 11:00",
     "waLabel": "WhatsApp",
     "immediateResponse": "Resposta imediata",

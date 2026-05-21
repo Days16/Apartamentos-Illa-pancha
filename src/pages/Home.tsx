@@ -256,7 +256,7 @@ export default function Home() {
                 aria-label={T.apartments.guests}
                 className="w-full h-[42px] px-3 py-2 border border-gray-300 rounded text-sm text-navy cursor-pointer focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 transition-all"
               >
-                {[1, 2, 3, 4, 5, 6].map(n => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
                   <option key={n} value={n}>
                     {n} {n === 1 ? T.common.person : T.common.persons}
                   </option>
@@ -410,9 +410,6 @@ export default function Home() {
                           <span className="text-xs text-gray-500">{T.common.perNight}</span>
                         </span>
                       </div>
-                    </div>
-                    <div className="absolute bottom-4 right-4 bg-white rounded-full px-3 py-1 text-sm font-semibold text-navy shadow">
-                      ★ {apt.rating}
                     </div>
                   </div>
                 ))}

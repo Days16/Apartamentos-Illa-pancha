@@ -343,10 +343,10 @@
     "ctaContact": "Contact",
     "marinaPoi": [
       {
-        "t": "20 min",
-        "d": "As Catedrais Beach",
-        "desc": "Natural Heritage. Arches and vaults carved by the sea on slate cliffs. Book in advance during high season to access the sand.",
-        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+        "t": "5 min",
+        "d": "Pancha Island Lighthouse",
+        "desc": "The most photogenic lighthouse on the Cantabrian, on a small island linked by a footbridge. Unforgettable sunsets.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "5 min",
@@ -355,40 +355,58 @@
         "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "5 min",
-        "d": "Pancha Island Lighthouse",
-        "desc": "The most photogenic lighthouse on the Cantabrian, on a small island linked by a footbridge. Unforgettable sunsets.",
-        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+        "t": "10 min",
+        "d": "As Catedrais Beach",
+        "desc": "Natural Heritage. Arches and vaults carved by the sea on slate cliffs. Book in advance during high season to access the sand.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "30 min",
+        "t": "25 min",
         "d": "Foz and Praia de Llas",
         "desc": "Lively fishing town with a wide dune beach perfect for surfing and families.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "45 min",
+        "t": "30 min",
         "d": "Mondoñedo",
         "desc": "Former capital of the Kingdom of Galicia. Basilica cathedral, arcaded square and traditional bakeries. An inland gem.",
         "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "40 min",
+        "d": "Monte Castelo Viewpoint · Burela",
+        "desc": "Elevated viewpoint above the Mariña lucense coastline with panoramic views of the Cantabrian Sea. Ideal for admiring the coast from the heights.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
         "d": "Viveiro",
         "desc": "Walled historic centre and the most famous Holy Week in the north. Gateway to the western Mariña.",
         "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "50 min",
+        "d": "Paper Cliffs",
+        "desc": "The least crowded part of As Catedrais Beach, only accessible at low tide. Rocky formations that resemble stacked sheets of paper shaped by the sea.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "San Ciprián",
+        "desc": "Coastal town in the Mariña lucense with quiet beaches and natural surroundings. Known for its crystal-clear waters and whale watching in spring.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "75 min",
+        "d": "Fuciño do Porco",
+        "desc": "Spectacular headland with vertiginous views over the Cantabrian cliffs. One of the most dramatic and least crowded landscapes on the Galician coast.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "90 min",
         "d": "Lugo · Roman Wall",
         "desc": "UNESCO World Heritage. The only Roman wall in the world preserved along its full perimeter: 2 km you can walk on top.",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 15min",
-        "d": "Praia das Catedrais at low tide",
-        "desc": "For repeat visitors: the least crowded part of the beach, only accessible at low tide. Check official tide schedules first.",
-        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
       }
     ],
     "asturiasPoi": [
@@ -405,34 +423,64 @@
         "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "20 min",
+        "t": "15 min",
         "d": "Tapia de Casariego",
         "desc": "Surf mecca of the north. Lighthouse, beaches for all levels and an authentic seafaring centre.",
         "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "50 min",
+        "t": "15 min",
+        "d": "Porcia Beach",
+        "desc": "Wild and uncrowded beach surrounded by Asturian meadows. Excellent for surfing and those seeking peace away from the crowds.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "25 min",
+        "d": "Puerto de Vega",
+        "desc": "Beautiful fishing village declared a Historic Artistic Site. Picturesque harbour, indiano mansions and an urban beach perfect for a stroll.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Luarca · The White Town",
+        "desc": "White-washed fishing town with a panoramic cemetery, seven bridges and an urban beach. Try the catch of the day.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Railway Route",
+        "desc": "Former railway line converted into a green trail running along the Asturian coast between cliffs and little-known beaches. Accessible for the whole family.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
+        "d": "Taramundi",
+        "desc": "Small municipality in western Asturias known for its artisan knifemakers. Start of the Mills Route and an example of authentic rural tourism.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
         "d": "Cabo Busto",
         "desc": "Vertigo cliffs and one of the most spectacular lighthouses on the Cantabrian. Whale watching point in spring.",
         "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "45 min",
-        "d": "Luarca · The White Town",
-        "desc": "White-washed fishing town with a panoramic cemetery, seven bridges and an urban beach. Try the catch of the day.",
-        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+        "d": "Comarca de los Oscos",
+        "desc": "Three municipalities (Santa Eulalia, San Martín and Villanueva de Oscos) in a pristine Asturian interior. Folk architecture, nature and sustainable rural tourism.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h 15min",
-        "d": "Cudillero",
-        "desc": "The most photographed fishing village in Spain. Colourful houses cascading down a sea ravine. Arrive early.",
-        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 30min",
+        "t": "45 min",
         "d": "Playa del Silencio",
         "desc": "Wild cove surrounded by vertical cliffs and small islets. The geological paradise of western Asturias.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cudillero",
+        "desc": "The most photographed fishing village in Spain. Colourful houses cascading down a sea ravine. Arrive early.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },
@@ -464,7 +512,7 @@
     "hours": "Mon–Sun · 9:00 – 21:00",
     "response": "Response in < 24h",
     "waMsg": "Hi, I would like information about the apartments in Ribadeo.",
-    "checkinTime": "From 15:00",
+    "checkinTime": "From 16:00",
     "checkoutTime": "Before 11:00",
     "waLabel": "WhatsApp",
     "immediateResponse": "Immediate response",

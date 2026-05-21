@@ -343,10 +343,10 @@
     "ctaContact": "Kontakt",
     "marinaPoi": [
       {
-        "t": "20 min",
-        "d": "Strand As Catedrais",
-        "desc": "Naturerbe. Bögen und Gewölbe, vom Meer in Schieferklippen geschnitten. In der Hochsaison vorher buchen.",
-        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
+        "t": "5 min",
+        "d": "Leuchtturm Isla Pancha",
+        "desc": "Der fotogenste Leuchtturm des Kantabrischen Meeres, auf einer kleinen Insel mit Steg. Unvergessliche Sonnenuntergänge.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "5 min",
@@ -355,40 +355,58 @@
         "photo": "https://images.unsplash.com/photo-1694092771894-3745d59a1462?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "5 min",
-        "d": "Leuchtturm Isla Pancha",
-        "desc": "Der fotogenste Leuchtturm des Kantabrischen Meeres, auf einer kleinen Insel mit Steg. Unvergessliche Sonnenuntergänge.",
-        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+        "t": "10 min",
+        "d": "Strand As Catedrais",
+        "desc": "Naturerbe. Bögen und Gewölbe, vom Meer in Schieferklippen geschnitten. In der Hochsaison vorher buchen.",
+        "photo": "https://images.unsplash.com/photo-1540111687571-22809dbdc8b4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "30 min",
+        "t": "25 min",
         "d": "Foz und Praia de Llas",
         "desc": "Lebendiges Fischerdorf mit einem breiten Dünenstrand, perfekt zum Surfen und für Familien.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "45 min",
+        "t": "30 min",
         "d": "Mondoñedo",
         "desc": "Ehemalige Hauptstadt des Königreichs Galizien. Kathedrale, Arkadenplatz und traditionelle Konditoreien. Ein Juwel im Inland.",
         "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "40 min",
+        "d": "Aussichtspunkt Monte Castelo · Burela",
+        "desc": "Erhöhter Aussichtspunkt über die Küste der Mariña lucense mit Panoramablick auf das Kantabrische Meer.",
+        "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
         "d": "Viveiro",
         "desc": "Ummauerte Altstadt und die berühmteste Karwoche im Norden. Tor zur westlichen Mariña.",
         "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h",
+        "t": "50 min",
+        "d": "Papierklippen",
+        "desc": "Der weniger besuchte Bereich von As Catedrais, nur bei Ebbe zugänglich. Felsformationen, die wie gestapelte Papierblätter aussehen.",
+        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "San Ciprián",
+        "desc": "Küstenort in der Mariña lucense mit ruhigen Stränden und natürlicher Umgebung. Im Frühling Ort zur Walbeobachtung.",
+        "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "75 min",
+        "d": "Fuciño do Porco",
+        "desc": "Spektakuläres Kap mit schwindelerregendem Blick auf die kantabrischen Klippen. Eine der dramatischsten Landschaften der galizischen Küste.",
+        "photo": "https://images.unsplash.com/photo-1726065809961-bbfd67737399?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "90 min",
         "d": "Lugo · Römische Stadtmauer",
         "desc": "UNESCO-Welterbe. Die einzige römische Mauer der Welt, die in voller Länge erhalten ist: 2 km begehbar.",
         "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 15min",
-        "d": "Praia das Catedrais bei Ebbe",
-        "desc": "Für Wiederholungstäter: der weniger besuchte Bereich, nur bei Ebbe zugänglich. Vorher offizielle Gezeiten prüfen.",
-        "photo": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800"
       }
     ],
     "asturiasPoi": [
@@ -405,34 +423,64 @@
         "photo": "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "20 min",
+        "t": "15 min",
         "d": "Tapia de Casariego",
         "desc": "Surf-Mekka des Nordens. Leuchtturm, Strände für alle Niveaus und ein authentisches Fischerzentrum.",
         "photo": "https://images.unsplash.com/photo-1583265627959-fb7042f5133b?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "50 min",
+        "t": "15 min",
+        "d": "Strand Porcia",
+        "desc": "Wilder und wenig besuchter Strand, umgeben von asturischen Wiesen. Ausgezeichnet zum Surfen und für Ruhe suchende.",
+        "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "25 min",
+        "d": "Puerto de Vega",
+        "desc": "Schönes Fischerdorf, als Historisch-Künstlerisches Ensemble ausgezeichnet. Malerischer Hafen, Indianer-Paläste und Stadtstrand.",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Luarca · Villa Blanca",
+        "desc": "Weiß getünchtes Fischerdorf mit Panoramafriedhof, sieben Brücken und Stadtstrand. Den Tagesfang probieren!",
+        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "30 min",
+        "d": "Eisenbahnroute",
+        "desc": "Ehemalige Bahnstrecke zum Grünweg umgewandelt, der die asturische Küste zwischen Klippen und unbekannten Stränden entlangführt.",
+        "photo": "https://images.unsplash.com/photo-1460748322947-f0f712dbfb7a?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
+        "d": "Taramundi",
+        "desc": "Kleines Dorf in Westasturien, bekannt für seine Handwerksmesser. Startpunkt der Mühlenroute und Beispiel für authentischen Landtourismus.",
+        "photo": "https://images.unsplash.com/photo-1756326276813-8cfe422d90c4?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "40 min",
         "d": "Cabo Busto",
         "desc": "Schwindelerregende Klippen und einer der spektakulärsten Leuchttürme des Kantabrischen Meeres. Im Frühling Ort zur Walbeobachtung.",
         "photo": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&q=80&w=800"
       },
       {
         "t": "45 min",
-        "d": "Luarca · Villa Blanca",
-        "desc": "Weiß getünchtes Fischerdorf mit Panoramafriedhof, sieben Brücken und Stadtstrand. Den Tagesfang probieren!",
-        "photo": "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=800"
+        "d": "Comarca de los Oscos",
+        "desc": "Drei Gemeinden in einem unberührten asturischen Hinterland. Volksarchitektur, Natur und nachhaltiger Landtourismus.",
+        "photo": "https://images.unsplash.com/photo-1579351143112-b04a09d24db4?auto=format&fit=crop&q=80&w=800"
       },
       {
-        "t": "1h 15min",
-        "d": "Cudillero",
-        "desc": "Das meistfotografierte Fischerdorf Spaniens. Bunte Häuser staffeln sich in einer Meeresschlucht. Früh anreisen.",
-        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
-      },
-      {
-        "t": "1h 30min",
+        "t": "45 min",
         "d": "Playa del Silencio",
         "desc": "Wilde Bucht, umgeben von senkrechten Klippen und kleinen Inseln. Das geologische Paradies des westlichen Asturiens.",
         "photo": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&q=80&w=800"
+      },
+      {
+        "t": "50 min",
+        "d": "Cudillero",
+        "desc": "Das meistfotografierte Fischerdorf Spaniens. Bunte Häuser staffeln sich in einer Meeresschlucht. Früh anreisen.",
+        "photo": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&q=80&w=800"
       }
     ]
   },
@@ -464,7 +512,7 @@
     "hours": "Mo–So · 9:00 – 21:00",
     "response": "Antwort in < 24h",
     "waMsg": "Hallo, ich hätte gerne Informationen über die Apartments in Ribadeo.",
-    "checkinTime": "Ab 15:00 Uhr",
+    "checkinTime": "Ab 16:00 Uhr",
     "checkoutTime": "Vor 11:00 Uhr",
     "waLabel": "WhatsApp",
     "immediateResponse": "Sofortige Antwort",

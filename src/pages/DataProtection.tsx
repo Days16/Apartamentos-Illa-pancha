@@ -32,14 +32,16 @@ export default function ProteccionDatos() {
               Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos
               digitales (LOPDGDD)
             </strong>{' '}
-            por parte de <strong>Illa Pancha Ribadeo</strong>.
+            por parte de <strong>Apartamentos Illa Pancha VUT — Ribatella Gestión S.L.</strong>
           </p>
 
           <h2>1. Responsable del tratamiento</h2>
           <p>
-            <strong>Titular:</strong> Illa Pancha Ribadeo S.L. (en constitución)
+            <strong>Titular:</strong> Ribatella Gestión S.L.
             <br />
             <strong>Domicilio:</strong> Ribadeo, Lugo, Galicia, España
+            <br />
+            <strong>Teléfono:</strong> +34 614 52 30 77
             <br />
             <strong>Email de contacto:</strong> info@apartamentosillapancha.com
             <br />

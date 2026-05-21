@@ -470,14 +470,6 @@ export default function BookingWidget({
               <strong>{convertPrice(extra)}</strong>
             </div>
           )}
-          {taxes > 0 && (
-            <div className="flex justify-between items-center text-sm text-gray-700">
-              <span>
-                {T.booking.taxesLabel} ({taxPct}%)
-              </span>
-              <strong>{convertPrice(taxes)}</strong>
-            </div>
-          )}
           <div className="flex justify-between items-center font-bold text-navy text-base border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
             <span>{T.detail.total}</span>
             <span>{convertPrice(total)}</span>
