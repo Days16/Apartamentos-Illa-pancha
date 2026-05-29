@@ -101,7 +101,7 @@ export default function Faq() {
                   </span>
                 </button>
                 {open === faq.id && (
-                  <div className="pb-5 text-gray-600 leading-relaxed text-sm">{getA(faq)}</div>
+                  <div className="pb-5 text-gray-600 leading-relaxed text-sm whitespace-pre-line">{getA(faq)}</div>
                 )}
               </div>
             ))}

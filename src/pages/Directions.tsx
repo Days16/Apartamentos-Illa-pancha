@@ -6,12 +6,9 @@ import Ico, { paths } from '../components/Ico';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { fetchWebsiteContent } from '../services/supabaseService';
+import { mapsUrl as MAPS_URL, mapsEmbedUrl as MAPS_EMBED } from '../constants/assets';
 
 const ADDRESS_DEFAULT = 'Av. Rosalía de Castro 25, 27700 Ribadeo, Lugo';
-const MAPS_URL =
-  'https://www.google.com/maps/place/Av.+de+Rosal%C3%ADa+de+Castro,+25,+27700+Ribadeo,+Lugo/@43.5397524,-7.0411052,199m/data=!3m1!1e3!4m6!3m5!1s0xd317e5724d77fed:0x5b60c517683c15a5!8m2!3d43.5399657!4d-7.0410569!16s%2Fg%2F11c19xgmd5?entry=ttu';
-const MAPS_EMBED =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d388.6!2d-7.041105!3d43.539752!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd317e5724d77fed%3A0x5b60c517683c15a5!2sAv.%20de%20Rosal%C3%ADa%20de%20Castro%2C%2025%2C%2027700%20Ribadeo%2C%20Lugo!5e0!3m2!1ses!2ses!4v1700000000000';
 
 const DEFAULTS = {
   car_es: 'Desde la A-8 (Autovía del Cantábrico), toma la salida Ribadeo. Sigue por la N-634 hasta el centro. Aparcamiento disponible en la zona.',

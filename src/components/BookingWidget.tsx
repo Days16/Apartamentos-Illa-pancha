@@ -141,7 +141,7 @@ export default function BookingWidget({
   const subtotalWithDiscount = subtotal - discountAmount;
 
   const taxPct =
-    typeof globalSettings.tax_percentage === 'number' ? globalSettings.tax_percentage : 10;
+    typeof globalSettings.tax_percentage === 'number' ? globalSettings.tax_percentage : 0;
 
   const extra = apt.extraNight ? apt.extraNight * nights : 0;
   const subtotalWithDiscountAndExtras = subtotalWithDiscount + extra;

@@ -492,7 +492,7 @@ export default function Home() {
                     </span>
                   </button>
                   {faqOpen === faq.id && (
-                    <div className="pb-5 text-gray-600 leading-relaxed text-sm">{pickA(faq)}</div>
+                    <div className="pb-5 text-gray-600 leading-relaxed text-sm whitespace-pre-line">{pickA(faq)}</div>
                   )}
                 </div>
               ))}

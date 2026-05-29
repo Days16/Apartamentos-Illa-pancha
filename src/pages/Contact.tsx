@@ -14,6 +14,7 @@ import { fetchApartments } from '../services/supabaseService';
 import { sendOwnerNotification } from '../services/resendService';
 import { safeHtml } from '../utils/sanitize';
 import { supabase } from '../lib/supabase';
+import { mapsUrl } from '../constants/assets';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', apt: '', msg: '' });
@@ -338,7 +339,7 @@ export default function Contact() {
               title="Ubicación Illa Pancha Ribadeo"
             />
             <a
-              href="https://www.google.com/maps/place/Av.+de+Rosal%C3%ADa+de+Castro,+25,+27700+Ribadeo,+Lugo/@43.5397524,-7.0411052,199m/data=!3m1!1e3!4m6!3m5!1s0xd317e5724d77fed:0x5b60c517683c15a5!8m2!3d43.5399657!4d-7.0410569!16s%2Fg%2F11c19xgmd5?entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D"
+              href={mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm text-navy text-xs font-semibold px-3 py-1.5 rounded-full shadow hover:bg-teal hover:text-white transition-colors"

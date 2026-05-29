@@ -238,7 +238,11 @@ export default function Calendario() {
     async function loadData() {
       try {
         const [apts, res] = await Promise.all([getApartments(), getReservations()]);
-        setApartments(apts);
+        const aptLetter = (name: string) => {
+          const m = name.match(/\d[º°']?\s*([A-Z])\s*$/i);
+          return m ? m[1].toUpperCase() : name;
+        };
+        setApartments([...apts].sort((a, b) => aptLetter(a.name).localeCompare(aptLetter(b.name))));
         const filteredRes = res.filter(r => r.status !== 'cancelled');
         setReservations(filteredRes);
       } catch (err) {

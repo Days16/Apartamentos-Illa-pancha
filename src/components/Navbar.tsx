@@ -108,14 +108,12 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
         >
           {T.nav.apartments}
         </Link>
-        {/*
         <Link
-          to="/nosotros"
-          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/nosotros') ? 'text-teal border-b-2 border-teal' : ''}`}
+          to="/como-llegar"
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/como-llegar') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
-          {T.nav.ribadeo}
+          {T.nav.comollegar}
         </Link>
-        */}
         <Link
           to="/experiencias"
           className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/experiencias') ? 'text-teal border-b-2 border-teal' : ''}`}

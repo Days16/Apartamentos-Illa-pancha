@@ -8,6 +8,17 @@ export const siteUrl = (
   import.meta.env.VITE_SITE_URL || 'https://www.apartamentosillapancha.com'
 ).replace(/\/$/, '');
 
+/** Enlace de Google Maps al negocio. Configurable via VITE_MAPS_URL en .env */
+export const mapsUrl =
+  import.meta.env.VITE_MAPS_URL?.trim() ||
+  'https://www.google.com/maps?cid=17198103483666018074&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAMYASAF&hl=es-ES&source=embed';
+
+/** URL del iframe embed de Google Maps. Configurable via VITE_MAPS_EMBED_URL en .env
+ *  IMPORTANTE: debe ser una URL /maps/embed?... — las URLs normales de Maps no funcionan en iframes. */
+export const mapsEmbedUrl =
+  import.meta.env.VITE_MAPS_EMBED_URL?.trim() ||
+  'https://maps.google.com/maps?q=43.5399657,-7.0410569&z=16&output=embed';
+
 export const assets = {
   // Global / Branding
   logo: {

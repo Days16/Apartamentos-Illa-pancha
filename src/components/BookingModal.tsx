@@ -175,7 +175,7 @@ export default function BookingModal({
   const belowMinStay = nights > 0 && nights < effectiveMinStay;
 
   const taxPct =
-    typeof globalSettings.tax_percentage === 'number' ? globalSettings.tax_percentage : 10;
+    typeof globalSettings.tax_percentage === 'number' ? globalSettings.tax_percentage : 0;
   const seasonalSubtotal =
     nights > 0
       ? nightlyBasePrices.length

@@ -17,7 +17,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { dateToStr, truncateMetaDescription } from '../utils/format';
-import { siteUrl, assets } from '../constants/assets';
+import { siteUrl, assets, mapsUrl } from '../constants/assets';
 
 import { trackEvent, EVENTS } from '../utils/analytics';
 import DOMPurify from 'dompurify';
@@ -581,12 +581,10 @@ export default function ApartmentDetail() {
               ))}
             </div>
             {(() => {
-              const mapsUrl =
-                apt.maps_url ||
-                'https://www.google.com/maps/place/Av.+de+Rosal%C3%ADa+de+Castro,+25,+27700+Ribadeo,+Lugo/@43.5397524,-7.0411052,199m/data=!3m1!1e3!4m6!3m5!1s0xd317e5724d77fed:0x5b60c517683c15a5!8m2!3d43.5399657!4d-7.0410569!16s%2Fg%2F11c19xgmd5?entry=ttu&g_ep=EgoyMDI2MDMxNS4wIKXMDSoASAFQAw%3D%3D';
+              const aptMapsUrl = apt.maps_url || mapsUrl;
               return (
                 <a
-                  href={mapsUrl}
+                  href={aptMapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 border border-gray-200 rounded-lg p-4 mb-8 hover:border-teal hover:bg-teal/5 transition-all group"
