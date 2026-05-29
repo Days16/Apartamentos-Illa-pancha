@@ -526,14 +526,6 @@ export default function BookingModal({
                   <span>{formatPrice(extrasTotal)}</span>
                 </div>
               )}
-              {taxes > 0 && (
-                <div className="flex justify-between items-center text-sm py-2 border-b border-white/10 px-0">
-                  <span className="text-white/55">
-                    {T.booking.taxesLabel} ({taxPct}%)
-                  </span>
-                  <span>{formatPrice(taxes)}</span>
-                </div>
-              )}
               <div className="flex justify-between items-center text-sm py-3 border-b-2 border-cyan-400 px-0">
                 <span className="font-serif text-lg">Total</span>
                 <strong className="font-serif text-xl">{formatPrice(total)}</strong>

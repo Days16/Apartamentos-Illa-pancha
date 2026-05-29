@@ -43,6 +43,7 @@ src/
   utils/        # pricing, format, generateInvoice, exportExcel, …
   services/     # supabaseService, dataService, resendService
   i18n/         # 5 idiomas: es / en / fr / de / pt
+  constants/    # assets.ts — URLs de imágenes hero y placeholders
 supabase/
   functions/    # 17 Edge Functions (Deno)
 tests/
@@ -59,9 +60,24 @@ tests/
 
 Los roles se asignan en Supabase con SQL (`raw_app_meta_data`).
 
+## Contenido editable sin tocar código
+
+| Contenido | Dónde editarlo |
+|---|---|
+| Textos de Home y Nosotros | Admin → `/admin/contenido-web` |
+| Página Cómo llegar (dirección, km, transportes) | Admin → `/admin/contenido-web` → pestaña «Cómo llegar» |
+| Preguntas frecuentes | Admin → `/admin/faq` |
+| Estancia mínima por fechas | Admin → `/admin/reglas-reserva` |
+| Foto hero (portada) | `src/constants/assets.ts` → `assets.hero.background` |
+| IVA sobre reservas | Admin → Pagos & IVA (`tax_percentage`) |
+
 ## Idiomas soportados
 
 ES · EN · FR · DE · PT — todas las claves deben estar en los 5 ficheros de `src/i18n/locales/`.
+
+---
+
+Ver [CLAUDE.md](./CLAUDE.md) para la guía completa de arquitectura y convenciones de código.
 
 ## Licencia
 

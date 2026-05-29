@@ -74,6 +74,15 @@ export default function WebTextos() {
     'about_exp_desc_1_en',
     'about_exp_desc_2',
     'about_exp_desc_2_en',
+
+    // ... CÓMO LLEGAR ...
+    'directions_address',
+    'directions_car_text',
+    'directions_car_text_en',
+    'directions_bus_text',
+    'directions_bus_text_en',
+    'directions_airport_text',
+    'directions_airport_text_en',
   ];
   const [settings, setSettings] = useState(() => {
     const initialState = {
@@ -121,6 +130,11 @@ export default function WebTextos() {
             } else {
               newSettings[c.section_key] = c.content_es || '';
             }
+          }
+          // Cargar versión EN de los campos de directions desde content_en del mismo row
+          const enKey = c.section_key + '_en';
+          if (KEYS.includes(enKey) && c.section_key.startsWith('directions_')) {
+            newSettings[enKey] = c.content_en || '';
           }
         });
 
@@ -182,7 +196,7 @@ export default function WebTextos() {
       ];
 
       KEYS.forEach(key => {
-        const page = key.startsWith('home_') ? 'home' : 'about';
+        const page = key.startsWith('home_') ? 'home' : key.startsWith('directions_') ? 'directions' : 'about';
         if (key.endsWith('_en')) {
           const baseKey = key.replace('_en', '');
           updates.push(updateWebsiteContent(baseKey, { page, content_en: settings[key] }));
@@ -225,6 +239,7 @@ export default function WebTextos() {
               { key: 'inicio', label: 'Inicio' },
               { key: 'inicio_feat', label: 'Características' },
               { key: 'nosotros', label: 'Nosotros' },
+              { key: 'comoLlegar', label: 'Cómo llegar' },
             ].map(t => (
               <button
                 key={t.key}
@@ -446,6 +461,83 @@ export default function WebTextos() {
                   <Field label="Experiences Title (EN)" name="about_exp_title_en" />
                   <Field label="Experiences Text 1 (EN)" name="about_exp_desc_1_en" isTextarea />
                   <Field label="Experiences Text 2 (EN)" name="about_exp_desc_2_en" isTextarea />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CÓMO LLEGAR TAB */}
+          {activeTab === 'comoLlegar' && (
+            <div className="space-y-8 animate-in fade-in duration-300">
+              <div className="font-serif text-xl text-navy mb-5">Cómo llegar: datos de transporte</div>
+              <p className="text-xs text-gray-500 -mt-4">
+                Estos textos aparecen en la página <strong>/como-llegar</strong>. Deja un campo vacío para usar el texto por defecto del código.
+              </p>
+
+              {/* DIRECCIÓN */}
+              <div className="space-y-3">
+                <div className="text-sm font-bold text-navy uppercase tracking-wider">Dirección</div>
+                <Field
+                  label="Dirección completa (todos los idiomas)"
+                  name="directions_address"
+                  placeholder="Av. Rosalía de Castro 25, 27700 Ribadeo, Lugo"
+                />
+              </div>
+
+              {/* EN COCHE */}
+              <div className="space-y-3 border-t border-gray-100 pt-6">
+                <div className="text-sm font-bold text-navy uppercase tracking-wider">En coche / By car</div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Field
+                    label="Descripción (ES)"
+                    name="directions_car_text"
+                    isTextarea
+                    placeholder="Desde la A-8 (Autovía del Cantábrico), toma la salida Ribadeo..."
+                  />
+                  <Field
+                    label="Description (EN)"
+                    name="directions_car_text_en"
+                    isTextarea
+                    placeholder="From the A-8 motorway, take the Ribadeo exit..."
+                  />
+                </div>
+              </div>
+
+              {/* AUTOBÚS */}
+              <div className="space-y-3 border-t border-gray-100 pt-6">
+                <div className="text-sm font-bold text-navy uppercase tracking-wider">Autobús / Bus</div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Field
+                    label="Descripción (ES)"
+                    name="directions_bus_text"
+                    isTextarea
+                    placeholder="Bus ALSA desde Lugo, Oviedo y A Coruña..."
+                  />
+                  <Field
+                    label="Description (EN)"
+                    name="directions_bus_text_en"
+                    isTextarea
+                    placeholder="ALSA buses from Lugo, Oviedo and A Coruña..."
+                  />
+                </div>
+              </div>
+
+              {/* AEROPUERTO */}
+              <div className="space-y-3 border-t border-gray-100 pt-6">
+                <div className="text-sm font-bold text-navy uppercase tracking-wider">Aeropuertos / Airports</div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Field
+                    label="Descripción (ES)"
+                    name="directions_airport_text"
+                    isTextarea
+                    placeholder="Aeropuerto de Santiago de Compostela (SCQ) a 190 km. Aeropuerto de Asturias (OVD) a 115 km..."
+                  />
+                  <Field
+                    label="Description (EN)"
+                    name="directions_airport_text_en"
+                    isTextarea
+                    placeholder="Santiago de Compostela Airport (SCQ) 190 km away. Asturias Airport (OVD) 115 km away..."
+                  />
                 </div>
               </div>
             </div>

@@ -22,7 +22,7 @@ const NAV_SECTIONS: NavSection[] = [
       { path: '/admin/faq', label: 'FAQ', icon: paths.check },
       { path: '/admin/blog', label: 'Blog', icon: paths.edit },
       { path: '/admin/experiencias', label: 'Fotos experiencias', icon: paths.photo },
-      //{ path: '/admin/web', label: 'Textos web', icon: paths.edit },
+      { path: '/admin/web', label: 'Textos web', icon: paths.edit },
     ],
   },
   {

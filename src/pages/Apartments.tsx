@@ -38,9 +38,6 @@ export default function Apartments() {
   const [selectedApt, _setSelectedApt] = useState<Apartment | null>(null);
   const [priceRange, setPriceRange] = useState(searchParams.get('price') || 'all');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'default');
-  const [amenityFilters, setAmenityFilters] = useState<string[]>(
-    searchParams.get('amenities')?.split(',') ?? []
-  );
   const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   // Load apartments and reservations from the unified service layer
@@ -81,16 +78,14 @@ export default function Apartments() {
     if (filter !== 'all') params.filter = filter;
     if (priceRange !== 'all') params.price = priceRange;
     if (sortBy !== 'default') params.sort = sortBy;
-    if (amenityFilters.length > 0) params.amenities = amenityFilters.join(',');
     setSearchParams(params, { replace: true });
-  }, [checkin, checkout, guests, filter, priceRange, sortBy, amenityFilters, setSearchParams]);
+  }, [checkin, checkout, guests, filter, priceRange, sortBy, setSearchParams]);
 
   const FILTERS = [
     { id: 'all', label: A.filters.all },
     { id: '2', label: A.filters.f2 },
     { id: '4', label: A.filters.f4 },
     { id: '6', label: A.filters.f6 },
-    { id: 'sea', label: A.filters.sea },
   ];
 
   const handleSearch = () => {
@@ -111,18 +106,6 @@ export default function Apartments() {
     });
   };
 
-  const AMENITY_OPTIONS = [
-    { key: 'WiFi', label: 'WiFi' },
-    { key: 'Parking', label: lang === 'EN' ? 'Parking' : 'Parking' },
-    { key: 'Terraza', label: lang === 'EN' ? 'Terrace' : 'Terraza' },
-    { key: 'Vistas', label: lang === 'EN' ? 'Sea views' : 'Vistas al mar' },
-    { key: 'Barbacoa', label: lang === 'EN' ? 'BBQ' : 'Barbacoa' },
-  ];
-
-  const toggleAmenity = (key: string) => {
-    setAmenityFilters(prev => (prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]));
-  };
-
   const filtered = useMemo(
     () =>
       apartments
@@ -134,11 +117,6 @@ export default function Apartments() {
           if (filter === '2' && capacity > 2) return false;
           if (filter === '4' && (capacity < 3 || capacity > 4)) return false;
           if (filter === '6' && capacity < 5) return false;
-          if (
-            filter === 'sea' &&
-            !amenities.some(a => typeof a === 'string' && a.includes('Vistas'))
-          )
-            return false;
           // Filtro huéspedes
           if (searched && guests > capacity) return false;
           // Filtro precio
@@ -146,17 +124,6 @@ export default function Apartments() {
           if (priceRange === '<100' && price >= 100) return false;
           if (priceRange === '100-150' && (price < 100 || price > 150)) return false;
           if (priceRange === '150+' && price <= 150) return false;
-          // Filtro comodidades
-          if (amenityFilters.length > 0) {
-            if (
-              !amenityFilters.every(f =>
-                amenities.some(
-                  a => typeof a === 'string' && a.toLowerCase().includes(f.toLowerCase())
-                )
-              )
-            )
-              return false;
-          }
           return true;
         })
         .map(apt => ({ ...apt, dateAvailable: !checkOverlap(apt) }))
@@ -181,7 +148,6 @@ export default function Apartments() {
       checkin,
       checkout,
       priceRange,
-      amenityFilters,
       sortBy,
       reservations,
     ]
@@ -288,15 +254,14 @@ export default function Apartments() {
           ))}
           <button
             onClick={() => setShowMoreFilters(v => !v)}
-            className={`ml-auto px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${showMoreFilters || priceRange !== 'all' || sortBy !== 'default' || amenityFilters.length > 0 ? 'bg-navy text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-100'}`}
+            className={`ml-auto px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${showMoreFilters || priceRange !== 'all' || sortBy !== 'default' ? 'bg-navy text-white' : 'border border-gray-300 text-gray-600 hover:bg-gray-100'}`}
           >
             {lang === 'EN' ? 'More filters' : 'Más filtros'}
-            {(priceRange !== 'all' || sortBy !== 'default' || amenityFilters.length > 0) && (
+            {(priceRange !== 'all' || sortBy !== 'default') && (
               <span className="bg-white text-navy rounded-full w-4 h-4 text-xs flex items-center justify-center font-bold">
                 {[
                   priceRange !== 'all' ? 1 : 0,
                   sortBy !== 'default' ? 1 : 0,
-                  amenityFilters.length > 0 ? 1 : 0,
                 ].reduce((a, b) => a + b, 0)}
               </span>
             )}
@@ -354,32 +319,12 @@ export default function Apartments() {
               </div>
             </div>
 
-            {/* COMODIDADES */}
-            <div>
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                {lang === 'EN' ? 'Amenities' : 'Comodidades'}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {AMENITY_OPTIONS.map(opt => (
-                  <button
-                    key={opt.key}
-                    onClick={() => toggleAmenity(opt.key)}
-                    className={`px-4 py-1.5 rounded-full text-sm transition-all flex items-center gap-1.5 ${amenityFilters.includes(opt.key) ? 'bg-teal text-white font-semibold' : 'bg-white border border-gray-300 text-gray-600 hover:border-teal'}`}
-                  >
-                    {amenityFilters.includes(opt.key) && <span>✓</span>}
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* LIMPIAR */}
-            {(priceRange !== 'all' || sortBy !== 'default' || amenityFilters.length > 0) && (
+            {(priceRange !== 'all' || sortBy !== 'default') && (
               <button
                 onClick={() => {
                   setPriceRange('all');
                   setSortBy('default');
-                  setAmenityFilters([]);
                 }}
                 className="text-sm text-red-500 hover:text-red-700 font-semibold transition-colors"
               >
@@ -427,7 +372,6 @@ export default function Apartments() {
             : filtered.map(apt => {
                 const status = getAvailStatus(apt);
                 const tagline = lang === 'EN' ? apt.taglineEn || apt.tagline : apt.tagline;
-                const topAmenities = (apt.amenities || []).slice(0, 3);
                 return (
                   <div
                     key={apt.slug}
@@ -514,25 +458,6 @@ export default function Apartments() {
                           </span>
                         )}
                       </div>
-
-                      {/* Amenities top */}
-                      {topAmenities.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mb-4">
-                          {topAmenities.map((a, i) => (
-                            <span
-                              key={i}
-                              className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium"
-                            >
-                              {a}
-                            </span>
-                          ))}
-                          {(apt.amenities || []).length > 3 && (
-                            <span className="text-[10px] text-slate-400 px-2 py-0.5">
-                              +{(apt.amenities || []).length - 3}
-                            </span>
-                          )}
-                        </div>
-                      )}
 
                       {/* Precio + CTA */}
                       <div className="flex justify-between items-center pt-4 border-t border-gray-100 mt-auto">
