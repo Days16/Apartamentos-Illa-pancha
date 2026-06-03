@@ -7,10 +7,20 @@ const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") as string, {
     httpClient: Stripe.createFetchHttpClient(),
 });
 
-const corsHeaders = {
-    "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = [
+    "https://apartamentosillapancha.com",
+    "https://www.apartamentosillapancha.com",
+    "http://localhost:5173",
+];
+
+function getCorsHeaders(req: Request): Record<string, string> {
+    const origin = req.headers.get("origin") ?? "";
+    return {
+        "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : "",
+        "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+        "Vary": "Origin",
+    };
+}
 
 const TURNSTILE_SECRET = Deno.env.get("TURNSTILE_SECRET_KEY") || "";
 
@@ -29,7 +39,6 @@ async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
     return data.success === true;
 }
 
-// Rate limiting persistente en Supabase: 3 intentos por IP cada 10 minutos
 const RATE_LIMIT = 3;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 
@@ -55,6 +64,8 @@ async function isRateLimited(ip: string): Promise<boolean> {
 }
 
 serve(async (req) => {
+    const corsHeaders = getCorsHeaders(req);
+
     if (req.method === "OPTIONS") {
         return new Response("ok", { headers: corsHeaders });
     }
@@ -68,15 +79,14 @@ serve(async (req) => {
     }
 
     try {
-        const {
-            amount,
-            currency,
-            customerEmail,
-            customerName,
-            reservationId,
-            description,
-            turnstileToken,
-        } = await req.json();
+        const { reservationId, customerName, turnstileToken } = await req.json();
+
+        if (!reservationId || typeof reservationId !== "string") {
+            return new Response(
+                JSON.stringify({ error: "Reserva no válida." }),
+                { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+            );
+        }
 
         const turnstileOk = await verifyTurnstile(turnstileToken || "", ip);
         if (!turnstileOk) {
@@ -88,21 +98,56 @@ serve(async (req) => {
             );
         }
 
+        // Obtener precio y datos de la reserva DESDE LA BASE DE DATOS
+        const supabase = createClient(
+            Deno.env.get("SUPABASE_URL") ?? "",
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+        );
+        const { data: reservation, error: resErr } = await supabase
+            .from("reservations")
+            .select("deposit, total, status, email, apt_slug")
+            .eq("id", reservationId)
+            .single();
+
+        if (resErr || !reservation) {
+            return new Response(
+                JSON.stringify({ error: "Reserva no encontrada." }),
+                { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
+            );
+        }
+
+        if (reservation.status !== "pending") {
+            return new Response(
+                JSON.stringify({ error: "Esta reserva ya ha sido procesada." }),
+                { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
+            );
+        }
+
+        // El importe siempre viene de la BD, nunca del cliente
+        const amount = Math.round((reservation.deposit ?? reservation.total ?? 0) * 100);
+
+        if (amount <= 0) {
+            return new Response(
+                JSON.stringify({ error: "Importe de reserva no válido." }),
+                { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+            );
+        }
+
         const paymentIntent = await stripe.paymentIntents.create({
             amount,
-            currency: currency || 'eur',
-            description: description || `Reserva ${reservationId}`,
-            receipt_email: customerEmail,
-            metadata: {
-                reservationId,
-                customerName,
-            }
+            currency: "eur",
+            description: `Reserva ${reservation.apt_slug} — ${reservationId}`,
+            receipt_email: reservation.email,
+            metadata: { reservationId, customerName: customerName ?? "" },
+        }, {
+            idempotencyKey: `payment-${reservationId}`,
         });
 
         return new Response(
             JSON.stringify({
                 clientSecret: paymentIntent.client_secret,
-                paymentIntentId: paymentIntent.id
+                paymentIntentId: paymentIntent.id,
+                amount,
             }),
             {
                 headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -110,11 +155,12 @@ serve(async (req) => {
             }
         );
     } catch (error) {
-        console.error("Payment error detail:", error);
+        const requestId = crypto.randomUUID();
+        console.error(`[${requestId}] Payment error:`, error);
         return new Response(
-            JSON.stringify({ 
-                error: error.message,
-                detail: error.stack
+            JSON.stringify({
+                error: "Error procesando el pago. Inténtalo de nuevo.",
+                requestId,
             }),
             {
                 headers: { ...corsHeaders, "Content-Type": "application/json" },

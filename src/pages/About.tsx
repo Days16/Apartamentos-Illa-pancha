@@ -9,7 +9,7 @@ import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { safeHtml } from '../utils/sanitize';
 import { useSettings } from '../contexts/SettingsContext';
-import { mapsUrl } from '../constants/assets';
+import { siteUrl, mapsUrl } from '../constants/assets';
 
 export default function About() {
   const navigate = useNavigate();
@@ -21,7 +21,39 @@ export default function About() {
 
   return (
     <>
-      <SEO title={T.seo.aboutTitle} description={T.seo.aboutDesc} />
+      <SEO
+        title={T.seo.aboutTitle}
+        description={T.seo.aboutDesc}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: 'Illa Pancha',
+          url: siteUrl,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${siteUrl}/logo_color.png`,
+          },
+          telephone: settings?.contact_phone || '+34 614 52 30 77',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: settings?.property_address || 'Av. Rosalía de Castro 25',
+            addressLocality: 'Ribadeo',
+            addressRegion: 'Galicia',
+            postalCode: '27700',
+            addressCountry: 'ES',
+          },
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: 43.5354,
+            longitude: -7.0415,
+          },
+          numberOfEmployees: { '@type': 'QuantitativeValue', value: 8 },
+          foundingLocation: {
+            '@type': 'Place',
+            name: 'Ribadeo, Galicia, España',
+          },
+        }}
+      />
       <Navbar onOpenBooking={() => setBookingOpen(true)} />
 
       {/* HERO */}

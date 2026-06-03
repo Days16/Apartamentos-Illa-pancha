@@ -58,6 +58,7 @@ export default function BookingModal({
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
   const [showErrors, setShowErrors] = useState(false);
+  const [cardComplete, setCardComplete] = useState(false);
   const [seasonPrices, setSeasonPrices] = useState<DbSeasonPrice[]>([]);
   const [nightlyBasePrices, setNightlyBasePrices] = useState<number[]>([]);
   const [dynamicRuleAdjustment, setDynamicRuleAdjustment] = useState(0);
@@ -264,6 +265,11 @@ export default function BookingModal({
       return;
     }
 
+    if (!cardComplete) {
+      setStripeError(T.booking.errorCard ?? 'Introduce los datos de tu tarjeta.');
+      return;
+    }
+
     setLoading(true);
     setStripeError('');
 
@@ -290,29 +296,11 @@ export default function BookingModal({
         return;
       }
 
-      // Create reservation ID (cryptographically secure)
+      // 1. Crear reserva en BD con estado 'pending' ANTES del pago
+      //    El servidor leerá el deposit desde aquí, nunca del cliente
       const reservationId =
         'IP-' + ((crypto.getRandomValues(new Uint32Array(1))[0] % 900000) + 100000);
 
-      // 1. Create PaymentIntent in Edge Function
-      const paymentData = await createPaymentIntent({
-        amount: deposit,
-        currency: 'eur',
-        customerEmail: form.email,
-        customerName: form.name,
-        reservationId: reservationId,
-        description: `${apartment?.name || 'Apt. Cantábrico'} - ${nights} noches`,
-        turnstileToken: captchaToken,
-      });
-
-      // 2. Confirm payment with Stripe Elements
-      const paymentResult = await confirmPayment(stripe, elements, paymentData.clientSecret);
-
-      if (!paymentResult.success) {
-        throw new Error('Error en confirmación de pago');
-      }
-
-      // 3. Create reservation record in Supabase
       const { error: insertError } = await supabase.from('reservations').insert([
         {
           id: reservationId,
@@ -327,7 +315,7 @@ export default function BookingModal({
           total: total,
           deposit: deposit,
           extras: selectedExtras,
-          status: 'confirmed',
+          status: 'pending',
           source: 'web',
           review_token: crypto.randomUUID(),
           created_at: new Date().toISOString(),
@@ -335,6 +323,25 @@ export default function BookingModal({
       ]);
 
       if (insertError) throw insertError;
+
+      // 2. Crear PaymentIntent — el servidor lee el importe desde la BD
+      const paymentData = await createPaymentIntent({
+        customerName: form.name,
+        reservationId: reservationId,
+        turnstileToken: captchaToken,
+      });
+
+      // 3. Confirmar pago con Stripe Elements
+      const paymentResult = await confirmPayment(stripe, elements, paymentData.clientSecret);
+
+      if (!paymentResult.success) {
+        // Marcar reserva como cancelada si el pago falla
+        await supabase.from('reservations').update({ status: 'cancelled' }).eq('id', reservationId);
+        throw new Error('Error en confirmación de pago');
+      }
+
+      // 4. Actualizar estado a confirmed (también lo hará el webhook de Stripe)
+      await supabase.from('reservations').update({ status: 'confirmed' }).eq('id', reservationId).eq('status', 'pending');
 
       // 4. Send confirmation email with Resend
       try {
@@ -446,15 +453,15 @@ export default function BookingModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-3 sm:p-6"
       onClick={e => e.target === e.currentTarget && onClose()}
     >
       <div
         ref={panelRef}
-        className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 rounded-lg overflow-hidden flex max-w-5xl w-full max-h-[90vh]"
+        className="bg-white dark:bg-slate-900 dark:border dark:border-slate-700 rounded-2xl sm:rounded-lg overflow-hidden flex flex-col sm:flex-row w-full sm:max-w-5xl max-h-[92dvh] sm:max-h-[90vh]"
       >
-        {/* LEFT PANEL */}
-        <div className="bg-gradient-to-br from-slate-900 to-slate-900 text-white flex-1 p-8 flex flex-col justify-between">
+        {/* LEFT PANEL — oculto en móvil */}
+        <div className="hidden sm:flex bg-gradient-to-br from-slate-900 to-slate-900 text-white flex-1 p-8 flex-col justify-between">
           <div className="flex flex-col gap-3 mb-12 pb-8 border-b border-white/20">
             {steps.map((s, i) => (
               <span
@@ -583,18 +590,48 @@ export default function BookingModal({
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="flex-1 p-8 overflow-y-auto bg-white relative">
+        <div className="flex-1 bg-white dark:bg-slate-900 relative flex flex-col overflow-hidden">
+
+          {/* Barra resumen móvil — solo visible en pantallas pequeñas */}
+          {step < 3 && (
+            <div className="sm:hidden flex-shrink-0 bg-slate-800 text-white px-5 pt-4 pb-3">
+              <div className="flex items-center gap-1.5 mb-2">
+                {steps.map((s, i) => (
+                  <span
+                    key={i}
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors ${step === i ? 'bg-cyan-400 text-slate-900' : 'text-white/30'}`}
+                  >
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                ))}
+              </div>
+              <div className="flex justify-between items-end pr-10">
+                <div>
+                  <div className="text-sm font-semibold">{apt.name}</div>
+                  <div className="text-xs text-white/60">
+                    {checkin} – {checkout} · {nights} {nights === 1 ? T.common.night : T.common.nights}
+                  </div>
+                </div>
+                <div className="font-serif text-xl font-bold">{formatPrice(total)}</div>
+              </div>
+            </div>
+          )}
+
+          {/* Botón cerrar */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-6 bg-transparent border-0 cursor-pointer text-slate-500"
+            className="absolute top-4 right-4 sm:top-5 sm:right-6 bg-transparent border-0 cursor-pointer text-slate-400 sm:text-slate-500 z-20"
           >
             <Ico d={paths.close} size={20} />
           </button>
 
+          {/* Contenido del paso — scrollable */}
+          <div className="flex-1 overflow-y-auto p-5 sm:p-8">
+
           {/* STEP 0: DATA (formerly step 1) */}
           {step === 0 && (
             <>
-              <div className="font-serif text-2xl font-light text-slate-900 mb-8">
+              <div className="font-serif text-2xl font-light text-slate-900 mb-5 sm:mb-8">
                 {T.booking.title1}
               </div>
               <label
@@ -609,6 +646,7 @@ export default function BookingModal({
                 placeholder={T.booking.placeholderName}
                 value={form.name}
                 onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                maxLength={100}
               />
               <label
                 htmlFor="booking-email"
@@ -618,10 +656,12 @@ export default function BookingModal({
               </label>
               <input
                 id="booking-email"
+                type="email"
                 className={`w-full px-3 py-2 border rounded text-sm text-slate-900 focus:outline-none focus:border-[#82c8bd] focus:ring-2 focus:ring-[#82c8bd]/20 ${showErrors && !isValidEmail(form.email) ? 'border-[#f44]' : 'border-gray-300'}`}
                 placeholder={T.booking.placeholderEmail}
                 value={form.email}
                 onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                maxLength={254}
               />
               <label
                 htmlFor="booking-phone"
@@ -655,6 +695,7 @@ export default function BookingModal({
                   placeholder={T.booking.placeholderPhone}
                   value={form.phone}
                   type="tel"
+                  maxLength={20}
                   onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
                 />
               </div>
@@ -731,10 +772,10 @@ export default function BookingModal({
           {/* STEP 1: EXTRAS */}
           {step === 1 && (
             <>
-              <div className="font-serif text-2xl font-light text-slate-900 mb-2">
+              <div className="font-serif text-2xl font-light text-slate-900 mb-2 sm:mb-2">
                 {T.booking.optionalExtras}
               </div>
-              <div className="text-sm text-slate-600 mb-6">{T.booking.extrasDesc}</div>
+              <div className="text-sm text-slate-600 mb-4 sm:mb-6">{T.booking.extrasDesc}</div>
 
               {activeExtras.length === 0 ? (
                 <div className="text-sm text-slate-600 py-5">{T.booking.noExtras}</div>
@@ -810,7 +851,7 @@ export default function BookingModal({
               <div className="font-serif text-2xl font-light text-slate-900 mb-2">
                 {T.booking.title3}
               </div>
-              <div className="text-xs text-gray-600 mb-8 flex items-center gap-1.5">
+              <div className="text-xs text-gray-600 mb-5 sm:mb-8 flex items-center gap-1.5">
                 <Ico d={paths.lock} size={13} color="#8a8a8a" />
                 {T.booking.secureProcessed}
               </div>
@@ -846,6 +887,7 @@ export default function BookingModal({
                         invalid: { color: '#dc3545' },
                       },
                     }}
+                    onChange={e => setCardComplete(e.complete)}
                   />
                 </div>
                 {import.meta.env.DEV && (
@@ -907,7 +949,8 @@ export default function BookingModal({
               </button>
             </div>
           )}
-        </div>
+          </div>{/* fin contenido scrollable */}
+        </div>{/* fin RIGHT PANEL */}
       </div>
     </div>
   );

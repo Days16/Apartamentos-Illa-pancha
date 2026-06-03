@@ -123,33 +123,56 @@ export default function Home() {
         ogType="website"
         jsonLd={{
           '@context': 'https://schema.org',
-          '@type': 'LodgingBusiness',
-          name: 'Illa Pancha',
-          url: siteUrl,
-          telephone: '+34 614 52 30 77',
-          image: import.meta.env.VITE_OG_IMAGE_URL?.trim() || assets.hero.background,
-          description: T.seo.homeDesc,
-          address: {
-            '@type': 'PostalAddress',
-            streetAddress: 'Ribadeo',
-            addressLocality: 'Ribadeo',
-            addressRegion: 'Galicia',
-            postalCode: '27700',
-            addressCountry: 'ES',
-          },
-          geo: {
-            '@type': 'GeoCoordinates',
-            latitude: 43.5354,
-            longitude: -7.0415,
-          },
-          aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: '4.9',
-            reviewCount: '220',
-            bestRating: '5',
-          },
-          priceRange: '€€',
-          numberOfRooms: 8,
+          '@graph': [
+            {
+              '@type': 'LodgingBusiness',
+              name: 'Illa Pancha',
+              url: siteUrl,
+              telephone: '+34 614 52 30 77',
+              image: import.meta.env.VITE_OG_IMAGE_URL?.trim() || assets.hero.background,
+              logo: {
+                '@type': 'ImageObject',
+                url: `${siteUrl}/logo_color.png`,
+              },
+              description: T.seo.homeDesc,
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'Av. Rosalía de Castro 25',
+                addressLocality: 'Ribadeo',
+                addressRegion: 'Galicia',
+                postalCode: '27700',
+                addressCountry: 'ES',
+              },
+              geo: {
+                '@type': 'GeoCoordinates',
+                latitude: 43.5354,
+                longitude: -7.0415,
+              },
+              aggregateRating: {
+                '@type': 'AggregateRating',
+                ratingValue: '4.9',
+                reviewCount: '220',
+                bestRating: '5',
+              },
+              priceRange: '€€',
+              numberOfRooms: 8,
+            },
+            ...(faqs.length > 0
+              ? [
+                  {
+                    '@type': 'FAQPage',
+                    mainEntity: faqs.map(faq => ({
+                      '@type': 'Question',
+                      name: pickQ(faq),
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: pickA(faq),
+                      },
+                    })),
+                  },
+                ]
+              : []),
+          ],
         }}
       />
       <Navbar onOpenBooking={() => setBookingOpen(true)} />
@@ -324,20 +347,14 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+        <div className="home-apts-grid mt-12">
           {loading
             ? Array.from({ length: 6 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-lg overflow-hidden shadow-sm bg-white min-h-[300px] animate-pulse"
-                >
-                  <div className="bg-gray-200 h-52" />
-                  <div className="p-6 space-y-3">
+                <div key={i} className="home-apt-card-skeleton animate-pulse">
+                  <div className="home-apt-card-skeleton-img bg-gray-200" />
+                  <div className="home-apt-card-skeleton-body">
                     <div className="h-5 bg-gray-200 rounded w-2/3" />
-                    <div className="flex justify-between">
-                      <div className="h-4 bg-gray-200 rounded w-1/3" />
-                      <div className="h-4 bg-gray-200 rounded w-1/4" />
-                    </div>
+                    <div className="h-3 bg-gray-200 rounded w-1/3 mt-2" />
                   </div>
                 </div>
               ))
@@ -362,54 +379,59 @@ export default function Home() {
                   if (!a.available && b.available) return 1;
                   return 0;
                 })
-                .map((apt, _i) => (
+                .map(apt => (
                   <div
                     key={apt.slug}
-                    className={`group relative flex flex-col rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all h-full min-h-[300px] ${searched && !apt.available ? 'opacity-70' : ''}`}
+                    className="home-apt-card group"
                     onClick={() => navigate(`/apartamentos/${apt.slug}`)}
                   >
-                    <div className="relative w-full flex-shrink-0" style={{ minHeight: 200 }}>
+                    {/* Imagen con zoom al hover */}
+                    <div className="home-apt-card-img-wrap">
                       {apt.coverPhoto ? (
                         <img
                           src={apt.coverPhoto}
                           alt={apt.name}
                           loading="lazy"
-                          className="absolute inset-0 w-full h-full object-cover"
+                          className="home-apt-card-img group-hover:scale-105"
                         />
                       ) : (
                         <div
-                          className="absolute inset-0 flex items-center justify-center"
+                          className="home-apt-card-img"
                           style={{
                             background: apt.color
-                              ? `linear-gradient(135deg, ${apt.color}cc, ${apt.color}88)`
+                              ? `linear-gradient(135deg, ${apt.color}cc, ${apt.color}55)`
                               : 'linear-gradient(135deg, #1a5f6e, #2C4A5E)',
                           }}
-                        >
-                          <Ico d={paths.photo} size={40} color="rgba(255,255,255,0.12)" />
+                        />
+                      )}
+
+                      {/* Degradado inferior */}
+                      <div className="home-apt-card-gradient" />
+
+                      {/* Badge precio — esquina superior derecha */}
+                      <div className="home-apt-price-badge">
+                        <span className="home-apt-price-from">{T.common.from}</span>
+                        {convertPrice(apt.price)}
+                        <span className="home-apt-price-night">{T.common.perNight}</span>
+                      </div>
+
+                      {/* Info superpuesta en la parte inferior */}
+                      <div className="home-apt-card-info">
+                        <h3 className="home-apt-card-name">{apt.name}</h3>
+                        <div className="home-apt-card-meta">
+                          <span>{apt.capacity} {T.apartments.persons} · {apt.beds} {T.apartments.beds}</span>
+                          <span className="home-apt-card-cta">
+                            {T.home.meetApts} →
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Overlay si no disponible en búsqueda */}
+                      {searched && !apt.available && (
+                        <div className="home-apt-unavail-overlay">
+                          <span className="home-apt-unavail-badge">{T.apartments.unavailable}</span>
                         </div>
                       )}
-                    </div>
-                    {searched && !apt.available ? (
-                      <div className="absolute top-4 right-4 bg-gray-700 text-white px-3 py-1 rounded text-sm z-10 font-medium">
-                        {T.apartments.unavailable}
-                      </div>
-                    ) : (
-                      <div className="absolute top-4 right-4 bg-teal text-white px-3 py-1 rounded text-sm z-10 font-medium">
-                        {apt.tagline}
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-all" />
-                    <div className="p-6 bg-white">
-                      <h3 className="text-xl font-serif font-bold text-navy mb-2">{apt.name}</h3>
-                      <div className="flex justify-between items-center text-sm text-gray-600 mb-4">
-                        <span>
-                          {apt.capacity} pers · {apt.beds} dorm
-                        </span>
-                        <span className="font-semibold text-teal text-lg">
-                          {T.common.from} {convertPrice(apt.price)}
-                          <span className="text-xs text-gray-500">{T.common.perNight}</span>
-                        </span>
-                      </div>
                     </div>
                   </div>
                 ))}

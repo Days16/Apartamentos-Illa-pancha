@@ -19,10 +19,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 //   );
 // Doc: https://supabase.com/docs/guides/functions/schedule-functions
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 // ─── Parser iCal ──────────────────────────────────────────────────────────────
 interface ICalEvent {
@@ -159,7 +156,18 @@ function generateWebId(): string {
     return "IP-" + (Math.floor(Math.random() * 900000) + 100000);
 }
 
+function isValidICalUrl(rawUrl: string): boolean {
+  let parsed: URL;
+  try { parsed = new URL(rawUrl); } catch { return false; }
+  if (!["https:", "http:"].includes(parsed.protocol)) return false;
+  const blocked = ["localhost", "127.0.0.1", "0.0.0.0", "::1"];
+  if (blocked.includes(parsed.hostname)) return false;
+  if (/^169\.254\.|^10\.|^172\.(1[6-9]|2\d|3[01])\.|^192\.168\./.test(parsed.hostname)) return false;
+  return true;
+}
+
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -236,6 +244,10 @@ serve(async (req) => {
       }
 
       try {
+      if (!isValidICalUrl(source.url)) {
+        throw new Error(`URL iCal no permitida: ${source.url}`);
+      }
+
       const res = await fetch(source.url, {
         headers: { "User-Agent": "IllaPancha/1.0 iCalSync" },
         signal: AbortSignal.timeout(15000),
@@ -243,6 +255,10 @@ serve(async (req) => {
 
       if (!res.ok) throw new Error(`HTTP ${res.status} al obtener ${source.url}`);
       const text = await res.text();
+      const MAX_ICAL_SIZE = 5 * 1024 * 1024;
+      if (text.length > MAX_ICAL_SIZE) {
+        throw new Error("Archivo iCal demasiado grande (máx 5 MB)");
+      }
       const events = parseIcal(text);
       const fetchedUids: string[] = [];
       const aptName = aptInfo?.internal_name || aptInfo?.name || source.apartment_slug;

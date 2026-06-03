@@ -15,10 +15,7 @@
 
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 // Firma del payload Web Push usando VAPID (implementación manual sin librería)
 async function signVapid(audience: string, subject: string, publicKey: string, privateKey: string): Promise<string> {
@@ -37,6 +34,7 @@ async function signVapid(audience: string, subject: string, publicKey: string, p
 }
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {

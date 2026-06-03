@@ -15,10 +15,7 @@ const SUPABASE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const SHEET_ID = Deno.env.get("GOOGLE_SHEET_ID") || "";
 const SERVICE_ACCOUNT_JSON = Deno.env.get("GOOGLE_SERVICE_ACCOUNT_JSON") || "";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 // ─── JWT para Google Service Account ─────────────────────────────────────────
 async function getGoogleAccessToken(): Promise<string> {
@@ -252,6 +249,7 @@ async function writeDataToSheet(
 
 // ─── Handler principal ────────────────────────────────────────────────────────
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") { return new Response("ok", { headers: corsHeaders }); }
   if (!SERVICE_ACCOUNT_JSON || !SHEET_ID) {
     return new Response(JSON.stringify({ error: "Configura GOOGLE_SERVICE_ACCOUNT_JSON y GOOGLE_SHEET_ID" }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 });

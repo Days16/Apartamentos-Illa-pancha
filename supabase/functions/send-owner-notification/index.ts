@@ -6,12 +6,10 @@ const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 // Configura OWNER_EMAIL en Supabase Dashboard → Edge Functions → Secrets
 const OWNER_EMAIL = Deno.env.get("OWNER_EMAIL") || "info@apartamentosillapancha.com";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }

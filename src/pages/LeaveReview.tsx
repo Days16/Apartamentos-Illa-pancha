@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import Turnstile from '../components/Turnstile';
 import { useLang } from '../contexts/LangContext';
 import { useT } from '../i18n/translations';
 import { useToast } from '../contexts/ToastContext';
@@ -23,6 +24,7 @@ export default function LeaveReview() {
   const [stars, setStars] = useState(5);
   const [comment, setComment] = useState('');
   const [error, setError] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
 
   useEffect(() => {
     if (!token) {
@@ -50,6 +52,10 @@ export default function LeaveReview() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reservation) return;
+    if (!captchaToken) {
+      errorMsg('Por favor completa la verificación de seguridad.');
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -160,6 +166,7 @@ export default function LeaveReview() {
                   <textarea
                     id="comment"
                     rows={4}
+                    maxLength={2000}
                     value={comment}
                     onChange={e => setComment(e.target.value)}
                     placeholder="Cuéntanos qué fue lo que más te gustó..."
@@ -167,9 +174,11 @@ export default function LeaveReview() {
                   />
                 </div>
 
+                <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || !captchaToken}
                   className="w-full bg-teal text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-teal-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {submitting ? (

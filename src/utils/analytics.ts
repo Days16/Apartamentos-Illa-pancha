@@ -1,13 +1,7 @@
-/**
- * Wrapper sobre Plausible Analytics.
- * Si Plausible no está cargado (dev, bloqueador, etc.) la llamada es silenciosa.
- *
- * Para activar: añadir en index.html el script de Plausible con el dominio correcto.
- * Eventos clave: apartment_view, booking_start, booking_complete, search
- */
 declare global {
   interface Window {
     plausible?: (event: string, options?: { props?: Record<string, unknown> }) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
@@ -26,3 +20,21 @@ export const EVENTS = {
 } as const;
 
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
+
+export function reportWebVitals(): void {
+  import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
+    const send = (metric: { name: string; value: number; id: string }) => {
+      window.gtag?.('event', metric.name, {
+        value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+        event_category: 'Web Vitals',
+        event_label: metric.id,
+        non_interaction: true,
+      });
+    };
+    onCLS(send);
+    onINP(send);
+    onFCP(send);
+    onLCP(send);
+    onTTFB(send);
+  });
+}

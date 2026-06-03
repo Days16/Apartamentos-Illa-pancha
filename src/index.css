@@ -837,7 +837,7 @@
 /* ── 10.7 KPI card ── */
 .panel-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
 }
 .panel-kpi-card {
@@ -2254,6 +2254,20 @@
   }
 }
 
+/* ── 11.11 Calendar row & sticky cell ───────────────────────── */
+.cal-row {
+  background: var(--panel-surface);
+}
+.cal-row:hover {
+  background: var(--panel-surface-2);
+}
+.cal-apt-cell {
+  background: var(--panel-surface);
+}
+.cal-row:hover .cal-apt-cell {
+  background: var(--panel-surface-2);
+}
+
 
 /* ═══════════════════════════════════════════════════════
    PDF EDITOR ADMIN
@@ -2885,5 +2899,771 @@
   }
   .blog-post-title {
     font-size: 1.7rem;
+  }
+}
+
+/* ============================================================
+   HOME — APARTMENT CARDS
+   ============================================================ */
+
+.home-apts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.home-apt-card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.home-apt-card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  transform: translateY(-3px);
+}
+
+.home-apt-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #1a5f6e;
+}
+
+.home-apt-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.home-apt-card-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 20, 35, 0.85) 0%,
+    rgba(10, 20, 35, 0.35) 45%,
+    transparent 100%
+  );
+}
+
+/* Badge precio top-right */
+.home-apt-price-badge {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  line-height: 1;
+}
+
+.home-apt-price-from {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.1rem;
+}
+
+.home-apt-price-night {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: #64748b;
+  margin-left: 0.05rem;
+}
+
+/* Info superpuesta en la parte inferior */
+.home-apt-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.25rem 1.25rem 1.1rem;
+}
+
+.home-apt-card-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+  margin-bottom: 0.45rem;
+  letter-spacing: 0.01em;
+}
+
+.home-apt-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.72);
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+}
+
+.home-apt-card-cta {
+  font-weight: 600;
+  color: #D4A843;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.home-apt-card:hover .home-apt-card-cta {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Overlay no disponible */
+.home-apt-unavail-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-apt-unavail-badge {
+  background: rgba(30, 41, 59, 0.9);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+
+/* Skeleton */
+.home-apt-card-skeleton {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.home-apt-card-skeleton-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.home-apt-card-skeleton-body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+/* ─── RESPONSIVE HOME APT CARDS ───────────────────────────── */
+
+@media (max-width: 1024px) {
+  .home-apts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .home-apts-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .home-apt-card-name {
+    font-size: 1.2rem;
+  }
+
+  .home-apt-card-cta {
+    display: none;
+  }
+}
+
+/* ============================================================
+   CONTACT PAGE
+   ============================================================ */
+
+/* — Hero — */
+.contact-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1a3a4a 60%, #1a5f6e 100%);
+  padding: 5rem 1.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: rgba(26, 95, 110, 0.18);
+  pointer-events: none;
+}
+
+.contact-hero-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contact-hero-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5eead4;
+  margin-bottom: 1rem;
+  background: rgba(94, 234, 212, 0.1);
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(94, 234, 212, 0.2);
+}
+
+.contact-hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+
+.contact-hero-title em {
+  font-style: italic;
+  color: #5eead4;
+  font-weight: 300;
+}
+
+.contact-hero-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.contact-hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.contact-hero-chip {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+
+/* — Layout body — */
+.contact-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 5rem;
+  align-items: start;
+}
+
+/* — Form card — */
+.contact-form-col {
+  position: sticky;
+  top: 5rem;
+}
+
+.contact-form-card {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.09);
+  padding: 2.5rem;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.dark .contact-form-card {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+}
+
+.contact-form-header {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dark .contact-form-header {
+  border-color: rgba(255,255,255,0.07);
+}
+
+.contact-form-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.35rem;
+}
+
+.dark .contact-form-title {
+  color: #f1f5f9;
+}
+
+.contact-form-sub {
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.contact-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.contact-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative;
+}
+
+.contact-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1a5f6e;
+}
+
+.contact-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-family: 'Jost', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.contact-input:focus {
+  border-color: #1a5f6e;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(26, 95, 110, 0.12);
+}
+
+.dark .contact-input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+.dark .contact-input:focus {
+  border-color: #1a5f6e;
+  background: #0f172a;
+}
+
+.contact-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+.contact-textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.contact-charcount {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  text-align: right;
+  margin-top: -0.25rem;
+}
+
+.contact-privacy {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.contact-submit {
+  width: 100%;
+  background: #1a5f6e;
+  color: #ffffff;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.9rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 14px rgba(26,95,110,0.35);
+}
+
+.contact-submit:hover:not(:disabled) {
+  background: #155060;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(26,95,110,0.4);
+}
+
+.contact-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.contact-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.contact-submit-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* — Sent state — */
+.contact-sent {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.contact-sent-icon {
+  width: 64px;
+  height: 64px;
+  background: #f0fdf8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  border: 2px solid #d1fae5;
+}
+
+.contact-sent-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+}
+
+.dark .contact-sent-title { color: #f1f5f9; }
+
+.contact-sent-desc {
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.contact-sent-btn {
+  border: 2px solid #1a5f6e;
+  color: #1a5f6e;
+  background: transparent;
+  padding: 0.6rem 1.75rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.contact-sent-btn:hover {
+  background: #1a5f6e;
+  color: #fff;
+}
+
+/* — Info column — */
+.contact-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contact-info-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.dark .contact-info-heading { color: #f1f5f9; }
+
+/* — Contact cards — */
+.contact-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  cursor: pointer;
+}
+
+.contact-card:not(.contact-card--static):hover {
+  border-color: #1a5f6e;
+  box-shadow: 0 4px 18px rgba(26,95,110,0.12);
+  transform: translateX(3px);
+}
+
+.dark .contact-card {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.07);
+}
+
+.contact-card--static {
+  cursor: default;
+}
+
+.contact-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-card-icon--teal  { background: #1a5f6e; }
+.contact-card-icon--navy  { background: #0f172a; }
+.contact-card-icon--wa    { background: #25D366; }
+.contact-card-icon--gold  { background: #D4A843; }
+
+.contact-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-card-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  margin-bottom: 0.15rem;
+}
+
+.contact-card-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark .contact-card-value { color: #f1f5f9; }
+
+.contact-card-value--sm { font-size: 0.82rem; }
+
+.contact-card-hint {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: 0.1rem;
+}
+
+.contact-card-arrow {
+  font-size: 1rem;
+  color: #1a5f6e;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.contact-card:not(.contact-card--static):hover .contact-card-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* — Check-in/out card — */
+.contact-checkin-card {
+  background: linear-gradient(135deg, rgba(26,95,110,0.07) 0%, rgba(26,95,110,0.03) 100%);
+  border: 1.5px solid rgba(26,95,110,0.15);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.dark .contact-checkin-card {
+  background: rgba(26,95,110,0.08);
+  border-color: rgba(26,95,110,0.2);
+}
+
+.contact-checkin-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+
+.dark .contact-checkin-title { color: #f1f5f9; }
+
+.contact-checkin-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.contact-checkin-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.contact-checkin-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1a5f6e;
+}
+
+.contact-checkin-time {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.dark .contact-checkin-time { color: #f1f5f9; }
+
+.contact-checkin-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(26,95,110,0.2);
+  flex-shrink: 0;
+}
+
+/* — Mapa — */
+.contact-map-wrap {
+  position: relative;
+  height: 220px;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.dark .contact-map-wrap { border-color: #334155; }
+
+.contact-map-btn {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(6px);
+  color: #0f172a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: background 0.2s, color 0.2s;
+}
+
+.contact-map-btn:hover {
+  background: #1a5f6e;
+  color: #fff;
+}
+
+/* ─── RESPONSIVE CONTACT ──────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .contact-body {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 3rem 1.25rem 4rem;
+  }
+
+  .contact-form-col {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .contact-hero {
+    padding: 3.5rem 1.25rem 3rem;
+  }
+
+  .contact-hero-chips {
+    gap: 0.4rem;
+  }
+
+  .contact-form-card {
+    padding: 1.5rem;
+  }
+
+  .contact-field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-checkin-row {
+    gap: 0.75rem;
   }
 }

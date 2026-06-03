@@ -29,11 +29,17 @@ export default function Apartments() {
   const [loadingApts, setLoadingApts] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [filter, setFilter] = useState(searchParams.get('filter') || 'all');
-  const [checkin, setCheckin] = useState(searchParams.get('checkin') || '');
-  const [checkout, setCheckout] = useState(searchParams.get('checkout') || '');
-  const [guests, setGuests] = useState(Number(searchParams.get('guests')) || 2);
-  const [searched, setSearched] = useState(!!searchParams.get('checkin'));
+  const isValidDate = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(new Date(s).getTime());
+  const safeFilter = ['all', 'available'].includes(searchParams.get('filter') ?? '') ? searchParams.get('filter')! : 'all';
+  const safeCheckin = isValidDate(searchParams.get('checkin') ?? '') ? searchParams.get('checkin')! : '';
+  const safeCheckout = isValidDate(searchParams.get('checkout') ?? '') ? searchParams.get('checkout')! : '';
+  const safeGuests = Math.min(Math.max(Number(searchParams.get('guests')) || 2, 1), 20);
+
+  const [filter, setFilter] = useState(safeFilter);
+  const [checkin, setCheckin] = useState(safeCheckin);
+  const [checkout, setCheckout] = useState(safeCheckout);
+  const [guests, setGuests] = useState(safeGuests);
+  const [searched, setSearched] = useState(!!safeCheckin);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [selectedApt, _setSelectedApt] = useState<Apartment | null>(null);
   const [priceRange, setPriceRange] = useState(searchParams.get('price') || 'all');
@@ -406,12 +412,8 @@ export default function Apartments() {
                       {/* Overlay degradado inferior */}
                       <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
 
-                      {/* Badge disponibilidad / tagline */}
-                      {status === 'unavailable' ? (
-                        <div className="absolute top-3 left-3 bg-gray-800/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                          {lang === 'EN' ? 'Not available' : 'No disponible'}
-                        </div>
-                      ) : tagline ? (
+                      {/* Badge tagline */}
+                      {tagline && status !== 'inactive' ? (
                         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm shadow-sm px-3 py-1 rounded-full text-[10px] font-bold text-navy uppercase tracking-wider">
                           {tagline}
                         </div>
@@ -422,11 +424,6 @@ export default function Apartments() {
                         <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm shadow px-2.5 py-1 rounded-full text-[11px] font-bold text-navy flex items-center gap-1">
                           ★ {apt.rating}
                         </div>
-                      )}
-
-                      {/* Overlay no disponible */}
-                      {status === 'unavailable' && (
-                        <div className="absolute inset-0 bg-gray-900/30" />
                       )}
                       {!apt.active && (
                         <div className="absolute inset-0 bg-navy/60 backdrop-blur-[2px] flex items-center justify-center">

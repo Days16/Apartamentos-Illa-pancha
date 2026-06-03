@@ -168,6 +168,7 @@
     "errorData": "Por favor completa todos los datos",
     "errorStripe": "Stripe no está cargado correctamente",
     "errorCaptcha": "Completa la verificación de seguridad (captcha) antes de pagar.",
+    "errorCard": "Introduce los datos completos de tu tarjeta.",
     "errorPayment": "Error procesando el pago. Intenta de nuevo.",
     "processing": "⏳ Procesando...",
     "secureProcessed": "Procesado por Stripe · PCI DSS Level 1",
@@ -239,6 +240,10 @@
     "leaveReviewDesc": "Deja tu opinión sobre Illa Pancha en Ribadeo. Reseñas verificadas que ayudan a otros huéspedes. Formulario rápido y seguro tras tu reserva directa.",
     "experiencesTitle": "Qué ver en Ribadeo y alrededores",
     "experiencesDesc": "Guía de la Mariña lucense y el occidente de Asturias: As Catedrais, Mondoñedo, Castropol, Cudillero y mucho más. Planifica tu escapada desde Illa Pancha."
+  },
+  "breadcrumb": {
+    "home": "Inicio",
+    "apartments": "Apartamentos"
   },
   "common": {
     "from": "Desde",
@@ -514,7 +519,7 @@
     "response": "Respuesta en < 24h",
     "waMsg": "Hola, me gustaría información sobre los apartamentos en Ribadeo.",
     "checkinTime": "A partir de las 16:00",
-    "checkoutTime": "Antes de las 11:00",
+    "checkoutTime": "Antes de las 12:00",
     "waLabel": "WhatsApp",
     "immediateResponse": "Respuesta inmediata",
     "address": "Ribadeo, Lugo · Galicia, España",

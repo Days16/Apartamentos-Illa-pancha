@@ -14,7 +14,7 @@ try { await import('dotenv/config'); } catch { /* not installed, that's OK */ }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const SITE_URL = process.env.VITE_SITE_URL || 'https://www.apartamentosillapancha.com';
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://www.apartamentosillapancha.com').replace(/\/$/, '');
 if (!process.env.VITE_SITE_URL) {
   console.warn('⚠  VITE_SITE_URL no definida — sitemap usará el dominio por defecto. Configúrala en .env o en las variables de entorno del hosting.');
 }

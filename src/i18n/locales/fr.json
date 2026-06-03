@@ -168,6 +168,7 @@
     "errorData": "Veuillez compléter toutes les données",
     "errorStripe": "Stripe n'est pas correctement chargé",
     "errorCaptcha": "Complétez la vérification de sécurité (captcha) avant de payer.",
+    "errorCard": "Veuillez saisir les données complètes de votre carte.",
     "errorPayment": "Erreur lors du traitement du paiement. Réessayez.",
     "processing": "⏳ Traitement...",
     "secureProcessed": "Traité par Stripe · PCI DSS Niveau 1",
@@ -239,6 +240,10 @@
     "leaveReviewDesc": "Donnez votre avis après un séjour dans nos appartements à Ribadeo. Avis vérifiés pour aider les voyageurs. Formulaire rapide après votre réservation.",
     "experiencesTitle": "Que voir à Ribadeo et alentours",
     "experiencesDesc": "Guide de la Mariña Lucense et de l'ouest des Asturies : As Catedrais, Mondoñedo, Castropol, Cudillero et bien plus. Préparez votre escapade depuis Illa Pancha."
+  },
+  "breadcrumb": {
+    "home": "Accueil",
+    "apartments": "Appartements"
   },
   "common": {
     "from": "À partir de",
@@ -514,7 +519,7 @@
     "response": "Réponse en < 24h",
     "waMsg": "Bonjour, j'aimerais des informations sur les appartements à Ribadeo.",
     "checkinTime": "À partir de 16h00",
-    "checkoutTime": "Avant 11h00",
+    "checkoutTime": "Avant 12h00",
     "waLabel": "WhatsApp",
     "immediateResponse": "Réponse immédiate",
     "address": "Ribadeo, Lugo · Galice, Espagne",

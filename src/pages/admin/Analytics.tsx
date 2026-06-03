@@ -26,6 +26,11 @@ function pct(n: number, total: number) {
   return total ? Math.round((n / total) * 100) : 0;
 }
 
+function netRevenue(r: { total?: number; source?: string }) {
+  const gross = r.total || 0;
+  return r.source === 'booking' ? gross * 0.85 : gross;
+}
+
 const STATUS_LABEL = { confirmed: 'Confirmada', pending: 'Pendiente', cancelled: 'Cancelada' };
 const SOURCE_LABEL = { web: 'Directa', manual: 'Manual', booking: 'Booking.com', airbnb: 'Airbnb' };
 const STATUS_COLOR = { confirmed: '#1a5f6e', pending: '#D4A843', cancelled: '#ef4444' };
@@ -61,9 +66,8 @@ export default function Analytics() {
     );
   }
 
-  // Forzar panel de analíticas a cero (sin datos operativos)
-  const reservationsForStats: Reservation[] = [];
-  const apartmentsForStats: Apartment[] = [];
+  const reservationsForStats = reservations;
+  const apartmentsForStats = apartments;
 
   // ── Filtrar por año seleccionado ──────────────────────────────────────────
   const confirmed = reservationsForStats.filter(r => r.status !== 'cancelled');
@@ -73,7 +77,7 @@ export default function Analytics() {
     .reverse();
 
   // ── KPIs globales (todos los años, solo confirmadas) ──────────────────────
-  const totalRevenue = confirmed.reduce((s, r) => s + (r.total || 0), 0);
+  const totalRevenue = confirmed.reduce((s, r) => s + netRevenue(r), 0);
   const totalNights = confirmed.reduce(
     (s, r) => s + (r.nights || diffDays(r.checkin, r.checkout)),
     0
@@ -82,7 +86,14 @@ export default function Analytics() {
   const avgTicket = confirmed.length ? Math.round(totalRevenue / confirmed.length) : 0;
 
   // ── KPIs año seleccionado ─────────────────────────────────────────────────
-  const yearRevenue = yearRes.reduce((s, r) => s + (r.total || 0), 0);
+  const yearRevenue = yearRes.reduce((s, r) => s + netRevenue(r), 0);
+
+  // ── Ingresos mes actual ───────────────────────────────────────────────────
+  const now = new Date();
+  const currentMonthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const monthRes = confirmed.filter(r => r.checkin?.startsWith(currentMonthPrefix));
+  const monthRevenue = monthRes.reduce((s, r) => s + netRevenue(r), 0);
+  const monthLabel = `${MONTHS[now.getMonth()]} ${now.getFullYear()}`;
   const yearNights = yearRes.reduce((s, r) => s + (r.nights || diffDays(r.checkin, r.checkout)), 0);
 
   // ── Ingresos y reservas por mes (año seleccionado) ────────────────────────
@@ -92,7 +103,7 @@ export default function Analytics() {
     return {
       label: MONTHS[i],
       count: monthRes.length,
-      revenue: monthRes.reduce((s, r) => s + (r.total || 0), 0),
+      revenue: monthRes.reduce((s, r) => s + netRevenue(r), 0),
       nights: monthRes.reduce((s, r) => s + (r.nights || diffDays(r.checkin, r.checkout)), 0),
     };
   });
@@ -108,7 +119,7 @@ export default function Analytics() {
       aptMap[slug] = { name: apt?.name || slug, count: 0, revenue: 0, nights: 0 };
     }
     aptMap[slug].count++;
-    aptMap[slug].revenue += r.total || 0;
+    aptMap[slug].revenue += netRevenue(r);
     aptMap[slug].nights += r.nights || diffDays(r.checkin, r.checkout);
   });
   const aptStats = Object.values(aptMap).sort((a: any, b: any) => b.revenue - a.revenue);
@@ -130,7 +141,7 @@ export default function Analytics() {
       key: s,
       label: SOURCE_LABEL[s],
       count: allYearRes.filter(r => r.source === s).length,
-      revenue: yearRes.filter(r => r.source === s).reduce((sum, r) => sum + (r.total || 0), 0),
+      revenue: yearRes.filter(r => r.source === s).reduce((sum, r) => sum + netRevenue(r), 0),
       color: SOURCE_COLOR[s],
     }))
     .filter(s => s.count > 0);
@@ -247,6 +258,12 @@ export default function Analytics() {
             label: 'Estancia media',
             value: `${avgStay} noches`,
             trend: 'histórico',
+            icon: paths.cal,
+          },
+          {
+            label: `Ingresos ${monthLabel}`,
+            value: fmt(monthRevenue),
+            trend: `${monthRes.length} reserva${monthRes.length !== 1 ? 's' : ''}`,
             icon: paths.cal,
           },
           { label: 'Ticket medio', value: fmt(avgTicket), trend: 'por reserva', icon: paths.tag },

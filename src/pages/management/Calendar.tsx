@@ -486,14 +486,15 @@ export default function Calendario() {
             <table className="border-collapse" style={{ minWidth: '100%' }}>
               <thead>
                 {/* CABECERA FECHAS */}
-                <tr className="bg-gray-50 sticky top-0 z-20">
-                  <th className="w-48 p-4 border border-gray-200 text-sm font-bold text-gray-600 bg-gray-50 sticky left-0 z-30">
+                <tr className="sticky top-0 z-20" style={{ background: 'var(--panel-surface-2)' }}>
+                  <th className="w-48 p-4 border border-gray-200 text-sm font-bold text-gray-600 sticky left-0 z-50" style={{ background: 'var(--panel-surface-2)' }}>
                     Alojamiento
                   </th>
                   {timelineDates.map((date, idx) => (
                     <th
                       key={idx}
                       className={`w-16 min-w-[64px] border border-gray-200 py-2 px-1 text-center font-normal cursor-pointer hover:bg-gray-100 transition-colors ${selectedDate && new Date(selectedDate).toDateString() === date.toDateString() ? 'bg-blue-50' : ''}`}
+                      style={{ background: selectedDate && new Date(selectedDate).toDateString() === date.toDateString() ? undefined : 'var(--panel-surface-2)' }}
                       onClick={() => setSelectedDate(dateToStr(date))}
                     >
                       <div className="text-[14px] font-bold text-gray-700">{date.getDate()}</div>
@@ -510,9 +511,9 @@ export default function Calendario() {
               </thead>
               <tbody>
                 {filteredApts.map(apt => (
-                  <tr key={apt.slug} className="hover:bg-gray-50/50 group">
+                  <tr key={apt.slug} className="cal-row group">
                     {/* Celda fija de nombre de apartamento */}
-                    <td className="p-3 border border-gray-200 text-xs font-bold text-blue-800 bg-white sticky left-0 z-10 group-hover:bg-gray-50">
+                    <td className="cal-apt-cell p-3 border border-gray-200 text-xs font-bold text-blue-800 sticky left-0 z-40 overflow-hidden">
                       <div className="truncate max-w-[170px] flex items-center gap-1.5">
                         <span
                           className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
@@ -564,7 +565,7 @@ export default function Calendario() {
                       return (
                         <td
                           key={idx}
-                          className={`h-16 border border-gray-100 relative transition-colors ${isToday ? 'bg-teal/5' : ''} ${isOccupied ? 'cursor-not-allowed' : 'cursor-crosshair hover:bg-gray-50'}`}
+                          className={`h-16 border border-gray-100 relative isolate transition-colors ${isToday ? 'bg-teal/5' : ''} ${isOccupied ? 'cursor-not-allowed' : 'cursor-crosshair hover:bg-gray-50'}`}
                           style={{
                             ...(res && !isCheckin && !isSplitDay && !(isCheckout && !res)
                               ? { backgroundColor: config.bg }
@@ -663,14 +664,15 @@ export default function Calendario() {
                 ))}
 
                 {/* REPETIR CABECERA AL FINAL SI HAY MUCHOS */}
-                <tr className="bg-gray-50">
-                  <th className="p-4 border border-gray-200 text-sm font-bold text-gray-600 sticky left-0 z-10 bg-gray-50">
+                <tr style={{ background: 'var(--panel-surface-2)' }}>
+                  <th className="p-4 border border-gray-200 text-sm font-bold text-gray-600 sticky left-0 z-40" style={{ background: 'var(--panel-surface-2)' }}>
                     Alojamiento
                   </th>
                   {timelineDates.map((date, idx) => (
                     <th
                       key={idx}
                       className="border border-gray-200 py-2 px-1 text-center font-normal"
+                      style={{ background: 'var(--panel-surface-2)' }}
                     >
                       <div className="text-[12px] font-bold text-gray-700">{date.getDate()}</div>
                       <div className="text-[10px] text-gray-500 uppercase">

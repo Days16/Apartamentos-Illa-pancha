@@ -20,7 +20,14 @@ export default function ForgotPassword() {
     });
     setLoading(false);
     if (error) {
-      setError(error.message);
+      const AUTH_ERROR_MAP: Record<string, string> = {
+        'For security purposes, you can only request this after': 'Demasiados intentos. Espera un momento antes de volver a intentarlo.',
+        'Email rate limit exceeded': 'Demasiados intentos. Espera unos minutos.',
+        'User not found': 'Si la dirección está registrada recibirás un enlace.',
+      };
+      const safeMsg = Object.entries(AUTH_ERROR_MAP).find(([k]) => error.message.startsWith(k))?.[1]
+        ?? 'Ha ocurrido un error. Inténtalo de nuevo.';
+      setError(safeMsg);
       return;
     }
     setSent(true);

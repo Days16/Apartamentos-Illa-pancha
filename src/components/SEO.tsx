@@ -52,20 +52,24 @@ function setCanonical(href: string) {
 
 function setHreflangLinks(canonicalUrl: string) {
   document.querySelectorAll('link[hreflang]').forEach(el => el.remove());
-  const langs = Object.values(HREFLANG_MAP);
-  langs.forEach(hreflang => {
+
+  const addLink = (hreflang: string, href: string) => {
     const el = document.createElement('link');
     el.setAttribute('rel', 'alternate');
     el.setAttribute('hreflang', hreflang);
-    el.setAttribute('href', canonicalUrl);
+    el.setAttribute('href', href);
     document.head.appendChild(el);
-  });
-  // x-default always points to ES (main version)
-  const xDefault = document.createElement('link');
-  xDefault.setAttribute('rel', 'alternate');
-  xDefault.setAttribute('hreflang', 'x-default');
-  xDefault.setAttribute('href', canonicalUrl);
-  document.head.appendChild(xDefault);
+  };
+
+  // ES gets the clean canonical URL (default language)
+  addLink('es', canonicalUrl);
+  // Other languages get a ?lang= param so Google can differentiate versions
+  addLink('en', `${canonicalUrl}?lang=en`);
+  addLink('fr', `${canonicalUrl}?lang=fr`);
+  addLink('de', `${canonicalUrl}?lang=de`);
+  addLink('pt', `${canonicalUrl}?lang=pt`);
+  // x-default → ES canonical
+  addLink('x-default', canonicalUrl);
 }
 
 interface SEOProps {
@@ -114,6 +118,16 @@ export default function SEO({
     setMeta('meta[property="og:type"]', 'content', ogType);
     setMeta('meta[property="og:url"]', 'content', canonicalUrl);
     setMeta('meta[property="og:locale"]', 'content', resolvedLocale);
+    // og:locale:alternate para los demás idiomas
+    document.querySelectorAll('meta[property="og:locale:alternate"]').forEach(el => el.remove());
+    Object.entries(LOCALE_MAP)
+      .filter(([key]) => key !== lang)
+      .forEach(([, locale]) => {
+        const el = document.createElement('meta');
+        el.setAttribute('property', 'og:locale:alternate');
+        el.setAttribute('content', locale);
+        document.head.appendChild(el);
+      });
     setMeta('meta[property="og:image"]', 'content', image);
     setMeta('meta[property="og:site_name"]', 'content', 'Illa Pancha');
     if (description) setMeta('meta[property="og:description"]', 'content', description);
@@ -141,6 +155,7 @@ export default function SEO({
       const s = document.getElementById(scriptId);
       if (s) s.remove();
       document.querySelectorAll('link[hreflang]').forEach(el => el.remove());
+      document.querySelectorAll('meta[property="og:locale:alternate"]').forEach(el => el.remove());
     };
   }, [fullTitle, description, image, ogType, resolvedLocale, jsonLd, noIndex]);
 

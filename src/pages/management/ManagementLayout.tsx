@@ -21,6 +21,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/gestion/calendario', label: 'Calendario', icon: paths.building },
   { path: '/gestion/mensajes', label: 'Mensajes', icon: paths.msg },
   { path: '/gestion/tareas', label: 'Mantenimiento', icon: paths.check },
+  { path: '/admin/analytics', label: 'Analíticas', icon: paths.trend },
 ];
 
 const ROUTE_LABELS: Record<string, string> = {

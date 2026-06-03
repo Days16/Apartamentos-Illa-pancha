@@ -18,6 +18,9 @@ export default defineConfig({
   plugins: [react()],
   server: { proxy: frankfurterProxy },
   preview: { proxy: frankfurterProxy },
+  build: {
+    sourcemap: false,
+  },
   test: {
     environment: 'node',
     include: ['tests/unit/**/*.test.ts'],

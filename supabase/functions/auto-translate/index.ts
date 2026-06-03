@@ -17,10 +17,7 @@ const DEEPL_BASE = DEEPL_API_KEY.endsWith(":fx")
   ? "https://api-free.deepl.com"
   : "https://api.deepl.com";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 const MYMEMORY_CHUNK = 420;
 const MYMEMORY_GAP_MS = 120;
@@ -115,6 +112,7 @@ async function translateText(text: string, targetUiLang: string, sourceLang: str
 }
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -123,9 +121,15 @@ serve(async (req) => {
     const body = await req.json();
     const { text, sourceLang: rawSource = "EN", targets } = body;
 
-    if (!text || typeof text !== "string") {
+    if (!text || typeof text !== "string" || text.length === 0) {
       return new Response(
         JSON.stringify({ error: "El campo 'text' es obligatorio." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+    if (text.length > 10_000) {
+      return new Response(
+        JSON.stringify({ error: "El texto no puede superar 10.000 caracteres." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }

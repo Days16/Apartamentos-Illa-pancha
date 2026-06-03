@@ -24,21 +24,10 @@ if (typeof window !== 'undefined' && isLiveStripeKey && !isHttpsOrLocalhost()) {
 export const stripePromise =
   isLiveStripeKey && !isHttpsOrLocalhost() ? Promise.resolve(null) : loadStripe(stripePublicKey);
 
-/**
- * Procesar pago con Stripe
- * @param {Object} paymentData - Datos del pago
- * @param {number} paymentData.amount - Monto en euros (se convierte a céntimos)
- * @param {string} paymentData.currency - Moneda (default: 'eur')
- * @param {string} paymentData.customerEmail - Email del cliente
- * @param {string} paymentData.customerName - Nombre del cliente
- * @param {string} paymentData.reservationId - ID de la reserva
- * @param {string} paymentData.description - Descripción del pago
- * @returns {Promise<Object>} {clientSecret, paymentIntentId}
- */
 interface PaymentData {
-  amount: number;
+  amount?: number;
   currency?: string;
-  customerEmail: string;
+  customerEmail?: string;
   customerName: string;
   reservationId: string;
   description?: string;
@@ -47,7 +36,6 @@ interface PaymentData {
 
 export async function createPaymentIntent(paymentData: PaymentData) {
   try {
-    // Validate Supabase and function exists
     if (!supabase) {
       throw new Error(
         'Supabase no está inicializado. Revisa VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en .env'
@@ -59,18 +47,12 @@ export async function createPaymentIntent(paymentData: PaymentData) {
       );
     }
 
+    // El importe se lee en el servidor desde la BD — no lo enviamos desde el cliente
     const { data, error } = await supabase.functions.invoke('process-payment', {
       body: {
-        amount: Math.round(paymentData.amount * 100), // Convert to cents
-        currency: paymentData.currency || 'eur',
-        customerEmail: paymentData.customerEmail,
-        customerName: paymentData.customerName,
         reservationId: paymentData.reservationId,
-        description: paymentData.description,
+        customerName: paymentData.customerName,
         turnstileToken: paymentData.turnstileToken,
-      },
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
       },
     });
 

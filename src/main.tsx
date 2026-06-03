@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import Clarity from '@microsoft/clarity';
 import App from './App';
+import { reportWebVitals } from './utils/analytics';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -18,6 +19,8 @@ const clarityProjectId = import.meta.env.VITE_CLARITY_PROJECT_ID as string | und
 if (clarityProjectId) {
   Clarity.init(clarityProjectId);
 }
+
+reportWebVitals();
 
 createRoot(rootEl).render(
   <StrictMode>

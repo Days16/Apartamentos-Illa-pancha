@@ -146,8 +146,8 @@ export default function ApartmentDetail() {
 
   useEffect(() => {
     async function load() {
-      if (!slug) {
-        setLoading(false);
+      if (!slug || !/^[a-z0-9-]{1,80}$/.test(slug)) {
+        navigate('/apartamentos', { replace: true });
         return;
       }
 
@@ -314,11 +314,22 @@ export default function ApartmentDetail() {
                       name: 'Illa Pancha',
                       url: siteUrl,
                     },
+                    ...(aptReviews.length > 0 && {
+                      aggregateRating: {
+                        '@type': 'AggregateRating',
+                        ratingValue: (
+                          aptReviews.reduce((s, r) => s + r.stars, 0) / aptReviews.length
+                        ).toFixed(1),
+                        ratingCount: aptReviews.length,
+                        bestRating: '5',
+                      },
+                    }),
                     offers: apt.price
                       ? {
                           '@type': 'Offer',
                           price: apt.price,
                           priceCurrency: 'EUR',
+                          availability: 'https://schema.org/InStock',
                           priceSpecification: {
                             '@type': 'UnitPriceSpecification',
                             price: apt.price,
@@ -334,13 +345,13 @@ export default function ApartmentDetail() {
                       {
                         '@type': 'ListItem',
                         position: 1,
-                        name: 'Inicio',
+                        name: T.breadcrumb?.home ?? 'Inicio',
                         item: siteUrl,
                       },
                       {
                         '@type': 'ListItem',
                         position: 2,
-                        name: 'Apartamentos',
+                        name: T.breadcrumb?.apartments ?? 'Apartamentos',
                         item: `${siteUrl}/apartamentos`,
                       },
                       {
@@ -434,52 +445,60 @@ export default function ApartmentDetail() {
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all" />
             </div>
           </div>
-          {[1, 2, 3].map(i => (
-            <div
-              key={i}
-              role="button"
-              tabIndex={0}
-              aria-label={photos[i]?.caption || `${aptName} — foto ${i + 1}`}
-              className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
-              onClick={() => {
-                setLightboxIdx(i);
-                setLightboxOpen(true);
-              }}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
+          {[1, 2, 3, 4].map(i => {
+            const isLastCell = i === 4;
+            const remaining = photos.length - 5;
+            const showMoreOverlay = isLastCell && photos[i] && remaining > 0;
+
+            return (
+              <div
+                key={i}
+                role="button"
+                tabIndex={0}
+                aria-label={
+                  showMoreOverlay
+                    ? T.detail.seeAllPhotos.replace('{count}', String(photos.length))
+                    : (photos[i]?.caption || `${aptName} — foto ${i + 1}`)
+                }
+                className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative group cursor-pointer"
+                onClick={() => {
                   setLightboxIdx(i);
                   setLightboxOpen(true);
-                }
-              }}
-            >
-              {photos[i] ? (
-                <img
-                  src={photos[i].photo_url}
-                  alt={photos[i].caption || `${aptName} ${i + 1}`}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#1a5f6e] to-[#2C4A5E] flex items-center justify-center">
-                  <Ico d={paths.photo} size={28} color="rgba(255,255,255,0.1)" />
-                </div>
-              )}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all" />
-            </div>
-          ))}
-          {photos.length > 0 && (
-            <button
-              className="absolute bottom-12 right-8 bg-white text-navy text-sm font-semibold px-4 py-2 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-all flex items-center gap-2"
-              onClick={() => {
-                setLightboxIdx(0);
-                setLightboxOpen(true);
-              }}
-            >
-              <Ico d={paths.photo} size={14} color="#0f172a" />
-              {T.detail.seeAllPhotos.replace('{count}', String(photos.length))}
-            </button>
-          )}
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setLightboxIdx(i);
+                    setLightboxOpen(true);
+                  }
+                }}
+              >
+                {photos[i] ? (
+                  <img
+                    src={photos[i].photo_url}
+                    alt={photos[i].caption || `${aptName} ${i + 1}`}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-[#1a5f6e] to-[#2C4A5E] flex items-center justify-center">
+                    <Ico d={paths.photo} size={28} color="rgba(255,255,255,0.1)" />
+                  </div>
+                )}
+
+                {showMoreOverlay ? (
+                  <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center gap-1 group-hover:bg-black/65 transition-colors">
+                    <span className="text-white font-bold text-3xl leading-none">+{remaining}</span>
+                    <span className="text-white/75 text-[0.65rem] uppercase tracking-[0.15em] font-medium">
+                      {lang === 'EN' ? 'photos' : lang === 'FR' ? 'photos' : lang === 'DE' ? 'Fotos' : lang === 'PT' ? 'fotos' : 'fotos'}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all" />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* CUERPO */}
@@ -629,7 +648,7 @@ export default function ApartmentDetail() {
           </div>
 
           {/* COLUMNA DERECHA: WIDGET */}
-          <div className="self-start sticky top-8">
+          <div className="self-start">
             <BookingWidget
               apt={apt}
               onBook={dates => {

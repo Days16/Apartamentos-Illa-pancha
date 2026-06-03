@@ -24,7 +24,13 @@ const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") || "";
 const OWNER_EMAIL = Deno.env.get("OWNER_EMAIL") || "";
 
-serve(async () => {
+serve(async (req) => {
+  const internalSecret = Deno.env.get("INTERNAL_CRON_SECRET") ?? "";
+  const authHeader = req.headers.get("authorization") ?? "";
+  if (!internalSecret || authHeader !== `Bearer ${internalSecret}`) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+  }
+
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
   // Rango del mes anterior
