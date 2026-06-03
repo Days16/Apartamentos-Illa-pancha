@@ -419,7 +419,7 @@ export default function Home() {
                       <div className="home-apt-card-info">
                         <h3 className="home-apt-card-name">{apt.name}</h3>
                         <div className="home-apt-card-meta">
-                          <span>{apt.capacity} {T.apartments.persons} · {apt.beds} {T.apartments.beds}</span>
+                          <span>{apt.capacity} {T.apartments.persons} · {apt.bedrooms} {T.apartments.beds}</span>
                           <span className="home-apt-card-cta">
                             {T.home.meetApts} →
                           </span>

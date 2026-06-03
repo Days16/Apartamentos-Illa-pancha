@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -530,7 +530,7 @@ export default function ApartmentDetail() {
               </span>
               <span className="text-gray-300">·</span>
               <span>
-                {apt.beds} {apt.beds > 1 ? T.apartments.beds : T.apartments.bed}
+                {apt.bedrooms} {apt.bedrooms > 1 ? T.apartments.beds : T.apartments.bed}
               </span>
               <span className="text-gray-300">·</span>
               <span>

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import type { DbApartment } from '../types';
 import Navbar from '../components/Navbar';
@@ -14,7 +14,7 @@ import { fetchApartments } from '../services/supabaseService';
 import { sendOwnerNotification } from '../services/resendService';
 import { safeHtml } from '../utils/sanitize';
 import { supabase } from '../lib/supabase';
-import { siteUrl, mapsUrl } from '../constants/assets';
+import { siteUrl, mapsUrl, mapsEmbedUrl } from '../constants/assets';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', apt: '', msg: '' });
@@ -246,7 +246,7 @@ export default function Contact() {
 
           {/* Mapa */}
           <div className="contact-map-wrap">
-            <iframe src="https://maps.google.com/maps?q=43.5399657,-7.0410569&z=16&output=embed" width="100%" height="100%" style={{ border: 0, display: 'block' }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Ubicación Illa Pancha Ribadeo" />
+            <iframe src={mapsEmbedUrl} width="100%" height="100%" style={{ border: 0, display: 'block' }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Ubicación Illa Pancha Ribadeo" />
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="contact-map-btn">{T.common.openMaps} ↗</a>
           </div>
         </div>

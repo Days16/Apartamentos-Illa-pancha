@@ -17,7 +17,7 @@ export const mapsUrl =
  *  IMPORTANTE: debe ser una URL /maps/embed?... — las URLs normales de Maps no funcionan en iframes. */
 export const mapsEmbedUrl =
   import.meta.env.VITE_MAPS_EMBED_URL?.trim() ||
-  'https://maps.google.com/maps?q=43.5399657,-7.0410569&z=16&output=embed';
+  'https://www.google.com/maps?q=43.5399657,-7.0410569&z=16&output=embed';
 
 export const assets = {
   // Global / Branding
