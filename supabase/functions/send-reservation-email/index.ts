@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -23,13 +24,23 @@ serve(async (req) => {
             deposit,
             reservationId,
             portalUrl,
-            lockCode,
-            address,
-            contactPhone,
-            whatsapp,
-            accessInfo,
-            houseRules,
+            lockCode: lockCodeParam,
+            address: addressParam,
+            contactPhone: contactPhoneParam,
+            whatsapp: whatsappParam,
+            accessInfo: accessInfoParam,
+            houseRules: houseRulesParam,
         } = await req.json();
+
+        // Leer settings desde Supabase para rellenar los campos no enviados por el cliente
+        const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+        const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        const { data: settingsRows } = await supabase.from("settings").select("key, value");
+        const s: Record<string, string> = {};
+        for (const row of settingsRows ?? []) s[row.key] = row.value;
+
+        const contactPhone = contactPhoneParam || s["contact_phone"] || "";
 
         const depositFormatted = typeof deposit === 'number' ? deposit.toFixed(2) : deposit;
         const totalFormatted = typeof total === 'number' ? total.toFixed(2) : total;
@@ -77,12 +88,7 @@ serve(async (req) => {
 
         const checkinFormatted  = formatDateWithDay(checkin);
         const checkoutFormatted = formatDateWithDay(checkout);
-        const formattedAddress   = address || 'Calle Illa Pancha 1, 27700 Ribadeo';
-        const formattedLockCode  = lockCode || '101010';
-        const formattedWhatsApp  = whatsapp || '34600000000';
-        const formattedPhone     = contactPhone || '+34 600 000 000';
-        const instructionsText   = accessInfo || 'La caja de llaves está junto a la puerta principal. Introduce el código en el teclado numérico.';
-        const fincaRulesText     = houseRules || 'Normas de la finca disponibles en el portal.';
+        const formattedPhone = contactPhone || '+34 614 52 30 77';
 
         const result = await resend.emails.send({
             from: "Illa Pancha Ribadeo <info@apartamentosillapancha.com>",
@@ -182,30 +188,6 @@ serve(async (req) => {
 
         <!-- CTA BOTÓN -->
         <tr>
-          <td style="padding:0 40px 24px;text-align:left;">
-            <h3 style="margin:0 0 8px;color:#0f172a;font-size:17px;font-weight:700;">Información práctica para tu llegada</h3>
-            <ul style="margin:0;padding-left:18px;color:#475569;font-size:14px;line-height:1.7;">
-              <li>Se muestra al huésped 48h antes de su llegada en el portal de reservas</li>
-              <li>Código de cerradura: <strong>🔔${formattedLockCode}🔔</strong></li>
-              <li>Dirección del alojamiento: <strong>${formattedAddress}</strong></li>
-              <li>Teléfono de contacto: <strong>${formattedPhone}</strong></li>
-              <li>WhatsApp: <strong>${formattedWhatsApp}</strong></li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:0 40px 24px;text-align:left;">
-            <h3 style="margin:0 0 8px;color:#0f172a;font-size:17px;font-weight:700;">Instrucciones de acceso</h3>
-            <p style="margin:0;color:#475569;font-size:14px;line-height:1.7;white-space:pre-line;">${instructionsText}</p>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:0 40px 24px;text-align:left;">
-            <h3 style="margin:0 0 8px;color:#0f172a;font-size:17px;font-weight:700;">Normas de la finca</h3>
-            <p style="margin:0;color:#475569;font-size:14px;line-height:1.7;white-space:pre-line;">${fincaRulesText}</p>
-          </td>
-        </tr>
-        <tr>
           <td style="padding:0 40px 40px;text-align:center;">
             <p style="margin:0 0 24px;color:#64748b;font-size:14px;line-height:1.6;">Puedes consultar y gestionar tu reserva en cualquier momento desde nuestro portal de clientes.</p>
             <a href="${portalLink}"
@@ -224,8 +206,8 @@ serve(async (req) => {
         <!-- PIE -->
         <tr>
           <td style="padding:28px 40px;text-align:center;">
-            <p style="margin:0 0 6px;color:#94a3b8;font-size:12px;">¿Tienes alguna duda? Responde a este correo o contáctanos en</p>
-            <a href="mailto:info@apartamentosillapancha.com" style="color:#1a5f6e;font-size:13px;font-weight:600;text-decoration:none;">info@apartamentosillapancha.com</a>
+            <p style="margin:0 0 6px;color:#94a3b8;font-size:12px;">¿Tienes alguna duda? Llámanos o escríbenos</p>
+            <a href="tel:${formattedPhone}" style="color:#1a5f6e;font-size:13px;font-weight:600;text-decoration:none;">${formattedPhone}</a>
             <p style="margin:20px 0 0;color:#cbd5e1;font-size:11px;">© Illa Pancha Ribadeo · Ribadeo, Lugo, Galicia</p>
           </td>
         </tr>

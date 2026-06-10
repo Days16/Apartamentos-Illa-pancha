@@ -36,10 +36,12 @@ serve(async (req) => {
     settings[row.key] = row.value;
   }
 
-  const lockCode    = settings["checkin_lock_code"]    ?? "";
-  const accessInfo  = settings["checkin_access_info"]  ?? "";
-  const houseRules  = settings["checkin_house_rules"]  ?? "";
-  const contactPhone = settings["contact_phone"]       ?? "";
+  const lockCode     = settings["checkin_lock_code"]    ?? "";
+  const accessInfo   = settings["checkin_access_info"]  ?? "";
+  const houseRules   = settings["checkin_house_rules"]  ?? "";
+  const contactPhone = settings["contact_phone"]        ?? "";
+  const address      = settings["property_address"]     ?? "";
+  const whatsapp     = settings["contact_whatsapp"]     ?? "";
 
   // ── 2. Buscar reservas con checkin en las próximas 48h que no hayan recibido el recordatorio ──
   const now     = new Date();
@@ -120,6 +122,8 @@ serve(async (req) => {
             accessInfo,
             houseRules,
             contactPhone,
+            address,
+            whatsapp,
           }),
         }
       );
