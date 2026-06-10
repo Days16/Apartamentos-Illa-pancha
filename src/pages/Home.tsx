@@ -184,7 +184,7 @@ export default function Home() {
           src={assets.hero.background}
           alt=""
           aria-hidden="true"
-          fetchPriority="high"
+          fetchpriority="high"
           decoding="async"
           className="absolute inset-0 w-full h-full object-cover"
         />

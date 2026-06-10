@@ -2,6 +2,7 @@ const ALLOWED_ORIGINS = [
     "https://apartamentosillapancha.com",
     "https://www.apartamentosillapancha.com",
     "http://localhost:5173",
+    "https://localhost:5173",
 ];
 
 export function getCorsHeaders(req: Request): Record<string, string> {
