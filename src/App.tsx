@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { stripePromise } from './lib/stripe';
 import { lazy, Suspense, useEffect, useState } from 'react';
@@ -120,6 +120,15 @@ class ChunkErrorBoundary extends React.Component<
   }
 }
 
+function PanelRedirect() {
+  const { user } = useAuth();
+  const role = user?.app_metadata?.role;
+  if (role === 'admin') return <Navigate to="/admin" replace />;
+  if (role === 'gestion') return <Navigate to="/gestion" replace />;
+  if (role === 'usuario') return <Navigate to="/portal" replace />;
+  return <Navigate to="/login" replace />;
+}
+
 function MaintenanceGuard({ children }: { children: React.ReactNode }) {
   const { settings, loading: settingsLoading } = useSettings();
   const { user } = useAuth();
@@ -205,6 +214,7 @@ export default function App() {
                             <Route path="/blog" element={<Blog />} />
                             <Route path="/blog/:slug" element={<BlogPost />} />
 
+                            <Route path="/panel" element={<PanelRedirect />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/reset-password" element={<ResetPassword />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
