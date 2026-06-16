@@ -127,14 +127,21 @@ function parseBookingDescription(description: string): BookingInfo {
   };
 }
 
-const BOOKING_GUEST_FALLBACK = "Reserva Booking";
+const PLATFORM_GUEST_FALLBACK: Record<string, string> = {
+  booking:  "Reserva Booking",
+  avaibook: "Reserva Avaibook",
+  airbnb:   "Reserva Airbnb",
+};
 
-function isBookingPlaceholderGuestName(name: string): boolean {
+function isPlaceholderGuestName(name: string): boolean {
   const n = name.trim();
   if (!n) return true;
   const lower = n.toLowerCase();
   if (lower.includes("not available")) return true;
   if (lower.includes("no disponible")) return true;
+  if (lower.includes("blocked")) return true;
+  if (lower === "airbnb") return true;
+  if (lower === "avaibook") return true;
   if (/\bclosed\b/i.test(n) && (/\bhuésped\b/i.test(n) || /\bhuesped\b/i.test(n) || /\bguest\b/i.test(n))) {
     return true;
   }
@@ -143,12 +150,12 @@ function isBookingPlaceholderGuestName(name: string): boolean {
   return false;
 }
 
-function resolveBookingGuestDisplay(rawGuest: string, summary: string): string {
+function resolveGuestDisplay(rawGuest: string, summary: string, platform: string): string {
   const candidates = [rawGuest.trim(), (summary || "").trim()].filter(Boolean);
   for (const c of candidates) {
-    if (c && !isBookingPlaceholderGuestName(c)) return c;
+    if (c && !isPlaceholderGuestName(c)) return c;
   }
-  return BOOKING_GUEST_FALLBACK;
+  return PLATFORM_GUEST_FALLBACK[platform] ?? "Reserva externa";
 }
 
 // Genera un ID estilo web IP-XXXXXX (6 dígitos aleatorios)
@@ -265,7 +272,10 @@ serve(async (req) => {
       const aptPrice = aptInfo?.price || 0;
 
       for (const ev of events) {
-        const ical_uid = `booking-${source.apartment_slug}-${ev.uid}`;
+        // Saltar eventos exportados por este propio sistema para evitar bucles de importación
+        if (ev.uid.endsWith("@illapancha")) continue;
+
+        const ical_uid = `${source.id}:${ev.uid}`;
         fetchedUids.push(ical_uid);
 
         const nights = Math.max(1, Math.round(
@@ -275,10 +285,12 @@ serve(async (req) => {
         // Calcular total estimado
         const estimatedTotal = nights * aptPrice;
 
+        const platform = source.platform ?? "booking";
         const info = parseBookingDescription(ev.description ?? "");
-        const guestName = resolveBookingGuestDisplay(
+        const guestName = resolveGuestDisplay(
           info.guestName || "",
           ev.summary || "",
+          platform,
         );
 
         // Construir etiqueta de huésped enriquecida (ref + pax) sin columnas extra
@@ -301,7 +313,7 @@ serve(async (req) => {
           total:         estimatedTotal,
           deposit:       0,
           status:        "confirmed",
-          source:        "booking",
+          source:        source.platform ?? "booking",
           email:         info.email || "",
           phone:         info.phone || null,
           extras:        [],
@@ -324,6 +336,20 @@ serve(async (req) => {
             console.error(`Error updating reservation ${existing.id}:`, updErr.message);
           }
         } else {
+          // Antes de insertar, verificar que no haya otra reserva que cubra estas fechas
+          const { data: overlapping } = await supabase
+            .from("reservations")
+            .select("id, ical_uid")
+            .eq("apt_slug", source.apartment_slug)
+            .neq("status", "cancelled")
+            .lt("checkin", ev.dtend)
+            .gt("checkout", ev.dtstart);
+
+          if (overlapping && overlapping.length > 0) {
+            console.log(`Skipping ${ical_uid}: dates ${ev.dtstart}–${ev.dtend} already covered by ${overlapping[0].ical_uid ?? overlapping[0].id}`);
+            continue;
+          }
+
           // Nueva con ID estilo web IP-XXXXXX
           const newId = generateWebId();
           const { error: insErr } = await supabase
@@ -360,7 +386,7 @@ serve(async (req) => {
           .select("id, ical_uid")
           .eq("apt_slug", source.apartment_slug)
           .not("ical_uid", "is", null)
-          .like("ical_uid", `booking-${source.apartment_slug}-%`);
+          .like("ical_uid", `${source.id}:%`);
 
         if (existing && existing.length > 0) {
           const toRemove = existing.filter((r: any) => !fetchedUids.includes(r.ical_uid));

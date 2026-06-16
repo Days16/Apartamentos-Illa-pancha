@@ -254,6 +254,7 @@ function normalizeApartment(d: any): Apartment {
     cancellation_days: d.cancellation_days ?? 14,
     deposit_percentage: d.deposit_percentage ?? 50,
     maps_url: d.maps_url || null,
+    avaibook_url: d.avaibook_url || null,
     internalName: d.internal_name || d.internalName || d.name,
     coverPhotoUrl: d.cover_photo_url || d.coverPhotoUrl || null,
   };

@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-type RequiredRole = 'admin' | 'gestion';
+type RequiredRole = 'admin' | 'gestion' | 'usuario';
 
 export default function ProtectedRoute({ requiredRole }: { requiredRole?: RequiredRole }) {
   const { user, loading } = useAuth();
@@ -30,8 +30,10 @@ export default function ProtectedRoute({ requiredRole }: { requiredRole?: Requir
 
   if (requiredRole) {
     const role = user.app_metadata?.role as string | undefined;
-    const hasAccess =
-      requiredRole === 'admin' ? role === 'admin' : role === 'admin' || role === 'gestion';
+    let hasAccess = false;
+    if (requiredRole === 'admin') hasAccess = role === 'admin';
+    else if (requiredRole === 'gestion') hasAccess = role === 'admin' || role === 'gestion';
+    else if (requiredRole === 'usuario') hasAccess = role === 'admin' || role === 'gestion' || role === 'usuario';
     if (!hasAccess) {
       return <Navigate to="/login" replace />;
     }

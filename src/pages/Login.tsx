@@ -22,8 +22,10 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/gestion');
+      const result = await login(email, password) as any;
+      const role = result?.user?.app_metadata?.role;
+      if (role === 'usuario') navigate('/portal');
+      else navigate('/gestion');
     } catch (err) {
       setError(L.error);
       console.error('Login error:', err);

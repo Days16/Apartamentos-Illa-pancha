@@ -186,7 +186,18 @@
     "pendingArrival": "Due on arrival",
     "downloadPDF": "Download PDF Invoice",
     "backToWeb": "Back to Website",
-    "confirmationEmail": "We have sent all details and confirmation code to your email. If you have any questions, contact us at"
+    "confirmationEmail": "We have sent all details and confirmation code to your email. If you have any questions, contact us at",
+    "avaibookBtn": "Book with Avaibook",
+    "avaibookTitle": "Avaibook booking engine",
+    "avaibookTabLabel": "Avaibook",
+    "avaibookModeLabel": "Integration mode",
+    "avaibookUrlLabel": "Global Avaibook booking URL",
+    "avaibookAptUrlLabel": "Avaibook URL for this apartment",
+    "avaibookModeOff": "Disabled",
+    "avaibookModeLink": "Complement (link)",
+    "avaibookModeIframe": "Complement (iframe)",
+    "avaibookModeLinkOnly": "Avaibook only (link)",
+    "avaibookModeIframeOnly": "Avaibook only (iframe)"
   },
   "footer": {
     "tagline": "Illa Pancha Apartments, taste the flavour of the north. Book direct and pay less than on any platform.",

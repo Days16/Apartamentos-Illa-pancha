@@ -33,6 +33,12 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
+// Portal de usuario — lazy
+const PortalLayout = lazy(() => import('./pages/portal/PortalLayout'));
+const PortalDashboard = lazy(() => import('./pages/portal/PortalDashboard'));
+const PortalInvoices = lazy(() => import('./pages/portal/PortalInvoices'));
+const PortalCheckin = lazy(() => import('./pages/portal/PortalCheckin'));
+
 // Management panel — lazy
 const ManagementLayout = lazy(() => import('./pages/management/ManagementLayout'));
 const Dashboard = lazy(() => import('./pages/management/Dashboard'));
@@ -130,6 +136,7 @@ function MaintenanceGuard({ children }: { children: React.ReactNode }) {
   const isProtectedPath =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/gestion') ||
+    pathname.startsWith('/portal') ||
     pathname.startsWith('/login');
   const userRole = user?.app_metadata?.role;
   const isStaff = userRole === 'admin' || userRole === 'gestion';
@@ -201,6 +208,50 @@ export default function App() {
                             <Route path="/login" element={<Login />} />
                             <Route path="/reset-password" element={<ResetPassword />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
+
+                            {/* ─── PORTAL DE USUARIO (PROTECTED) ──────────────── */}
+                            <Route element={<ProtectedRoute requiredRole="usuario" />}>
+                              <Route path="/portal" element={<PortalLayout />}>
+                                <Route index element={<PortalDashboard />} />
+
+                                {/* Portal personal */}
+                                <Route path="checkin"  element={<PortalCheckin />} />
+                                <Route path="facturas" element={<PortalInvoices />} />
+
+                                {/* Secciones de Gestión */}
+                                <Route path="g/dashboard"  element={<Dashboard />} />
+                                <Route path="g/reservas"   element={<Reservations />} />
+                                <Route path="g/calendario" element={<Calendar />} />
+                                <Route path="g/mensajes"   element={<Messages />} />
+                                <Route path="g/tareas"     element={<Tasks />} />
+
+                                {/* Secciones de Admin — Contenido */}
+                                <Route path="a/apartamentos"  element={<ApartmentsAdmin />} />
+                                <Route path="a/ofertas"       element={<OffersAdmin />} />
+                                <Route path="a/extras"        element={<ExtrasAdmin />} />
+                                <Route path="a/resenas"       element={<ReviewsAdmin />} />
+                                <Route path="a/faq"           element={<FaqAdmin />} />
+                                <Route path="a/blog"          element={<BlogAdmin />} />
+                                <Route path="a/experiencias"  element={<ExperiencesAdmin />} />
+                                <Route path="a/web"           element={<WebContent />} />
+
+                                {/* Secciones de Admin — Configuración */}
+                                <Route path="a/precios"       element={<Pricing />} />
+                                <Route path="a/descuentos"    element={<DiscountCodes />} />
+                                <Route path="a/reglas"        element={<BookingRules />} />
+                                <Route path="a/cancelacion"   element={<Cancellation />} />
+                                <Route path="a/emails"        element={<EmailConfig />} />
+                                <Route path="a/ical"          element={<IcalAdmin />} />
+                                <Route path="a/registro"      element={<CheckInAdmin />} />
+                                <Route path="a/pdf-editor"    element={<PdfEditorAdmin />} />
+                                <Route path="a/configuracion" element={<GeneralSettings />} />
+
+                                {/* Secciones de Admin — Sistema */}
+                                <Route path="a/analytics"     element={<Analytics />} />
+                                <Route path="a/auditoria"     element={<AuditLog />} />
+                                <Route path="a/changelog"     element={<Changelog />} />
+                              </Route>
+                            </Route>
 
                             {/* ─── MANAGEMENT PANEL (PROTECTED) ────────────────── */}
                             <Route element={<ProtectedRoute requiredRole="gestion" />}>

@@ -279,6 +279,12 @@ export default function ApartmentDetail() {
       ? globalSettings.cancellation_free_days
       : 14);
 
+  const avaiMode = (globalSettings?.avaibook_mode as string) ?? 'off';
+  const avaiUrl = apt.avaibook_url || (globalSettings?.avaibook_url as string) || '';
+  const showOwnWidget = avaiMode === 'off' || avaiMode === 'link' || avaiMode === 'iframe';
+  const showAvaibook = avaiMode !== 'off' && !!avaiUrl;
+  const avaiAsIframe = avaiMode === 'iframe' || avaiMode === 'iframe_only';
+
   return (
     <>
       <SEO
@@ -567,7 +573,7 @@ export default function ApartmentDetail() {
                 </div>
               ))}
             </div>
-            {globalSettings?.booking_mode !== 'redirect' && (
+            {showOwnWidget && globalSettings?.booking_mode !== 'redirect' && (
               <>
                 <div className="text-2xl font-serif font-bold text-navy mb-4 mt-8">
                   {T.detail.availability}
@@ -649,33 +655,61 @@ export default function ApartmentDetail() {
 
           {/* COLUMNA DERECHA: WIDGET */}
           <div className="self-start">
-            <BookingWidget
-              apt={apt}
-              onBook={dates => {
-                if (globalSettings?.booking_mode === 'redirect') {
-                  navigate('/reservar');
-                } else {
-                  setBookingDates(dates);
-                  setBookingOpen(true);
-                }
-              }}
-              T={T}
-            />
+            {showOwnWidget && (
+              <>
+                <BookingWidget
+                  apt={apt}
+                  onBook={dates => {
+                    if (globalSettings?.booking_mode === 'redirect') {
+                      navigate('/reservar');
+                    } else {
+                      setBookingDates(dates);
+                      setBookingOpen(true);
+                    }
+                  }}
+                  T={T}
+                />
 
-            <div className="mt-4 p-5 bg-gray-50 text-xs text-gray-700 leading-relaxed rounded-lg">
-              <div className="font-semibold mb-1 text-navy">{T.detail.payModel}</div>
-              <div>
-                💳 {depositPct}% {T.detail.depositNow}
-              </div>
-              {depositPct < 100 && (
-                <div>
-                  💵 {100 - depositPct}% {T.detail.cashArrival}
+                <div className="mt-4 p-5 bg-gray-50 text-xs text-gray-700 leading-relaxed rounded-lg">
+                  <div className="font-semibold mb-1 text-navy">{T.detail.payModel}</div>
+                  <div>
+                    💳 {depositPct}% {T.detail.depositNow}
+                  </div>
+                  {depositPct < 100 && (
+                    <div>
+                      💵 {100 - depositPct}% {T.detail.cashArrival}
+                    </div>
+                  )}
+                  <div className="mt-2 text-gray-600">
+                    {T.detail.noCommission} {cancelDays} {T.detail.daysBefore}
+                  </div>
                 </div>
-              )}
-              <div className="mt-2 text-gray-600">
-                {T.detail.noCommission} {cancelDays} {T.detail.daysBefore}
-              </div>
-            </div>
+              </>
+            )}
+
+            {showAvaibook && (
+              avaiAsIframe ? (
+                <div className={showOwnWidget ? 'mt-4' : ''}>
+                  <iframe
+                    src={avaiUrl}
+                    title={T.booking.avaibookTitle}
+                    width="100%"
+                    height="600"
+                    frameBorder="0"
+                    className="rounded-lg border border-gray-200 w-full"
+                  />
+                </div>
+              ) : (
+                <a
+                  href={avaiUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex items-center justify-center gap-2 w-full px-4 py-3 rounded border border-teal text-teal font-semibold text-sm hover:bg-teal/5 transition-all ${showOwnWidget ? 'mt-3' : ''}`}
+                >
+                  {T.booking.avaibookBtn} ↗
+                </a>
+              )
+            )}
 
             <button
               className="w-full border border-gray-300 text-navy px-4 py-3 rounded hover:bg-gray-50 transition-all font-semibold mt-3"

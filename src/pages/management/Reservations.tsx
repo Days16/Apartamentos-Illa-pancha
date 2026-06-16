@@ -2,6 +2,7 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   formatDateShort,
   formatPrice,
@@ -52,7 +53,8 @@ const STATUS_LABEL: Record<string, string> = {
 };
 const SRC_LABEL: Record<string, string> = {
   web: 'Web',
-  booking: 'Booking',
+  booking: 'Booking.com',
+  avaibook: 'Avaibook',
   airbnb: 'Airbnb',
   manual: 'Manual',
   direct: 'Manual',
@@ -61,6 +63,8 @@ const SRC_LABEL: Record<string, string> = {
 export default function Reservas() {
   const [searchParams] = useSearchParams();
   const initialId = searchParams.get('id');
+  const { user } = useAuth();
+  const isUsuario = user?.app_metadata?.role === 'usuario';
 
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -801,7 +805,7 @@ export default function Reservas() {
       {viewMode === 'table' && (
         <div className="panel-card overflow-hidden" style={{ padding: 0 }}>
           <PanelTable
-            columns={columns}
+            columns={isUsuario ? columns.filter(c => c.key !== 'total') : columns}
             data={filtered}
             rowKey={r => String(r.id ?? '')}
             loading={loading}
@@ -878,7 +882,7 @@ export default function Reservas() {
               >
                 ⎙ Registro entrada
               </button>
-              {selectedReservation.status === 'confirmed' && !selectedReservation.cashPaid && (
+              {!isUsuario && selectedReservation.status === 'confirmed' && !selectedReservation.cashPaid && (
                 <button
                   className="panel-btn panel-btn-primary panel-btn-sm"
                   disabled={saving}
@@ -1002,7 +1006,7 @@ export default function Reservas() {
           </PanelCard>
 
           {/* Pagos */}
-          <PanelCard title="Resumen de pagos" className="mb-4">
+          {!isUsuario && <PanelCard title="Resumen de pagos" className="mb-4">
             {[
               ['Total reserva', formatPrice(selectedReservation.total)],
               ...(selectedReservation.extrasTotal > 0
@@ -1051,7 +1055,7 @@ export default function Reservas() {
                 )}
               </span>
             </div>
-          </PanelCard>
+          </PanelCard>}
 
           {/* Extras */}
           <PanelCard
@@ -1121,9 +1125,11 @@ export default function Reservas() {
                           >
                             {extra.name}
                           </div>
-                          <div className="text-xs panel-text-muted">
-                            {extra.price > 0 ? formatPrice(extra.price) : 'Gratis'}
-                          </div>
+                          {!isUsuario && (
+                            <div className="text-xs panel-text-muted">
+                              {extra.price > 0 ? formatPrice(extra.price) : 'Gratis'}
+                            </div>
+                          )}
                         </div>
                       </label>
                     );
@@ -1139,7 +1145,7 @@ export default function Reservas() {
                   return e ? (
                     <PanelBadge key={extraId} variant="info">
                       {e.name}
-                      {e.price > 0 ? ` · ${formatPrice(e.price)}` : ''}
+                      {!isUsuario && e.price > 0 ? ` · ${formatPrice(e.price)}` : ''}
                     </PanelBadge>
                   ) : null;
                 })}
@@ -1159,7 +1165,7 @@ export default function Reservas() {
                     ['Capacidad', apt.cap],
                     ['Dormitorios', apt.beds],
                     ['Baños', apt.baths],
-                    ['Precio/noche', formatPrice(apt.price)],
+                    ...(!isUsuario ? [['Precio/noche', formatPrice(apt.price)]] : []),
                     ['Mín. noches', `${apt.minStay} noches`],
                   ].map(([label, value]) => (
                     <div key={label}>

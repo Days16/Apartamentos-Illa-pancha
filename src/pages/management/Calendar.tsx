@@ -2,6 +2,7 @@
 // @ts-nocheck
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { getApartments, getReservations, createReservation } from '../../services/dataService';
 import {
   formatDateNumeric,
@@ -15,11 +16,13 @@ import { PanelPageHeader, PanelModal, FormField, FormSection } from '../../compo
 
 // Color configuration based on user image
 const STATUS_COLORS = {
-  reserved: { bg: '#86efac', text: '#14532d', border: '#4ade80', label: 'Web directa' }, // Verde (Web directa)
-  booking: { bg: '#93c5fd', text: '#1e3a8a', border: '#3b82f6', label: 'Booking.com' }, // Azul (Booking)
-  pending: { bg: '#fef08a', text: '#713f12', border: '#facc15', label: 'Pendiente' }, // Amarillo
-  external: { bg: '#d8b4fe', text: '#4c1d95', border: '#a855f7', label: 'Otros' }, // Morado
-  blocked: { bg: '#fecaca', text: '#7f1d1d', border: '#f87171', label: 'Bloqueado' }, // Rojo
+  reserved:  { bg: '#86efac', text: '#14532d', border: '#4ade80', label: 'Web directa' },
+  booking:   { bg: '#93c5fd', text: '#1e3a8a', border: '#3b82f6', label: 'Booking.com' },
+  avaibook:  { bg: '#6ee7b7', text: '#065f46', border: '#10b981', label: 'Avaibook' },
+  airbnb:    { bg: '#fda4af', text: '#9f1239', border: '#f43f5e', label: 'Airbnb' },
+  pending:   { bg: '#fef08a', text: '#713f12', border: '#facc15', label: 'Pendiente' },
+  external:  { bg: '#d8b4fe', text: '#4c1d95', border: '#a855f7', label: 'Otros' },
+  blocked:   { bg: '#fecaca', text: '#7f1d1d', border: '#f87171', label: 'Bloqueado' },
 };
 
 const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -48,6 +51,8 @@ const normalizeApartmentColor = (color?: string) => {
 
 export default function Calendario() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isUsuario = user?.app_metadata?.role === 'usuario';
   const scrollContainerRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [apartments, setApartments] = useState([]);
@@ -300,11 +305,10 @@ export default function Calendario() {
       return 'blocked';
     if (res.status === 'pending') return 'pending';
     if (res.source === 'booking') return 'booking';
+    if (res.source === 'avaibook') return 'avaibook';
+    if (res.source === 'airbnb') return 'airbnb';
     if (res.source === 'web') return 'reserved';
-    if (
-      res.source === 'other' ||
-      (res.source && res.source !== 'manual' && res.source !== 'web' && res.source !== 'booking')
-    )
+    if (res.source && res.source !== 'manual' && res.source !== 'web' && res.source !== 'booking')
       return 'external';
     return 'reserved';
   };
@@ -565,7 +569,7 @@ export default function Calendario() {
                       return (
                         <td
                           key={idx}
-                          className={`h-16 border border-gray-100 relative isolate transition-colors ${isToday ? 'bg-teal/5' : ''} ${isOccupied ? 'cursor-not-allowed' : 'cursor-crosshair hover:bg-gray-50'}`}
+                          className={`h-16 border border-gray-100 relative isolate transition-colors cursor-pointer ${isToday ? 'bg-teal/5' : ''} ${!isOccupied ? 'hover:bg-gray-50' : ''}`}
                           style={{
                             ...(res && !isCheckin && !isSplitDay && !(isCheckout && !res)
                               ? { backgroundColor: config.bg }
@@ -582,7 +586,7 @@ export default function Calendario() {
                             handleCellMouseDown(apt.slug, dateStr, isOccupied);
                           }}
                           onMouseEnter={() => handleCellMouseEnter(apt.slug, dateStr)}
-                          onClick={() => !isOccupied && setSelectedDate(dateToStr(date))}
+                          onClick={() => setSelectedDate(dateToStr(date))}
                         >
                           {/* Split day: checkout morning (upper-left triangle) + check-in afternoon (lower-right triangle) */}
                           {isSplitDay && (
@@ -650,13 +654,6 @@ export default function Calendario() {
                             />
                           )}
 
-                          {/* Borde izquierdo para días ocupados intermedios (excepto primera columna para limpieza visual) */}
-                          {res && !isCheckin && !isSplitDay && idx !== 0 && (
-                            <div
-                              className="absolute inset-y-0 left-0 w-[1px]"
-                              style={{ backgroundColor: config.border }}
-                            />
-                          )}
                         </td>
                       );
                     })}
@@ -765,11 +762,16 @@ export default function Calendario() {
                           {new Date(res.checkout + 'T00:00:00').toLocaleDateString()}
                         </div>
                         <div>
-                          💰{' '}
-                          <span className="font-bold" style={{ color: 'var(--panel-text)' }}>
-                            {formatPrice(res.total || 0)}
-                          </span>{' '}
-                          ({res.nights} noche{res.nights !== 1 ? 's' : ''})
+                          🌙{' '}
+                          {res.nights} noche{res.nights !== 1 ? 's' : ''}
+                          {!isUsuario && (
+                            <>
+                              {' · '}
+                              <span className="font-bold" style={{ color: 'var(--panel-text)' }}>
+                                {formatPrice(res.total || 0)}
+                              </span>
+                            </>
+                          )}
                         </div>
                         <div className="font-mono text-[11px]">
                           🆔 {formatReservationReference(res.id, res.source)}

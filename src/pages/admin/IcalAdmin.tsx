@@ -20,14 +20,22 @@ function timeAgo(iso: string) {
   return `Hace ${Math.floor(h / 24)} días`;
 }
 
+const PLATFORM_LABELS: Record<string, string> = { booking: 'Booking.com', avaibook: 'Avaibook', airbnb: 'Airbnb' };
+const PLATFORM_COLORS: Record<string, string> = {
+  booking:  'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  avaibook: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
+  airbnb:   'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+};
+
 export default function IcalAdmin() {
   const toast = useToast();
-  const [sources, setSources] = useState<Array<{ id: string; apartment_slug: string; url: string; active: boolean; last_sync: string | null; last_status: string | null; last_message?: string | null }>>([]);
+  const [sources, setSources] = useState<Array<{ id: string; apartment_slug: string; url: string; active: boolean; last_sync: string | null; last_status: string | null; last_message?: string | null; platform?: string }>>([]);
   const [apartments, setApartments] = useState<Array<{ slug: string; name: string }>>([]);
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState<string | null>(null); // id of source being synced
+  const [syncing, setSyncing] = useState<string | null>(null);
   const [syncingAll, setSyncingAll] = useState(false);
-  const [form, setForm] = useState({ apartment_slug: '', url: '' });
+  const [form, setForm] = useState({ apartment_slug: '', url: '', platform: 'booking' as 'booking' | 'avaibook' | 'airbnb' });
+  const [guideTab, setGuideTab] = useState<'booking' | 'avaibook' | 'airbnb'>('booking');
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<{ id: string; slug: string } | null>(null);
@@ -61,11 +69,11 @@ export default function IcalAdmin() {
     setAdding(true);
     const { error: err } = await supabase
       .from('ical_sources')
-      .insert({ apartment_slug: form.apartment_slug, url: form.url });
+      .insert({ apartment_slug: form.apartment_slug, url: form.url, platform: form.platform });
     if (err) {
       setError(err.message);
     } else {
-      setForm({ apartment_slug: '', url: '' });
+      setForm({ apartment_slug: '', url: '', platform: 'booking' });
       await load();
     }
     setAdding(false);
@@ -74,16 +82,13 @@ export default function IcalAdmin() {
   // ── Eliminar fuente ───────────────────────────────────────────────────────
   const handleDeleteConfirmed = async () => {
     if (!confirmDelete) return;
-    const { id, slug } = confirmDelete;
+    const { id } = confirmDelete;
     setConfirmDelete(null);
     await supabase.from('ical_sources').delete().eq('id', id);
-    // Delete reservations imported from this source
     await supabase
       .from('reservations')
       .delete()
-      .eq('source', 'booking')
-      .eq('apt_slug', slug)
-      .like('ical_uid', `booking-${slug}-%`);
+      .like('ical_uid', `${id}:%`);
     await load();
   };
 
@@ -164,8 +169,8 @@ export default function IcalAdmin() {
   return (
     <div className="panel-page-content space-y-5">
       <PanelPageHeader
-        title="Sincronización Booking.com"
-        subtitle="Importa las reservas de Booking.com vía iCal para evitar dobles reservas."
+        title="Sincronización iCal"
+        subtitle="Importa reservas de Booking.com, Avaibook y Airbnb vía iCal para evitar dobles reservas."
         actions={
           sources.length > 0 ? (
             <button
@@ -185,35 +190,62 @@ export default function IcalAdmin() {
         }
       />
 
-      {/* How to get the Booking.com URL */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-        <div className="flex gap-3">
-          <Ico d={paths.check} size={16} color="#3b82f6" className="shrink-0 mt-0.5" />
-          <div className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
-            <p className="font-semibold">¿Dónde encuentro la URL iCal de Booking.com?</p>
-            <ol className="list-decimal list-inside space-y-0.5 text-blue-700 dark:text-blue-400">
-              <li>
-                Inicia sesión en la <strong>Extranet de Booking.com</strong>
-              </li>
-              <li>
-                Ve a <strong>Calendario → Sincronizar calendarios</strong>
-              </li>
-              <li>
-                Copia la URL del enlace <strong>"Exportar calendario"</strong> (.ics)
-              </li>
-            </ol>
-          </div>
+      {/* Guía multi-plataforma */}
+      <div className="panel-card">
+        <p className="panel-label mb-2">¿Dónde encuentro la URL iCal?</p>
+        <div className="flex gap-2 mb-3">
+          {(['booking', 'avaibook', 'airbnb'] as const).map(p => (
+            <button
+              key={p}
+              onClick={() => setGuideTab(p)}
+              className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors border ${guideTab === p ? 'bg-teal-600 text-white border-teal-600' : 'border-[var(--panel-border)] panel-text-muted hover:border-teal-400'}`}
+            >
+              {PLATFORM_LABELS[p]}
+            </button>
+          ))}
         </div>
+        {guideTab === 'booking' && (
+          <ol className="list-decimal list-inside space-y-1 text-sm panel-text-muted">
+            <li>Inicia sesión en la <strong className="panel-text-main">Extranet de Booking.com</strong></li>
+            <li>Ve a <strong className="panel-text-main">Calendario → Sincronizar calendarios</strong></li>
+            <li>Copia la URL del enlace <strong className="panel-text-main">"Exportar calendario"</strong> (.ics)</li>
+          </ol>
+        )}
+        {guideTab === 'avaibook' && (
+          <ol className="list-decimal list-inside space-y-1 text-sm panel-text-muted">
+            <li>Inicia sesión en tu cuenta de <strong className="panel-text-main">Avaibook</strong></li>
+            <li>Ve a <strong className="panel-text-main">Propiedades → Calendarios → Exportar</strong></li>
+            <li>Copia la URL iCal (.ics) generada para el alojamiento</li>
+          </ol>
+        )}
+        {guideTab === 'airbnb' && (
+          <ol className="list-decimal list-inside space-y-1 text-sm panel-text-muted">
+            <li>Inicia sesión en <strong className="panel-text-main">Airbnb</strong> como anfitrión</li>
+            <li>Ve a <strong className="panel-text-main">Calendario → Disponibilidad → Exportar calendario</strong></li>
+            <li>Copia el enlace <strong className="panel-text-main">"Exportar"</strong> (.ics) del alojamiento</li>
+          </ol>
+        )}
       </div>
 
       {/* Add new source */}
       <div className="panel-card">
-        <h2 className="panel-h3 mb-4">Añadir calendario de Booking.com</h2>
+        <h2 className="panel-h3 mb-4">Añadir calendario iCal</h2>
         <form onSubmit={handleAdd} className="flex flex-wrap gap-3">
+          <select
+            value={form.platform}
+            onChange={e => setForm(f => ({ ...f, platform: e.target.value as 'booking' | 'avaibook' | 'airbnb' }))}
+            className="panel-input w-40"
+            aria-label="Plataforma"
+          >
+            <option value="booking">Booking.com</option>
+            <option value="avaibook">Avaibook</option>
+            <option value="airbnb">Airbnb</option>
+          </select>
           <select
             value={form.apartment_slug}
             onChange={e => setForm(f => ({ ...f, apartment_slug: e.target.value }))}
-            className="panel-input w-48"
+            className="panel-input w-44"
+            aria-label="Apartamento"
           >
             <option value="">Apartamento…</option>
             {apartments.map(a => (
@@ -224,7 +256,7 @@ export default function IcalAdmin() {
           </select>
           <input
             type="url"
-            placeholder="https://admin.booking.com/hotel/...ics"
+            placeholder="https://…ics"
             value={form.url}
             onChange={e => setForm(f => ({ ...f, url: e.target.value }))}
             className="panel-input flex-1 min-w-64 w-auto"
@@ -263,7 +295,7 @@ export default function IcalAdmin() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   {/* Info principal */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       {/* Estado */}
                       <span
                         className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -287,6 +319,11 @@ export default function IcalAdmin() {
                               ? 'Error'
                               : 'Sin sincronizar'}
                       </span>
+                      {src.platform && (
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${PLATFORM_COLORS[src.platform] ?? 'bg-gray-100 text-gray-500'}`}>
+                          {PLATFORM_LABELS[src.platform] ?? src.platform}
+                        </span>
+                      )}
                       <span
                         className="text-sm font-semibold panel-text-main"
                       >
@@ -373,7 +410,7 @@ export default function IcalAdmin() {
       <div className="panel-card">
         <h2 className="panel-h3 mb-1">Exportar calendarios propios</h2>
         <p className="text-xs text-gray-400 mb-4">
-          Usa estas URLs en Booking.com para importar tus reservas directas y evitar huecos.
+          Usa estas URLs en Booking.com, Avaibook o Airbnb para importar tus reservas directas y evitar huecos.
         </p>
         <div className="space-y-2">
           {apartments.map(apt => (
@@ -409,7 +446,7 @@ export default function IcalAdmin() {
         open={!!confirmDelete}
         variant="destructive"
         title="¿Eliminar esta fuente iCal?"
-        description="Las reservas importadas de Booking.com para este apartamento también se eliminarán."
+        description="Las reservas importadas vía iCal para este calendario también se eliminarán."
         confirmLabel="Eliminar"
         onConfirm={handleDeleteConfirmed}
         onCancel={() => setConfirmDelete(null)}

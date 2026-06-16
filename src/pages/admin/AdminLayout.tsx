@@ -44,7 +44,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { path: '/admin/analytics', label: 'Analíticas', icon: paths.trend },
       { path: '/admin/auditoria', label: 'Reg. auditoría', icon: paths.check },
-      //{ path: '/admin/usuarios', label: 'Usuarios', icon: paths.users },
+      { path: '/admin/usuarios', label: 'Usuarios', icon: paths.users },
       { path: '/admin/changelog', label: 'Changelog', icon: paths.download },
     ],
   },

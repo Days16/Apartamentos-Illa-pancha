@@ -186,7 +186,18 @@
     "downloadPDF": "Télécharger le PDF",
     "backToWeb": "Retour au site",
     "confirmationEmail": "Nous avons envoyé tous les détails et le code de confirmation à votre email.",
-    "cashRest": "Reste à l'arrivée"
+    "cashRest": "Reste à l'arrivée",
+    "avaibookBtn": "Réserver avec Avaibook",
+    "avaibookTitle": "Moteur de réservation Avaibook",
+    "avaibookTabLabel": "Avaibook",
+    "avaibookModeLabel": "Mode d'intégration",
+    "avaibookUrlLabel": "URL globale du moteur Avaibook",
+    "avaibookAptUrlLabel": "URL Avaibook pour cet appartement",
+    "avaibookModeOff": "Désactivé",
+    "avaibookModeLink": "Complément (lien)",
+    "avaibookModeIframe": "Complément (iframe)",
+    "avaibookModeLinkOnly": "Avaibook uniquement (lien)",
+    "avaibookModeIframeOnly": "Avaibook uniquement (iframe)"
   },
   "footer": {
     "tagline": "Appartements Illa Pancha, vivez le goût du nord. Réservez directement et payez moins que sur toute plateforme.",

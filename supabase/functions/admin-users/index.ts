@@ -36,6 +36,7 @@ serve(async (req) => {
         id: u.id,
         email: u.email,
         role: u.app_metadata?.role ?? null,
+        portal_sections: u.app_metadata?.portal_sections ?? null,
         created_at: u.created_at,
         last_sign_in_at: u.last_sign_in_at,
         banned_until: u.banned_until ?? null,
@@ -44,40 +45,51 @@ serve(async (req) => {
     }
 
     if (req.method === "POST") {
-      // Invitar usuario
-      const { email, role: newRole } = await req.json();
+      const { email, role: newRole, password } = await req.json();
       if (!email || !newRole) return new Response(JSON.stringify({ error: "email and role required" }), { status: 400, headers: corsHeaders });
-      const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
-        data: { role: newRole },
-      });
-      if (error) throw error;
-      // Actualizar app_metadata con el rol
-      await adminClient.auth.admin.updateUserById(data.user.id, {
-        app_metadata: { role: newRole },
-      });
-      return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      if (password) {
+        // Crear usuario con contraseña directa (sin email de invitación)
+        const { data, error } = await adminClient.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true,
+          app_metadata: { role: newRole },
+        });
+        if (error) throw error;
+        return new Response(JSON.stringify({ ok: true, id: data.user.id }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      } else {
+        // Flujo de invitación por email (comportamiento original)
+        const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
+          data: { role: newRole },
+        });
+        if (error) throw error;
+        await adminClient.auth.admin.updateUserById(data.user.id, {
+          app_metadata: { role: newRole },
+        });
+        return new Response(JSON.stringify({ ok: true, id: data.user.id }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
     }
 
     if (req.method === "PATCH") {
-      // Actualizar rol o estado de un usuario
-      const { id, role: newRole, active } = await req.json();
+      // Actualizar rol, secciones del portal o estado de un usuario
+      const { id, role: newRole, active, portal_sections } = await req.json();
       if (!id) return new Response(JSON.stringify({ error: "id required" }), { status: 400, headers: corsHeaders });
 
-      if (newRole !== undefined) {
-        await adminClient.auth.admin.updateUserById(id, {
-          app_metadata: { role: newRole },
-        });
+      if (newRole !== undefined || portal_sections !== undefined) {
+        // Obtener metadata actual para hacer merge (no reemplazar)
+        const { data: currentUserData } = await adminClient.auth.admin.getUserById(id);
+        const currentMeta: Record<string, unknown> = currentUserData?.user?.app_metadata ?? {};
+        const updates: Record<string, unknown> = { ...currentMeta };
+        if (newRole !== undefined) updates.role = newRole;
+        if (portal_sections !== undefined) updates.portal_sections = portal_sections;
+        await adminClient.auth.admin.updateUserById(id, { app_metadata: updates });
       }
       if (active === false) {
-        // Banear indefinidamente
-        await adminClient.auth.admin.updateUserById(id, {
-          ban_duration: "876600h", // 100 años
-        });
+        await adminClient.auth.admin.updateUserById(id, { ban_duration: "876600h" });
       }
       if (active === true) {
-        await adminClient.auth.admin.updateUserById(id, {
-          ban_duration: "none",
-        });
+        await adminClient.auth.admin.updateUserById(id, { ban_duration: "none" });
       }
       return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }

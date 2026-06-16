@@ -100,41 +100,41 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
 
       {/* Links - desktop and mobile menu */}
       <div
-        className={`flex flex-col md:flex-row md:items-center md:gap-8 absolute top-16 md:top-1/2 md:-translate-y-1/2 left-0 md:left-1/2 md:-translate-x-1/2 right-0 md:right-auto w-full md:w-auto bg-white dark:bg-slate-900 dark:border-slate-700 md:bg-transparent md:dark:bg-transparent px-6 md:px-0 py-4 md:py-0 border-b md:border-0 transition-all duration-300 ${mobileOpen ? 'max-h-64 opacity-100' : 'md:max-h-full md:opacity-100 max-h-0 opacity-0 overflow-hidden md:overflow-visible'}`}
+        className={`flex flex-col md:flex-row md:items-center md:gap-3 lg:gap-5 xl:gap-8 absolute top-16 md:top-1/2 md:-translate-y-1/2 left-0 md:left-1/2 md:-translate-x-1/2 right-0 md:right-auto w-full md:w-auto bg-white dark:bg-slate-900 dark:border-slate-700 md:bg-transparent md:dark:bg-transparent px-6 md:px-0 py-4 md:py-0 border-b md:border-0 transition-all duration-300 ${mobileOpen ? 'max-h-64 opacity-100' : 'md:max-h-full md:opacity-100 max-h-0 opacity-0 overflow-hidden md:overflow-visible'}`}
       >
         <Link
           to="/apartamentos"
-          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/apartamentos') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium whitespace-nowrap md:text-sm lg:text-base ${isActive('/apartamentos') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.apartments}
         </Link>
         <Link
           to="/como-llegar"
-          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/como-llegar') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium whitespace-nowrap md:text-sm lg:text-base ${isActive('/como-llegar') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.comollegar}
         </Link>
         <Link
           to="/experiencias"
-          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/experiencias') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium whitespace-nowrap md:text-sm lg:text-base ${isActive('/experiencias') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.experiences}
         </Link>
         <Link
           to="/contacto"
-          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/contacto') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium whitespace-nowrap md:text-sm lg:text-base ${isActive('/contacto') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.contact}
         </Link>
         <Link
           to="/faq"
-          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/faq') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium whitespace-nowrap md:text-sm lg:text-base ${isActive('/faq') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.faq}
         </Link>
         <Link
           to="/blog"
-          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium ${isActive('/blog') ? 'text-teal border-b-2 border-teal' : ''}`}
+          className={`py-2 md:py-0 text-navy dark:text-slate-200 hover:text-teal transition-colors font-medium whitespace-nowrap md:text-sm lg:text-base ${isActive('/blog') ? 'text-teal border-b-2 border-teal' : ''}`}
         >
           {T.nav.blog}
         </Link>
@@ -148,7 +148,7 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
         </button>
       </div>
 
-      <div className="flex items-center gap-4 md:gap-6">
+      <div className="flex items-center gap-2 md:gap-3 lg:gap-4 xl:gap-6">
         {/* Selector de idioma */}
         <div className="relative" ref={langRef}>
           <button
@@ -271,7 +271,7 @@ export default function Navbar({ onOpenBooking: _onOpenBooking }: { onOpenBookin
         </button>
 
         <button
-          className="hidden md:inline-block bg-teal text-white px-6 py-2 rounded hover:bg-teal-600 transition-all font-semibold"
+          className="hidden md:inline-block bg-teal text-white px-4 py-2 lg:px-6 rounded hover:bg-teal-600 transition-all font-semibold md:text-sm lg:text-base whitespace-nowrap"
           onClick={handleBook}
           aria-label={T.nav.book}
         >

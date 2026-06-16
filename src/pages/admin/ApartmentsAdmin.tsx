@@ -422,6 +422,7 @@ export default function ApartamentosAdmin() {
         slug: formData.slug,
         internal_name: formData.internal_name || null,
         maps_url: formData.maps_url || null,
+        avaibook_url: formData.avaibook_url || null,
         rules: formData.rules || [],
       };
 
@@ -1059,6 +1060,20 @@ export default function ApartamentosAdmin() {
                       className="panel-input resize-y min-h-[120px]"
                     />
                   </div>
+
+                  <div className="apt-admin-field">
+                    <label className="apt-admin-label">URL de Avaibook (Motor Simple)</label>
+                    <input
+                      type="url"
+                      value={formData.avaibook_url || ''}
+                      onChange={e => handleInputChange('avaibook_url', e.target.value)}
+                      className="panel-input"
+                      placeholder="https://app.avaibook.com/..."
+                    />
+                    <p className="apt-admin-hint">
+                      Opcional. Tiene prioridad sobre la URL global de Avaibook (Ajustes → Avaibook).
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -1450,6 +1465,7 @@ export default function ApartamentosAdmin() {
                   ) : (
                     <div className="apt-admin-maps-empty">📍 Sin enlace de Maps configurado</div>
                   )}
+
                 </div>
               )}
 

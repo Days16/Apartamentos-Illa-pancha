@@ -186,7 +186,18 @@
     "pendingArrival": "Pendiente al llegar",
     "downloadPDF": "Descargar Factura PDF",
     "backToWeb": "Volver a la Web",
-    "confirmationEmail": "Hemos enviado todos los detalles y el código de confirmación a tu email. Si tienes alguna duda, contáctanos en"
+    "confirmationEmail": "Hemos enviado todos los detalles y el código de confirmación a tu email. Si tienes alguna duda, contáctanos en",
+    "avaibookBtn": "Reservar con Avaibook",
+    "avaibookTitle": "Motor de reservas Avaibook",
+    "avaibookTabLabel": "Avaibook",
+    "avaibookModeLabel": "Modo de integración",
+    "avaibookUrlLabel": "URL global del motor de Avaibook",
+    "avaibookAptUrlLabel": "URL de Avaibook para este apartamento",
+    "avaibookModeOff": "Desactivado",
+    "avaibookModeLink": "Complemento (enlace)",
+    "avaibookModeIframe": "Complemento (iframe)",
+    "avaibookModeLinkOnly": "Solo Avaibook (enlace)",
+    "avaibookModeIframeOnly": "Solo Avaibook (iframe)"
   },
   "footer": {
     "tagline": "Apartamentos Illa Pancha, vive el sabor del norte. Reserva directo y paga menos que en cualquier plataforma.",

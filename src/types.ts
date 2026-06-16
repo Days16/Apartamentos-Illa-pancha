@@ -30,6 +30,7 @@ export interface DbApartment {
   occupied_days: string[];
   internal_name: string | null;
   cover_photo_url: string | null;
+  avaibook_url: string | null;
   created_at: string;
 }
 
@@ -44,7 +45,7 @@ export interface DbReservation {
   total: number;
   deposit: number;
   status: 'pending' | 'confirmed' | 'cancelled';
-  source: 'web' | 'manual' | 'booking';
+  source: 'web' | 'manual' | 'booking' | 'avaibook' | 'airbnb';
   cash_paid: boolean;
   email: string;
   phone: string | null;
@@ -221,6 +222,7 @@ export interface Apartment {
   /** ISO dates derived from active reservations, generated in ApartmentDetail */
   internalName: string | null;
   coverPhotoUrl: string | null;
+  avaibook_url?: string | null;
   occupiedDatesList?: string[];
   /** Raw apartment reservations, used by BookingWidget */
   rawReservations?: Reservation[];
@@ -239,7 +241,7 @@ export interface Reservation {
   total: number;
   deposit: number;
   status: 'pending' | 'confirmed' | 'cancelled';
-  source: 'web' | 'manual' | 'booking';
+  source: 'web' | 'manual' | 'booking' | 'avaibook' | 'airbnb';
   cashPaid: boolean;
   email: string;
   phone: string | null;

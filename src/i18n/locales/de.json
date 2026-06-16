@@ -186,7 +186,18 @@
     "downloadPDF": "PDF herunterladen",
     "backToWeb": "Zurück zur Website",
     "confirmationEmail": "Wir haben alle Details und den Bestätigungscode an Ihre E-Mail gesendet.",
-    "cashRest": "Rest bei Ankunft"
+    "cashRest": "Rest bei Ankunft",
+    "avaibookBtn": "Mit Avaibook buchen",
+    "avaibookTitle": "Avaibook Buchungsmaschine",
+    "avaibookTabLabel": "Avaibook",
+    "avaibookModeLabel": "Integrationsmodus",
+    "avaibookUrlLabel": "Globale Avaibook-URL",
+    "avaibookAptUrlLabel": "Avaibook-URL für diese Wohnung",
+    "avaibookModeOff": "Deaktiviert",
+    "avaibookModeLink": "Ergänzung (Link)",
+    "avaibookModeIframe": "Ergänzung (iframe)",
+    "avaibookModeLinkOnly": "Nur Avaibook (Link)",
+    "avaibookModeIframeOnly": "Nur Avaibook (iframe)"
   },
   "footer": {
     "tagline": "Illa Pancha Apartments, erleben Sie den Geschmack des Nordens. Buchen Sie direkt und zahlen Sie weniger als auf jeder Plattform.",
