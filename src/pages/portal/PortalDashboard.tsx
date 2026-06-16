@@ -23,7 +23,7 @@ export default function PortalDashboard() {
     <div className="panel-page-content">
       <div className="mb-8">
         <h1 className="font-serif text-3xl panel-text-main mb-1">
-          Hola, <em>{user?.email?.split('@')[0]}</em>
+          Hola, <em>{user?.user_metadata?.full_name ?? user?.email?.split('@')[0]}</em>
         </h1>
         <p className="panel-text-muted text-sm">
           Tienes acceso a {totalEnabled} {totalEnabled === 1 ? 'sección' : 'secciones'}.
