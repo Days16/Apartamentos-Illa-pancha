@@ -323,11 +323,16 @@ serve(async (req) => {
 
         const { data: existing } = await supabase
           .from("reservations")
-          .select("id")
+          .select("id, status")
           .eq("ical_uid", ical_uid)
           .maybeSingle();
 
         if (existing?.id) {
+          // Si fue cancelada manualmente, no reactivar
+          if (existing.status === "cancelled") {
+            console.log(`Skipping ${ical_uid}: manually cancelled, will not reactivate`);
+            continue;
+          }
           const { error: updErr } = await supabase
             .from("reservations")
             .update(reservationData)
@@ -337,13 +342,19 @@ serve(async (req) => {
           }
         } else {
           // Antes de insertar, verificar que no haya otra reserva que cubra estas fechas
-          const { data: overlapping } = await supabase
+          const { data: overlapping, error: overlapErr } = await supabase
             .from("reservations")
             .select("id, ical_uid")
             .eq("apt_slug", source.apartment_slug)
             .neq("status", "cancelled")
+            .neq("ical_uid", ical_uid)
             .lt("checkin", ev.dtend)
             .gt("checkout", ev.dtstart);
+
+          if (overlapErr) {
+            console.error(`Overlap check failed for ${ical_uid}, skipping insert:`, overlapErr.message);
+            continue;
+          }
 
           if (overlapping && overlapping.length > 0) {
             console.log(`Skipping ${ical_uid}: dates ${ev.dtstart}–${ev.dtend} already covered by ${overlapping[0].ical_uid ?? overlapping[0].id}`);

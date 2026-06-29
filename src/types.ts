@@ -249,6 +249,7 @@ export interface Reservation {
   extrasTotal: number;
   reviewToken?: string;
   created_at?: string;
+  icalUid?: string;
 }
 
 export interface Extra {

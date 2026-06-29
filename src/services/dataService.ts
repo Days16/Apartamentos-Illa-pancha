@@ -169,8 +169,23 @@ export async function updateReservation(id: string, patch: Partial<Reservation>)
 
 export async function deleteReservation(id: string): Promise<boolean> {
   try {
-    const { error } = await supabase.from('reservations').delete().eq('id', id);
-    if (error) throw error;
+    // Si tiene ical_uid, cancelar en vez de borrar para que el sync no la recree
+    const { data: r } = await supabase
+      .from('reservations')
+      .select('ical_uid')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (r?.ical_uid) {
+      const { error } = await supabase
+        .from('reservations')
+        .update({ status: 'cancelled' })
+        .eq('id', id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('reservations').delete().eq('id', id);
+      if (error) throw error;
+    }
     return true;
   } catch {
     return false;
@@ -280,5 +295,6 @@ export function normalizeReservation(d: any): Reservation {
     extras: d.extras || [],
     extrasTotal: d.extras_total ?? 0,
     reviewToken: d.review_token || d.reviewToken || undefined,
+    icalUid: d.ical_uid ?? undefined,
   };
 }

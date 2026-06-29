@@ -243,11 +243,14 @@ export default function Calendario() {
     async function loadData() {
       try {
         const [apts, res] = await Promise.all([getApartments(), getReservations()]);
-        const aptLetter = (name: string) => {
-          const m = name.match(/\d[º°']?\s*([A-Z])\s*$/i);
-          return m ? m[1].toUpperCase() : name;
+        const extractLetter = (apt: any) => {
+          const src = apt.internalName || apt.name || '';
+          const m = src.match(/[1-9][^A-Za-z]*([A-Z])/);
+          return m ? m[1].toUpperCase() : src;
         };
-        setApartments([...apts].sort((a, b) => aptLetter(a.name).localeCompare(aptLetter(b.name))));
+        setApartments([...apts].sort((a, b) =>
+          extractLetter(a).localeCompare(extractLetter(b))
+        ));
         const filteredRes = res.filter(r => r.status !== 'cancelled');
         setReservations(filteredRes);
       } catch (err) {
@@ -267,14 +270,14 @@ export default function Calendario() {
     timelineDates.push(d);
   }
 
-  const getReservationForDay = (aptSlug, date) => {
+  const getReservationForDay = (aptSlug, date, resList = reservations) => {
     // Normalizar d a YYYY-MM-DD (LOCAL)
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const dStr = `${y}-${m}-${day}`;
 
-    return reservations.find(r => {
+    return resList.find(r => {
       const rSlug = r.aptSlug || r.apt_slug || r.apt;
 
       if (rSlug === aptSlug) {
@@ -313,11 +316,11 @@ export default function Calendario() {
     return 'reserved';
   };
 
-  const getReservationsForDetailedList = date => {
+  const getReservationsForDetailedList = (date, resList = reservations) => {
     if (!date) return [];
     const d = new Date(date + 'T00:00:00');
 
-    return reservations
+    return resList
       .filter(r => {
         const checkin = new Date(r.checkin + 'T00:00:00');
         const checkout = new Date(r.checkout + 'T00:00:00');
@@ -328,8 +331,6 @@ export default function Calendario() {
         return { ...r, apartmentName: apt?.internalName || apt?.name || 'Apartamento desconocido' };
       });
   };
-
-  const dayReservations = getReservationsForDetailedList(selectedDate);
 
   if (loading)
     return (
@@ -342,6 +343,8 @@ export default function Calendario() {
 
   const filteredApts =
     selectedApt === 'all' ? apartments : apartments.filter(a => a.slug === selectedApt);
+
+  const dayReservations = getReservationsForDetailedList(selectedDate, reservations);
 
   const handlePdf = async () => {
     try {
@@ -533,7 +536,7 @@ export default function Calendario() {
                       const dateStr = dateToStr(date);
 
                       // Reservation occupying this day (checkin <= date < checkout)
-                      const res = getReservationForDay(apt.slug, date);
+                      const res = getReservationForDay(apt.slug, date, reservations);
                       const type = getStatusType(res);
                       const config = type ? STATUS_COLORS[type] : null;
 
