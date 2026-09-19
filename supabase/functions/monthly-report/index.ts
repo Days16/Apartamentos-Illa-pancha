@@ -18,6 +18,7 @@
 
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EMAIL_SENDING_DISABLED, disabledEmailResponse } from "../_shared/email-disabled.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SUPABASE_SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
@@ -30,6 +31,7 @@ serve(async (req) => {
   if (!internalSecret || authHeader !== `Bearer ${internalSecret}`) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
+  if (EMAIL_SENDING_DISABLED) return disabledEmailResponse();
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 

@@ -13,12 +13,14 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 //              );
 
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { EMAIL_SENDING_DISABLED, disabledEmailResponse } from "../_shared/email-disabled.ts";
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+  if (EMAIL_SENDING_DISABLED) return disabledEmailResponse(corsHeaders);
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey  = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

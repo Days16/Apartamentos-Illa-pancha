@@ -4,12 +4,14 @@ import { Resend } from "npm:resend@2.0.0";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { EMAIL_SENDING_DISABLED, disabledEmailResponse } from "../_shared/email-disabled.ts";
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+  if (EMAIL_SENDING_DISABLED) return disabledEmailResponse(corsHeaders);
 
   try {
     const {
