@@ -18,6 +18,7 @@ const SITE_URL = Deno.env.get("SITE_URL") || "https://apartamentosillapancha.com
 const resend = new Resend(RESEND_API_KEY);
 
 import { getCorsHeaders } from "../_shared/cors.ts";
+import { EMAIL_SENDING_DISABLED, disabledEmailResponse } from "../_shared/email-disabled.ts";
 
 interface DiscountInfo {
   code: string;
@@ -104,6 +105,7 @@ function buildEmailHtml(
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (EMAIL_SENDING_DISABLED) return disabledEmailResponse(corsHeaders);
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
   const { guestEmail, guestName, apartmentName, reviewToken, reservationId, manual, discount } = await req.json();
